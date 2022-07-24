@@ -1,8 +1,13 @@
+import math
+
 import pymysql
 import json
 import hashlib
 import time
 import uuid
+import datetime
+
+import utils
 
 
 class Mysqldb:
@@ -140,6 +145,39 @@ class Mysqldb:
         db.close()
         return json.dumps(result)
 
+    def update_fcm_token(self, ps_auth_token, user_id, fcm_token):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        sql = "SELECT * FROM user WHERE userId = %s;" % user_id
+        result = {"status": 0, "message": "Success"}
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            if len(results) == 0:
+                db.close()
+                return '{"status":1,"message":"Account not exit."}'
+            for row in results:
+                if ps_auth_token != row[15]:
+                    db.close()
+                    return '{"status":1,"message":"Failed to authenticate."}'
+        except:
+            db.close()
+            return '{"status":1,"message":"Update user error."}'
+        cursor = db.cursor()
+        sql = "UPDATE user SET fcmToken = '%s' WHERE userId = '%s'" % (fcm_token, user_id)
+        try:
+            cursor.execute(sql)
+            db.commit()
+        except:
+            db.rollback()
+            db.close()
+            return '{"status":1,"message":"Update user error."}'
+        db.close()
+        return json.dumps(result)
+
     def logout(self, ps_auth_token, user_id):
         if not self.api_key_check(ps_auth_token, user_id):
             return '{"status":1,"message":"Failed to authenticate"}'
@@ -207,6 +245,26 @@ class Mysqldb:
         db.close()
         return json.dumps(result)
 
+    def get_albums(self):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        sql = "SELECT * FROM albums;"
+        result = {"status": 0, "message": "Success", "albums": []}
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for row in results:
+                album = {"albumId": row[0], "albumName": row[1], "coverPhotoUrl": row[2]}
+                result["albums"].append(album)
+        except:
+            db.close()
+            return '{"status":1,"message":"Database error."}'
+        db.close()
+        return json.dumps(result)
+
     def get_working_hours(self):
         db = pymysql.connect(host=self.sql_host,
                              user='root',
@@ -219,7 +277,7 @@ class Mysqldb:
             cursor.execute(sql)
             results = cursor.fetchall()
             for row in results:
-                working_hours = {"fromTime": str(row[1]), "toTime": str(row[2])}
+                working_hours = {"fromTime": str(row[1])[:-3], "toTime": str(row[2])[:-3]}
                 result["timings"][row[0]] = working_hours
         except:
             db.close()
@@ -228,30 +286,46 @@ class Mysqldb:
         return json.dumps(result)
 
     def get_current_appointments(self, barber_id):
-        db = pymysql.connect(host=self.sql_host,
-                             user='root',
-                             password=self.sql_password,
-                             database='barber')
-        cursor = db.cursor()
-        sql = "SELECT * FROM workingHours;"
-        result = {"status": 0, "message": "Success", "timings": {}}
-        try:
-            cursor.execute(sql)
-            results = cursor.fetchall()
-            for row in results:
-                working_hours = {"fromTime": str(row[1]), "toTime": str(row[2])}
-                result["timings"][row[0]] = working_hours
-        except:
-            db.close()
-            return '{"status":1,"message":"Database error."}'
-        db.close()
+        slots = {}
+        working_hours = json.loads(self.get_working_hours())
+        if working_hours["status"] == 1:
+            return '{"status":1,"message":"Failed to get working hours."}'
+        barber = self.get_barber(barber_id)
+        if barber is None:
+            return '{"status":1,"message":"Failed to get barber."}'
+        for i in range(7):
+            dt = (datetime.datetime.now() + datetime.timedelta(days=i)).strftime("%Y-%m-%d")
+            int_weekday = (datetime.datetime.now() + datetime.timedelta(days=i)).weekday()
+            string_weekday = utils.get_string_weekday(int_weekday)
+            slots[dt] = {"day": string_weekday, "date": dt, "slots": {}}
+            day_time = working_hours["timings"][string_weekday]["fromTime"]
+            while utils.time_before(day_time, working_hours["timings"][string_weekday]["toTime"]):
+                if i == 0 and utils.time_before(day_time, datetime.datetime.now().strftime("%H:%M:%S")):
+                    slots[dt]["slots"]["%s-%s" % (day_time, utils.get_next_15min(day_time))] = True
+                elif utils.time_before(day_time, barber["breakTimeTo"]) and not \
+                        utils.time_before(day_time, barber["breakTimeFrom"]):
+                    slots[dt]["slots"]["%s-%s" % (day_time, utils.get_next_15min(day_time))] = True
+                else:
+                    slots[dt]["slots"]["%s-%s" % (day_time, utils.get_next_15min(day_time))] = False
+                day_time = utils.get_next_15min(day_time)
+        appointments = self.get_appointments_by_time(datetime.datetime.now().strftime("%Y-%m-%d"),
+                                                     (datetime.datetime.now() + datetime.timedelta(days=6))
+                                                     .strftime("%Y-%m-%d"), barber_id)
+        for appointment in appointments:
+            day_time = appointment["timeFrom"]
+            while utils.time_before(day_time, appointment["timeTo"]):
+                slots[appointment["aptDate"]]["slots"]["%s-%s" % (day_time, utils.get_next_15min(day_time))] = True
+                day_time = utils.get_next_15min(day_time)
+
+        result = {"status": 0, "message": "Success", "slots": []}
+        for key in slots:
+            result["slots"].append(slots[key])
         return json.dumps(result)
 
     def book(self, ps_auth_token, user_id, barber_id, services: str, apt_date, time_from,
              time_to, total_duration, total_cost, coupon_code, send_sms: str):
         if not self.api_key_check(ps_auth_token, user_id):
             return '{"status":1,"message":"Failed to authenticate."}'
-        result = {"status": 0, "message": "Book appointment successfully", "appointment": {}}
         db = pymysql.connect(host=self.sql_host,
                              user='root',
                              password=self.sql_password,
@@ -285,34 +359,99 @@ class Mysqldb:
             db.rollback()
             db.close()
             return '{"status":1,"message":"Book appointment error."}'
-        appointment = self.get_appointment(db.insert_id())
-        if appointment is None:
-            return '{"status":1,"message":"Failed to get appointment."}'
-        result["appointment"]["aptNo"] = appointment["aptNo"]
-        result["appointment"]["aptDate"] = appointment["aptDate"]
-        result["appointment"]["timeFrom"] = appointment["timeFrom"]
-        result["appointment"]["timeTo"] = appointment["timeTo"]
-        result["appointment"]["userId"] = appointment["userId"]
-        result["appointment"]["fullName"] = appointment["fullName"]
-        result["appointment"]["mobileNo"] = appointment["mobileNo"]
-        result["appointment"]["totalCost"] = appointment["totalCost"]
-        result["appointment"]["couponDiscount"] = appointment["couponDiscount"]
-        result["appointment"]["finalCost"] = appointment["finalCost"]
-        result["appointment"]["totalDuration"] = appointment["totalDuration"]
-        result["appointment"]["aptStatus"] = appointment["aptStatus"]
-        result["appointment"]["couponCode"] = appointment["couponCode"]
-        result["appointment"]["barberId"] = appointment["barberId"]
-        result["appointment"]["barberName"] = appointment["barberName"]
-        result["appointment"]["profilePic"] = appointment["profilePic"]
-        result["appointment"]["userProfilePic"] = appointment["userProfilePic"]
-        result["appointment"]["services"] = []
-        services_str: str = appointment["services"]
-        for i in services_str.split(","):
-            service = self.get_service(i)
-            if service is None:
-                return '{"status":1,"message":"Failed to get service."}'
-            result["appointment"]["services"].append(service)
-        result["appointment"]["previousTimePhotos"] = appointment["previousTimePhotos"]
+        db.close()
+        result = self.get_appointment_result(db.insert_id())
+        return json.dumps(result)
+
+    def cancel_appointment(self, appointment_id):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        try:
+            sql = "UPDATE appointment SET isDeleted = 1 WHERE aptNo = '%s';" % appointment_id
+            cursor.execute(sql)
+            db.commit()
+        except:
+            db.rollback()
+            db.close()
+            return '{"status":1,"message":"Database error."}'
+        db.close()
+        return '{"status":0,"message":"Success"}'
+
+    def reschedule_appointment(self, ps_auth_token, appointment_id, time_from, time_to, apt_date):
+        if not self.api_key_check_without_user_id(ps_auth_token):
+            return '{"status":1,"message":"Failed to authenticate."}'
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        try:
+            sql = "UPDATE appointment SET timeFrom = '%s', timeTo = '%s' , aptDate = '%s' WHERE aptNo = '%s';" \
+                  % (time_from + ":00", time_to + ":00", apt_date, appointment_id)
+            cursor.execute(sql)
+            db.commit()
+        except:
+            db.rollback()
+            db.close()
+            return '{"status":1,"message":"Database error."}'
+        db.close()
+        result = self.get_appointment_result(appointment_id)
+        return json.dumps(result)
+
+    def add_reviews(self, ps_auth_token, user_id, rating, comment):
+        if not self.api_key_check(ps_auth_token, user_id):
+            return '{"status":1,"message":"Failed to authenticate."}'
+        dt = time.strftime('%Y-%m-%d')
+        user = self.get_user(user_id)
+        if user is None:
+            return '{"status":1,"message":"Failed to get user."}'
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        try:
+            sql = "INSERT INTO reviews(comment, rating, creationDate, fullName, profilePic, userId) \
+                           VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (comment, rating, dt, user["fullName"],
+                                                                           user["profilePic"], user_id)
+            cursor.execute(sql)
+            db.commit()
+        except:
+            db.rollback()
+            db.close()
+            return '{"status":1,"message":"Database error."}'
+        db.close()
+        return '{"status":0,"message":"Success"}'
+
+    def get_reviews(self, page_size, page_no):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        result = {"status": 0, "message": "Success", "reviews": []}
+        try:
+            sql = "SELECT * FROM reviews LIMIT %d,%d;" % (page_no * page_size, page_size)
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for row in results:
+                review = {"reviewId": row[0], "comment": row[1], "rating": row[2], "creationDate": str(row[3]),
+                          "fullName": row[4], "profilePic": row[5]}
+                result["reviews"].append(review)
+            sql = "SELECT * FROM reviews;"
+            rows = cursor.execute(sql)
+            result["isFirstPage"] = page_no == 0
+            result["isLastPage"] = rows <= (page_no + 1) * page_size
+            result["totalPages"] = math.ceil(rows / page_size)
+            result["totalRecords"] = rows
+            result["pageNo"] = page_no
+            result["pageSize"] = page_size
+        except:
+            db.close()
+            return '{"status":1,"message":"Database error."}'
         db.close()
         return json.dumps(result)
 
@@ -380,8 +519,8 @@ class Mysqldb:
                 barber["mobileNo"] = row[4]
                 barber["profilePic"] = row[5]
                 barber["gender"] = row[6]
-                barber["breakTimeFrom"] = str(row[7])
-                barber["breakTimeTo"] = str(row[8])
+                barber["breakTimeFrom"] = str(row[7])[:-3]
+                barber["breakTimeTo"] = str(row[8])[:-3]
                 barber["hasDefaultServices"] = row[9]
                 barber["holiday"] = row[10]
                 barber["userRating"] = row[11]
@@ -401,7 +540,7 @@ class Mysqldb:
                              database='barber')
         cursor = db.cursor()
         appointment = {}
-        sql = "SELECT * FROM appointment WHERE aptNo = %s;" % apt_no
+        sql = "SELECT * FROM appointment WHERE aptNo = %s AND isDeleted = 0;" % apt_no
         try:
             cursor.execute(sql)
             results = cursor.fetchall()
@@ -411,11 +550,11 @@ class Mysqldb:
             for row in results:
                 appointment["aptNo"] = row[0]
                 appointment["aptDate"] = str(row[1])
-                appointment["timeFrom"] = str(row[2])
-                appointment["timeTo"] = str(row[3])
+                appointment["timeFrom"] = str(row[2])[:-3]
+                appointment["timeTo"] = str(row[3])[:-3]
                 appointment["userId"] = row[4]
                 appointment["fullName"] = row[5]
-                appointment["mobileNo"] = str(row[6])
+                appointment["mobileNo"] = row[6]
                 appointment["totalCost"] = row[7]
                 appointment["totalCost"] = row[7]
                 appointment["couponDiscount"] = row[8]
@@ -435,6 +574,50 @@ class Mysqldb:
             return None
         db.close()
         return appointment
+
+    def get_appointments_by_time(self, start_date, end_date, barber_id):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        appointments = []
+
+        sql = "SELECT * FROM appointment WHERE barberId = %s " \
+              "AND aptDate >= '%s' AND aptDate <= '%s' AND isDeleted = 0;" % \
+              (barber_id, start_date, end_date)
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for row in results:
+                appointment = {}
+                appointment["aptNo"] = row[0]
+                appointment["aptDate"] = str(row[1])
+                appointment["timeFrom"] = str(row[2])[:-3]
+                appointment["timeTo"] = str(row[3])[:-3]
+                appointment["userId"] = row[4]
+                appointment["fullName"] = row[5]
+                appointment["mobileNo"] = row[6]
+                appointment["totalCost"] = row[7]
+                appointment["totalCost"] = row[7]
+                appointment["couponDiscount"] = row[8]
+                appointment["finalCost"] = row[9]
+                appointment["totalDuration"] = row[10]
+                appointment["aptStatus"] = row[11]
+                appointment["couponCode"] = row[12]
+                appointment["barberId"] = row[13]
+                appointment["barberName"] = row[14]
+                appointment["profilePic"] = row[15]
+                appointment["userProfilePic"] = row[16]
+                appointment["services"] = row[17]
+                appointment["previousTimePhotos"] = row[18]
+                appointment["sendSms"] = row[19]
+                appointments.append(appointment)
+        except:
+            db.close()
+            return None
+        db.close()
+        return appointments
 
     def get_service(self, service_id):
         db = pymysql.connect(host=self.sql_host,
@@ -462,6 +645,38 @@ class Mysqldb:
         db.close()
         return service
 
+    def get_appointment_result(self, appointment_id):
+        appointment = self.get_appointment(appointment_id)
+        if appointment is None:
+            return '{"status":1,"message":"Failed to get appointment."}'
+        result = {"status": 0, "message": "Book appointment successfully", "appointment": {}}
+        result["appointment"]["aptNo"] = appointment["aptNo"]
+        result["appointment"]["aptDate"] = appointment["aptDate"]
+        result["appointment"]["timeFrom"] = appointment["timeFrom"]
+        result["appointment"]["timeTo"] = appointment["timeTo"]
+        result["appointment"]["userId"] = appointment["userId"]
+        result["appointment"]["fullName"] = appointment["fullName"]
+        result["appointment"]["mobileNo"] = appointment["mobileNo"]
+        result["appointment"]["totalCost"] = appointment["totalCost"]
+        result["appointment"]["couponDiscount"] = appointment["couponDiscount"]
+        result["appointment"]["finalCost"] = appointment["finalCost"]
+        result["appointment"]["totalDuration"] = appointment["totalDuration"]
+        result["appointment"]["aptStatus"] = appointment["aptStatus"]
+        result["appointment"]["couponCode"] = appointment["couponCode"]
+        result["appointment"]["barberId"] = appointment["barberId"]
+        result["appointment"]["barberName"] = appointment["barberName"]
+        result["appointment"]["profilePic"] = appointment["profilePic"]
+        result["appointment"]["userProfilePic"] = appointment["userProfilePic"]
+        result["appointment"]["services"] = []
+        services_str: str = appointment["services"]
+        for i in services_str.split(","):
+            service = self.get_service(i)
+            if service is None:
+                return '{"status":1,"message":"Failed to get service."}'
+            result["appointment"]["services"].append(service)
+        result["appointment"]["previousTimePhotos"] = appointment["previousTimePhotos"]
+        return result
+
     def api_key_check(self, ps_auth_token, user_id):
         db = pymysql.connect(host=self.sql_host,
                              user='root',
@@ -479,6 +694,25 @@ class Mysqldb:
                 if ps_auth_token != row[15]:
                     db.close()
                     return False
+        except:
+            db.close()
+            return False
+        db.close()
+        return True
+
+    def api_key_check_without_user_id(self, ps_auth_token):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        sql = "SELECT * FROM user WHERE apiToken = '%s';" % ps_auth_token
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            if len(results) == 0:
+                db.close()
+                return False
         except:
             db.close()
             return False

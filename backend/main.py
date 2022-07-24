@@ -37,9 +37,9 @@ def signup():
     if request.headers.get("Content-type") != "application/json":
         return '{"status":1,"message":"Failed to authenticate"}'
     if "mobileNo" not in request.json:
-        return '{"status":1,"message":"Failed to authenticate"}'
+        return '{"status":1,"message":"Require mobileNo"}'
     if "password" not in request.json:
-        return '{"status":1,"message":"Failed to authenticate"}'
+        return '{"status":1,"message":"Require password"}'
     return db.signup(request.json["mobileNo"], request.json["password"])
 
 
@@ -75,6 +75,17 @@ def update_user():
                           request.json["password"], request.json["profilePic"])
 
 
+@app.route('/User/updateFcmToken', methods=['POST'])
+def update_fcm_token():
+    if request.headers.get("ps_auth_token") is None:
+        return '{"status":1,"message":"Failed to authenticate"}'
+    if "userId" not in request.json:
+        return '{"status":1,"message":"Require userId"}'
+    if "fcmToken" not in request.json:
+        return '{"status":1,"message":"Require fcmToken"}'
+    return db.update_fcm_token(request.headers.get("ps_auth_token"), request.json["userId"], request.json["fcmToken"])
+
+
 @app.route('/Appointment/book', methods=['POST'])
 def book():
     if request.headers.get("Content-type") != "application/json":
@@ -108,6 +119,29 @@ def book():
                    request.json["couponCode"], request.json["sendSms"])
 
 
+@app.route('/Appointment/cancelAppointment/<appointment_id>', methods=['GET'])
+def cancel_appointment(appointment_id):
+    return db.cancel_appointment(appointment_id)
+
+
+@app.route('/Appointment/reschedule', methods=['POST'])
+def reschedule_appointment():
+    if request.headers.get("Content-type") != "application/json":
+        return '{"status":1,"message":"Failed to authenticate"}'
+    if request.headers.get("ps_auth_token") is None:
+        return '{"status":1,"message":"Failed to authenticate"}'
+    if "aptNo" not in request.json:
+        return '{"status":1,"message":"Require aptNo"}'
+    if "timeFrom" not in request.json:
+        return '{"status":1,"message":"Require timeFrom"}'
+    if "timeTo" not in request.json:
+        return '{"status":1,"message":"Require timeTo"}'
+    if "aptDate" not in request.json:
+        return '{"status":1,"message":"Require aptDate"}'
+    return db.reschedule_appointment(request.headers.get("ps_auth_token"), request.json["aptNo"],
+                                     request.json["timeFrom"], request.json["timeTo"], request.json["aptDate"])
+
+
 @app.route('/User/logout', methods=['POST'])
 def logout():
     if request.headers.get("ps_auth_token") is None:
@@ -137,6 +171,45 @@ def get_working_hours():
 @app.route('/Appointment/currentAppointments/<barber_id>', methods=['GET'])
 def get_current_appointments(barber_id):
     return db.get_current_appointments(barber_id)
+
+
+@app.route('/User/addReviews', methods=['POST'])
+def add_reviews():
+    if request.headers.get("ps_auth_token") is None:
+        return '{"status":1,"message":"Failed to authenticate"}'
+    if request.headers.get("Content-type") != "application/json":
+        return '{"status":1,"message":"Failed to authenticate"}'
+    if "userId" not in request.json:
+        return '{"status":1,"message":"Require userId"}'
+    if "rating" not in request.json:
+        return '{"status":1,"message":"Require rating"}'
+    if "comment" not in request.json:
+        return '{"status":1,"message":"Require comment"}'
+    return db.add_reviews(request.headers.get("ps_auth_token"), request.json["userId"], request.json["rating"],
+                          request.json["comment"])
+
+
+@app.route('/User/reviews', methods=['POST'])
+def get_reviews():
+    if request.headers.get("Content-type") != "application/json":
+        return '{"status":1,"message":"Failed to authenticate"}'
+    if "pageSize" not in request.json:
+        return '{"status":1,"message":"Require pageSize"}'
+    if "pageNo" not in request.json:
+        return '{"status":1,"message":"Require pageNo"}'
+    return db.get_reviews(request.json["pageSize"], request.json["pageNo"])
+
+
+@app.route('/Albums/getList', methods=['GET'])
+def get_albums():
+    return db.get_albums()
+
+
+@app.route('/AppUser/dashboard', methods=['GET'])
+def dashboard():
+    return '{"banners":[{"photoName":"Gold Facial","photoUrl":"/uploads/images/Albums/photos/photo11.jpg"},' \
+           '{"photoName":"Gold Makeup","photoUrl":"/uploads/images/Albums/photos/photo14.jpg"}],' \
+           '"isShopOpened":"Now open","alertMessage":"Some message if created today otherwise empty"}'
 
 
 if __name__ == '__main__':
