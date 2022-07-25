@@ -36,11 +36,13 @@ def test_header():
 def signup():
     if request.headers.get("Content-type") != "application/json":
         return '{"status":1,"message":"Failed to authenticate"}'
+    if "fcmToken" not in request.json:
+        return '{"status":1,"message":"Require fcmToken"}'
     if "mobileNo" not in request.json:
         return '{"status":1,"message":"Require mobileNo"}'
     if "password" not in request.json:
         return '{"status":1,"message":"Require password"}'
-    return db.signup(request.json["mobileNo"], request.json["password"])
+    return db.signup(request.json["fcmToken"], request.json["mobileNo"], request.json["password"])
 
 
 @app.route('/AppUser/login', methods=['POST'])
@@ -52,6 +54,17 @@ def login():
     if "password" not in request.json:
         return '{"status":1,"message":"Failed to authenticate"}'
     return db.login(request.json["username"], request.json["password"], request.remote_addr)
+
+
+@app.route('/User/logout', methods=['POST'])
+def logout():
+    if request.headers.get("ps_auth_token") is None:
+        return '{"status":1,"message":"Failed to authenticate"}'
+    if request.headers.get("Content-type") != "application/json":
+        return '{"status":1,"message":"Failed to authenticate"}'
+    if "userId" not in request.json:
+        return '{"status":1,"message":"Require userId"}'
+    return db.logout(request.headers.get("ps_auth_token"), request.json["userId"])
 
 
 @app.route('/User/updateUser', methods=['POST'])
@@ -119,6 +132,13 @@ def book():
                    request.json["couponCode"], request.json["sendSms"])
 
 
+@app.route('/Appointment/myAppointments/<user_id>', methods=['GET'])
+def get_appointments(user_id):
+    if request.headers.get("ps_auth_token") is None:
+        return '{"status":1,"message":"Failed to authenticate"}'
+    return db.get_appointments(request.headers.get("ps_auth_token"), user_id)
+
+
 @app.route('/Appointment/cancelAppointment/<appointment_id>', methods=['GET'])
 def cancel_appointment(appointment_id):
     return db.cancel_appointment(appointment_id)
@@ -142,20 +162,14 @@ def reschedule_appointment():
                                      request.json["timeFrom"], request.json["timeTo"], request.json["aptDate"])
 
 
-@app.route('/User/logout', methods=['POST'])
-def logout():
-    if request.headers.get("ps_auth_token") is None:
-        return '{"status":1,"message":"Failed to authenticate"}'
-    if request.headers.get("Content-type") != "application/json":
-        return '{"status":1,"message":"Failed to authenticate"}'
-    if "userId" not in request.json:
-        return '{"status":1,"message":"Require userId"}'
-    return db.logout(request.headers.get("ps_auth_token"), request.json["userId"])
-
-
 @app.route('/Service/getServices', methods=['GET'])
 def get_services():
     return db.get_services()
+
+
+@app.route('/Offers/getCoupons', methods=['GET'])
+def get_coupons():
+    return db.get_coupons()
 
 
 @app.route('/ShopContacts/getList', methods=['GET'])
@@ -203,6 +217,11 @@ def get_reviews():
 @app.route('/Albums/getList', methods=['GET'])
 def get_albums():
     return db.get_albums()
+
+
+@app.route('/Albums/photos/<album_id>', methods=['GET'])
+def get_album_photos(album_id):
+    return db.get_album_photos(album_id)
 
 
 @app.route('/AppUser/dashboard', methods=['GET'])

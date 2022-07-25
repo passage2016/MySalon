@@ -16,7 +16,7 @@ class Mysqldb:
         sql_host = load_dict["host"]
         sql_password = load_dict["password"]
 
-    def signup(self, mobile_no, password):
+    def signup(self, fcm_token, mobile_no, password):
         db = pymysql.connect(host=self.sql_host,
                              user='root',
                              password=self.sql_password,
@@ -31,8 +31,8 @@ class Mysqldb:
             md5 = hashlib.md5()
             md5.update(password.encode('utf-8'))
             dt = time.strftime('%Y-%m-%d %H:%M:%S')
-            sql = "INSERT INTO user(mobileNo, password, createdOn, updatedOn) \
-                           VALUES ('%s', '%s', '%s', '%s')" % (mobile_no, md5.hexdigest(), dt, dt)
+            sql = "INSERT INTO user(mobileNo, password, createdOn, updatedOn, fcmToken) \
+                           VALUES ('%s', '%s', '%s', '%s', '%s')" % (mobile_no, md5.hexdigest(), dt, dt, fcm_token)
             cursor.execute(sql)
             db.commit()
         except:
@@ -224,6 +224,29 @@ class Mysqldb:
         db.close()
         return json.dumps(result)
 
+    def get_coupons(self):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        sql = "SELECT * FROM coupons;"
+        result = {"status": 0, "message": "Success", "coupons": []}
+
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for row in results:
+                coupon = {"couponId": row[0], "couponCode": row[1], "couponType": row[2], "fromDate": str(row[3]),
+                          "toDate": str(row[4]), "terms": row[5], "minimumRqrdCost": row[6], "couponText": row[7],
+                          "couponValue": row[8]}
+                result["coupons"].append(coupon)
+        except:
+            db.close()
+            return '{"status":1,"message":"Failed to authenticate."}'
+        db.close()
+        return json.dumps(result)
+
     def get_contacts(self):
         db = pymysql.connect(host=self.sql_host,
                              user='root',
@@ -259,6 +282,27 @@ class Mysqldb:
             for row in results:
                 album = {"albumId": row[0], "albumName": row[1], "coverPhotoUrl": row[2]}
                 result["albums"].append(album)
+        except:
+            db.close()
+            return '{"status":1,"message":"Database error."}'
+        db.close()
+        return json.dumps(result)
+
+    def get_album_photos(self, album_id):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        sql = "SELECT * FROM albumPhotos WHERE albumId = '%s';" % album_id
+        result = {"status": 0, "message": "Success", "photos": []}
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for row in results:
+                photo = {"photoId": row[0], "photoName": row[1], "photoUrl": row[2], "albumId": row[3],
+                         "albumName": row[4]}
+                result["photos"].append(photo)
         except:
             db.close()
             return '{"status":1,"message":"Database error."}'
@@ -361,6 +405,35 @@ class Mysqldb:
             return '{"status":1,"message":"Book appointment error."}'
         db.close()
         result = self.get_appointment_result(db.insert_id())
+        return json.dumps(result)
+
+    def get_appointments(self, ps_auth_token, user_id):
+        if not self.api_key_check(ps_auth_token, user_id):
+            return '{"status":1,"message":"Failed to authenticate."}'
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        appointments = []
+        sql = "SELECT * FROM appointment WHERE userId = %s AND isDeleted = 0;" % user_id
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for row in results:
+                appointment = {}
+                appointment["aptNo"] = row[0]
+                appointment["aptDate"] = str(row[1])
+                appointment["timeFrom"] = str(row[2])[:-3]
+                appointment["timeTo"] = str(row[3])[:-3]
+                appointment["totalDuration"] = row[10]
+                appointment["aptStatus"] = row[11]
+                appointments.append(appointment)
+        except:
+            db.close()
+            return '{"status":1,"message":"Database error."}'
+        db.close()
+        result = {"status": 0, "message": "Success", "appointments": appointments}
         return json.dumps(result)
 
     def cancel_appointment(self, appointment_id):
@@ -555,7 +628,6 @@ class Mysqldb:
                 appointment["userId"] = row[4]
                 appointment["fullName"] = row[5]
                 appointment["mobileNo"] = row[6]
-                appointment["totalCost"] = row[7]
                 appointment["totalCost"] = row[7]
                 appointment["couponDiscount"] = row[8]
                 appointment["finalCost"] = row[9]
