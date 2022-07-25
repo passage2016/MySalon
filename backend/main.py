@@ -48,11 +48,11 @@ def signup():
 @app.route('/AppUser/login', methods=['POST'])
 def login():
     if request.headers.get("Content-type") != "application/json":
-        return '{"status":1,"message":"Failed to authenticate"}'
+        return '{"status":1,"message":"Require Content-type"}'
     if "username" not in request.json:
-        return '{"status":1,"message":"Failed to authenticate"}'
+        return '{"status":1,"message":"Require username"}'
     if "password" not in request.json:
-        return '{"status":1,"message":"Failed to authenticate"}'
+        return '{"status":1,"message":"Require password"}'
     return db.login(request.json["username"], request.json["password"], request.remote_addr)
 
 

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1093986813458",
+    "project_id": "my-salon-b236f",
+    "storage_bucket": "my-salon-b236f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1093986813458:android:5b17638c83325efe57bacb",
+        "android_client_info": {
+          "package_name": "com.example.mysalon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1093986813458-g91u3suff9gsojhkb38chj623jqesjst.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJ1Z89optXYoewT3XCun3ZFTV-AeCaJaQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1093986813458-g91u3suff9gsojhkb38chj623jqesjst.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

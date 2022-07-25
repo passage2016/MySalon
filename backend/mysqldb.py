@@ -35,7 +35,7 @@ class Mysqldb:
                            VALUES ('%s', '%s', '%s', '%s', '%s')" % (mobile_no, md5.hexdigest(), dt, dt, fcm_token)
             cursor.execute(sql)
             db.commit()
-        except:
+        except RuntimeError:
             db.rollback()
             db.close()
             return '{"status":1,"message":"Signup error."}'
@@ -50,6 +50,8 @@ class Mysqldb:
         cursor = db.cursor()
         sql = "SELECT * FROM user WHERE mobileNo = %s;" % mobile_no
         result = {"status": 0, "message": "Authenticated successfully"}
+        user_id = ""
+        token = ""
         try:
             cursor.execute(sql)
             results = cursor.fetchall()
@@ -62,9 +64,9 @@ class Mysqldb:
                 if md5.hexdigest() != row[5]:
                     db.close()
                     return '{"status":1,"message":"Wrong password."}'
-                userId = row[0]
+                user_id = row[0]
                 token = uuid.uuid4().hex
-                result["userId"] = userId
+                result["userId"] = user_id
                 result["fullName"] = row[1]
                 result["emailId"] = row[2]
                 result["gender"] = row[3]
@@ -85,16 +87,16 @@ class Mysqldb:
                 result["updatedOn"] = str(row[18])
                 result["deletedOn"] = str(row[19])
                 result["isDeleted"] = row[20]
-        except:
+        except RuntimeError:
             db.close()
             return '{"status":1,"message":"Login error."}'
         cursor = db.cursor()
 
-        sql = "UPDATE user SET isActive = 1, apiToken = '%s' WHERE userId = '%s';" % (token, userId)
+        sql = "UPDATE user SET isActive = 1, apiToken = '%s' WHERE userId = '%s';" % (token, user_id)
         try:
             cursor.execute(sql)
             db.commit()
-        except:
+        except RuntimeError:
             db.rollback()
             db.close()
             return '{"status":1,"message":"Login update error."}'
@@ -109,6 +111,7 @@ class Mysqldb:
         cursor = db.cursor()
         sql = "SELECT * FROM user WHERE userId = %s;" % user_id
         result = {"status": 0, "message": "Authenticated successfully"}
+        new_password = ""
         try:
             cursor.execute(sql)
             results = cursor.fetchall()
@@ -128,7 +131,7 @@ class Mysqldb:
                 result["password"] = new_password
                 result["dateOfBirth"] = date_of_birth
                 result["profilePic"] = profile_pic
-        except:
+        except RuntimeError:
             db.close()
             return '{"status":1,"message":"Update user error."}'
         cursor = db.cursor()
@@ -138,7 +141,7 @@ class Mysqldb:
         try:
             cursor.execute(sql)
             db.commit()
-        except:
+        except RuntimeError:
             db.rollback()
             db.close()
             return '{"status":1,"message":"Update user error."}'
@@ -163,7 +166,7 @@ class Mysqldb:
                 if ps_auth_token != row[15]:
                     db.close()
                     return '{"status":1,"message":"Failed to authenticate."}'
-        except:
+        except RuntimeError:
             db.close()
             return '{"status":1,"message":"Update user error."}'
         cursor = db.cursor()
@@ -171,7 +174,7 @@ class Mysqldb:
         try:
             cursor.execute(sql)
             db.commit()
-        except:
+        except RuntimeError:
             db.rollback()
             db.close()
             return '{"status":1,"message":"Update user error."}'
@@ -191,7 +194,7 @@ class Mysqldb:
         try:
             cursor.execute(sql)
             db.commit()
-        except:
+        except RuntimeError:
             db.rollback()
             db.close()
             return '{"status":1,"message":"Logout update error."}'
@@ -218,7 +221,7 @@ class Mysqldb:
                 else:
                     result["services"][row[2]] = []
                     result["services"][row[2]].append(service)
-        except:
+        except RuntimeError:
             db.close()
             return '{"status":1,"message":"Failed to authenticate."}'
         db.close()
@@ -241,7 +244,7 @@ class Mysqldb:
                           "toDate": str(row[4]), "terms": row[5], "minimumRqrdCost": row[6], "couponText": row[7],
                           "couponValue": row[8]}
                 result["coupons"].append(coupon)
-        except:
+        except RuntimeError:
             db.close()
             return '{"status":1,"message":"Failed to authenticate."}'
         db.close()
@@ -262,7 +265,7 @@ class Mysqldb:
                 contact = {"contactId": row[0], "contactTitle": row[1], "contactType": row[2], "contactData": row[3],
                            "iconUrl": row[4], "displayOrder": row[5]}
                 result["contacts"].append(contact)
-        except:
+        except RuntimeError:
             db.close()
             return '{"status":1,"message":"Failed to authenticate."}'
         db.close()
@@ -282,7 +285,7 @@ class Mysqldb:
             for row in results:
                 album = {"albumId": row[0], "albumName": row[1], "coverPhotoUrl": row[2]}
                 result["albums"].append(album)
-        except:
+        except RuntimeError:
             db.close()
             return '{"status":1,"message":"Database error."}'
         db.close()
@@ -303,7 +306,7 @@ class Mysqldb:
                 photo = {"photoId": row[0], "photoName": row[1], "photoUrl": row[2], "albumId": row[3],
                          "albumName": row[4]}
                 result["photos"].append(photo)
-        except:
+        except RuntimeError:
             db.close()
             return '{"status":1,"message":"Database error."}'
         db.close()
@@ -323,7 +326,7 @@ class Mysqldb:
             for row in results:
                 working_hours = {"fromTime": str(row[1])[:-3], "toTime": str(row[2])[:-3]}
                 result["timings"][row[0]] = working_hours
-        except:
+        except RuntimeError:
             db.close()
             return '{"status":1,"message":"Database error."}'
         db.close()
@@ -399,7 +402,7 @@ class Mysqldb:
         try:
             cursor.execute(sql)
             db.commit()
-        except:
+        except RuntimeError:
             db.rollback()
             db.close()
             return '{"status":1,"message":"Book appointment error."}'
@@ -421,15 +424,10 @@ class Mysqldb:
             cursor.execute(sql)
             results = cursor.fetchall()
             for row in results:
-                appointment = {}
-                appointment["aptNo"] = row[0]
-                appointment["aptDate"] = str(row[1])
-                appointment["timeFrom"] = str(row[2])[:-3]
-                appointment["timeTo"] = str(row[3])[:-3]
-                appointment["totalDuration"] = row[10]
-                appointment["aptStatus"] = row[11]
+                appointment = {"aptNo": row[0], "aptDate": str(row[1]), "timeFrom": str(row[2])[:-3],
+                               "timeTo": str(row[3])[:-3], "totalDuration": row[10], "aptStatus": row[11]}
                 appointments.append(appointment)
-        except:
+        except RuntimeError:
             db.close()
             return '{"status":1,"message":"Database error."}'
         db.close()
@@ -446,7 +444,7 @@ class Mysqldb:
             sql = "UPDATE appointment SET isDeleted = 1 WHERE aptNo = '%s';" % appointment_id
             cursor.execute(sql)
             db.commit()
-        except:
+        except RuntimeError:
             db.rollback()
             db.close()
             return '{"status":1,"message":"Database error."}'
@@ -466,7 +464,7 @@ class Mysqldb:
                   % (time_from + ":00", time_to + ":00", apt_date, appointment_id)
             cursor.execute(sql)
             db.commit()
-        except:
+        except RuntimeError:
             db.rollback()
             db.close()
             return '{"status":1,"message":"Database error."}'
@@ -492,7 +490,7 @@ class Mysqldb:
                                                                            user["profilePic"], user_id)
             cursor.execute(sql)
             db.commit()
-        except:
+        except RuntimeError:
             db.rollback()
             db.close()
             return '{"status":1,"message":"Database error."}'
@@ -522,7 +520,7 @@ class Mysqldb:
             result["totalRecords"] = rows
             result["pageNo"] = page_no
             result["pageSize"] = page_size
-        except:
+        except RuntimeError:
             db.close()
             return '{"status":1,"message":"Database error."}'
         db.close()
@@ -564,7 +562,7 @@ class Mysqldb:
                 user["updatedOn"] = str(row[18])
                 user["deletedOn"] = str(row[19])
                 user["isDeleted"] = row[20]
-        except:
+        except RuntimeError:
             db.close()
             return None
         db.close()
@@ -600,7 +598,7 @@ class Mysqldb:
                 barber["password"] = row[12]
                 barber["type"] = row[13]
                 barber["payment"] = row[14]
-        except:
+        except RuntimeError:
             db.close()
             return None
         db.close()
@@ -641,7 +639,7 @@ class Mysqldb:
                 appointment["services"] = row[17]
                 appointment["previousTimePhotos"] = row[18]
                 appointment["sendSms"] = row[19]
-        except:
+        except RuntimeError:
             db.close()
             return None
         db.close()
@@ -662,30 +660,15 @@ class Mysqldb:
             cursor.execute(sql)
             results = cursor.fetchall()
             for row in results:
-                appointment = {}
-                appointment["aptNo"] = row[0]
-                appointment["aptDate"] = str(row[1])
-                appointment["timeFrom"] = str(row[2])[:-3]
-                appointment["timeTo"] = str(row[3])[:-3]
-                appointment["userId"] = row[4]
-                appointment["fullName"] = row[5]
-                appointment["mobileNo"] = row[6]
-                appointment["totalCost"] = row[7]
-                appointment["totalCost"] = row[7]
-                appointment["couponDiscount"] = row[8]
-                appointment["finalCost"] = row[9]
-                appointment["totalDuration"] = row[10]
-                appointment["aptStatus"] = row[11]
-                appointment["couponCode"] = row[12]
-                appointment["barberId"] = row[13]
-                appointment["barberName"] = row[14]
-                appointment["profilePic"] = row[15]
-                appointment["userProfilePic"] = row[16]
-                appointment["services"] = row[17]
-                appointment["previousTimePhotos"] = row[18]
-                appointment["sendSms"] = row[19]
+                appointment = {"aptNo": row[0], "aptDate": str(row[1]), "timeFrom": str(row[2])[:-3],
+                               "timeTo": str(row[3])[:-3], "userId": row[4], "fullName": row[5], "mobileNo": row[6],
+                               "totalCost": row[7], "couponDiscount": row[8], "finalCost": row[9],
+                               "totalDuration": row[10], "aptStatus": row[11], "couponCode": row[12],
+                               "barberId": row[13], "barberName": row[14], "profilePic": row[15],
+                               "userProfilePic": row[16], "services": row[17], "previousTimePhotos": row[18],
+                               "sendSms": row[19]}
                 appointments.append(appointment)
-        except:
+        except RuntimeError:
             db.close()
             return None
         db.close()
@@ -711,7 +694,7 @@ class Mysqldb:
                 service["cost"] = row[4]
                 service["servicePic"] = row[5]
 
-        except:
+        except RuntimeError:
             db.close()
             return None
         db.close()
@@ -766,7 +749,7 @@ class Mysqldb:
                 if ps_auth_token != row[15]:
                     db.close()
                     return False
-        except:
+        except RuntimeError:
             db.close()
             return False
         db.close()
@@ -785,7 +768,7 @@ class Mysqldb:
             if len(results) == 0:
                 db.close()
                 return False
-        except:
+        except RuntimeError:
             db.close()
             return False
         db.close()
