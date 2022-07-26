@@ -28,6 +28,11 @@ class LoginActivity : AppCompatActivity() {
             loginViewModel.login(phone, password)
         }
 
+        binding.tvLoginRegister.setOnClickListener {
+            val intent: Intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
 }

@@ -8,6 +8,6 @@ import retrofit2.http.*
 interface LoginApiService {
     @Headers("Content-type: application/json")
     @POST("AppUser/login")
-    fun login(@Body loginReq: String): Call<LoginResponse>
+    fun login(@Body loginReq: RequestBody): Call<LoginResponse>
 
 }

@@ -1,4 +1,5 @@
 import math
+import random
 
 import pymysql
 import json
@@ -21,6 +22,7 @@ class Mysqldb:
                              user='root',
                              password=self.sql_password,
                              database='barber')
+        user_id = ""
         cursor = db.cursor()
         sql = "SELECT * FROM user WHERE mobileNo = %s;" % mobile_no
         try:
@@ -35,12 +37,17 @@ class Mysqldb:
                            VALUES ('%s', '%s', '%s', '%s', '%s')" % (mobile_no, md5.hexdigest(), dt, dt, fcm_token)
             cursor.execute(sql)
             db.commit()
+            user_id = str(db.insert_id())
         except RuntimeError:
             db.rollback()
             db.close()
             return '{"status":1,"message":"Signup error."}'
         db.close()
-        return '{"status":0,"message":"Success"}'
+        result = {"status": 0, "message": "Success"}
+        opt = str(random.randint(0, 10000))
+        result["otp"] = opt
+        result["userId"] = user_id
+        return json.dumps(result)
 
     def login(self, mobile_no: str, password: str, ip: str):
         db = pymysql.connect(host=self.sql_host,

@@ -20,7 +20,7 @@ def test_get1(test_id):
 
 @app.route('/test/post', methods=['POST'])
 def test_post():
-    return '{"msg":"%s"}' % str(request.get_data())
+    return '{"message":"%s"}' % str(request.get_data())
 
 
 @app.route('/test/header', methods=['GET', 'POST'])
@@ -42,8 +42,10 @@ def signup():
         return '{"status":1,"message":"Require mobileNo"}'
     if "password" not in request.json:
         return '{"status":1,"message":"Require password"}'
-    json_body = json.loads(request.json)
-    return db.signup(json_body["fcmToken"], json_body["mobileNo"], json_body["password"])
+    print(request.json)
+    if not isinstance(request.json, dict):
+        return '{"status":1,"message":"Require json body."}'
+    return db.signup(request.json["fcmToken"], request.json["mobileNo"], request.json["password"])
 
 
 @app.route('/AppUser/login', methods=['POST'])
@@ -54,8 +56,10 @@ def login():
         return '{"status":1,"message":"Require username"}'
     if "password" not in request.json:
         return '{"status":1,"message":"Require password"}'
-    json_body = json.loads(request.json)
-    return db.login(json_body["username"], json_body["password"], request.remote_addr)
+    print(request.json)
+    if not isinstance(request.json, dict):
+        return '{"status":1,"message":"Require json body."}'
+    return db.login(request.json["username"], request.json["password"], request.remote_addr)
 
 
 @app.route('/User/logout', methods=['POST'])
@@ -66,8 +70,9 @@ def logout():
         return '{"status":1,"message":"Failed to authenticate"}'
     if "userId" not in request.json:
         return '{"status":1,"message":"Require userId"}'
-    json_body = json.loads(request.json)
-    return db.logout(request.headers.get("ps_auth_token"), json_body["userId"])
+    if not isinstance(request.json, dict):
+        return '{"status":1,"message":"Require json body."}'
+    return db.logout(request.headers.get("ps_auth_token"), request.json["userId"])
 
 
 @app.route('/User/updateUser', methods=['POST'])
@@ -86,10 +91,11 @@ def update_user():
         return '{"status":1,"message":"Require password"}'
     if "profilePic" not in request.json:
         return '{"status":1,"message":"Require profilePic"}'
-    json_body = json.loads(request.json)
-    return db.update_user(request.headers.get("ps_auth_token"), json_body["userId"], json_body["fullName"],
-                          json_body["emailId"], json_body["dateOfBirth"],
-                          json_body["password"], json_body["profilePic"])
+    if not isinstance(request.json, dict):
+        return '{"status":1,"message":"Require json body."}'
+    return db.update_user(request.headers.get("ps_auth_token"), request.json["userId"], request.json["fullName"],
+                          request.json["emailId"], request.json["dateOfBirth"],
+                          request.json["password"], request.json["profilePic"])
 
 
 @app.route('/User/updateFcmToken', methods=['POST'])
@@ -100,8 +106,9 @@ def update_fcm_token():
         return '{"status":1,"message":"Require userId"}'
     if "fcmToken" not in request.json:
         return '{"status":1,"message":"Require fcmToken"}'
-    json_body = json.loads(request.json)
-    return db.update_fcm_token(request.headers.get("ps_auth_token"), json_body["userId"], json_body["fcmToken"])
+    if not isinstance(request.json, dict):
+        return '{"status":1,"message":"Require json body."}'
+    return db.update_fcm_token(request.headers.get("ps_auth_token"), request.json["userId"], request.json["fcmToken"])
 
 
 @app.route('/Appointment/book', methods=['POST'])
@@ -130,12 +137,13 @@ def book():
         return '{"status":1,"message":"Require couponCode"}'
     if "sendSms" not in request.json:
         return '{"status":1,"message":"Require sendSms"}'
-    json_body = json.loads(request.json)
-    return db.book(request.headers.get("ps_auth_token"), json_body["userId"], json_body["barberId"],
-                   json_body["services"], json_body["aptDate"],
-                   json_body["timeFrom"], json_body["timeTo"],
-                   json_body["totalDuration"], json_body["totalCost"],
-                   json_body["couponCode"], json_body["sendSms"])
+    if not isinstance(request.json, dict):
+        return '{"status":1,"message":"Require json body."}'
+    return db.book(request.headers.get("ps_auth_token"), request.json["userId"], request.json["barberId"],
+                   request.json["services"], request.json["aptDate"],
+                   request.json["timeFrom"], request.json["timeTo"],
+                   request.json["totalDuration"], request.json["totalCost"],
+                   request.json["couponCode"], request.json["sendSms"])
 
 
 @app.route('/Appointment/myAppointments/<user_id>', methods=['GET'])
@@ -164,9 +172,10 @@ def reschedule_appointment():
         return '{"status":1,"message":"Require timeTo"}'
     if "aptDate" not in request.json:
         return '{"status":1,"message":"Require aptDate"}'
-    json_body = json.loads(request.json)
-    return db.reschedule_appointment(request.headers.get("ps_auth_token"), json_body["aptNo"],
-                                     json_body["timeFrom"], json_body["timeTo"], json_body["aptDate"])
+    if not isinstance(request.json, dict):
+        return '{"status":1,"message":"Require json body."}'
+    return db.reschedule_appointment(request.headers.get("ps_auth_token"), request.json["aptNo"],
+                                     request.json["timeFrom"], request.json["timeTo"], request.json["aptDate"])
 
 
 @app.route('/Service/getServices', methods=['GET'])
@@ -206,9 +215,10 @@ def add_reviews():
         return '{"status":1,"message":"Require rating"}'
     if "comment" not in request.json:
         return '{"status":1,"message":"Require comment"}'
-    json_body = json.loads(request.json)
-    return db.add_reviews(request.headers.get("ps_auth_token"), json_body["userId"], json_body["rating"],
-                          json_body["comment"])
+    if not isinstance(request.json, dict):
+        return '{"status":1,"message":"Require json body."}'
+    return db.add_reviews(request.headers.get("ps_auth_token"), request.json["userId"], request.json["rating"],
+                          request.json["comment"])
 
 
 @app.route('/User/reviews', methods=['POST'])
@@ -219,8 +229,9 @@ def get_reviews():
         return '{"status":1,"message":"Require pageSize"}'
     if "pageNo" not in request.json:
         return '{"status":1,"message":"Require pageNo"}'
-    json_body = json.loads(request.json)
-    return db.get_reviews(json_body["pageSize"], json_body["pageNo"])
+    if not isinstance(request.json, dict):
+        return '{"status":1,"message":"Require json body."}'
+    return db.get_reviews(request.json["pageSize"], request.json["pageNo"])
 
 
 @app.route('/Albums/getList', methods=['GET'])
