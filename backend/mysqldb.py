@@ -38,8 +38,8 @@ class Mysqldb:
                            VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" \
                   % (mobile_no, md5.hexdigest(), dt, dt, fcm_token, phone_verification_code)
             cursor.execute(sql)
-            db.commit()
             user_id = str(db.insert_id())
+            db.commit()
         except RuntimeError:
             db.rollback()
             db.close()
@@ -593,13 +593,14 @@ class Mysqldb:
                  services, "", send_sms)
         try:
             cursor.execute(sql)
+            appointment_id = db.insert_id()
             db.commit()
         except RuntimeError:
             db.rollback()
             db.close()
             return '{"status":1,"message":"Book appointment error."}'
         db.close()
-        result = self.get_appointment_result(db.insert_id())
+        result = self.get_appointment_result(appointment_id)
         return json.dumps(result)
 
     def get_appointments(self, ps_auth_token, user_id):
@@ -768,7 +769,7 @@ class Mysqldb:
                 user["fcmToken"] = row[11]
                 user["ipAddress"] = row[12]
                 user["emailVerificationCode"] = row[13]
-                user["evcExpiresOn"] = row[14]
+                user["evcExpiresOn"] = str(row[14])
                 user["apiToken"] = row[15]
                 user["tokenValidUpTo"] = str(row[16])
                 user["createdOn"] = str(row[17])
