@@ -62,21 +62,10 @@ def login():
     return db.login(request.json["username"], request.json["password"], request.remote_addr)
 
 
-@app.route('/User/logout', methods=['POST'])
-def logout():
-    if request.headers.get("ps_auth_token") is None:
-        return '{"status":1,"message":"Failed to authenticate"}'
-    if request.headers.get("Content-type") != "application/json":
-        return '{"status":1,"message":"Failed to authenticate"}'
-    if "userId" not in request.json:
-        return '{"status":1,"message":"Require userId"}'
-    if not isinstance(request.json, dict):
-        return '{"status":1,"message":"Require json body."}'
-    return db.logout(request.headers.get("ps_auth_token"), request.json["userId"])
-
-
-@app.route('/User/updateUser', methods=['POST'])
+@app.route('/AppUser/updateUser', methods=['POST'])
 def update_user():
+    if request.headers.get("Content-type") != "application/json":
+        return '{"status":1,"message":"Require Content-type"}'
     if request.headers.get("ps_auth_token") is None:
         return '{"status":1,"message":"Failed to authenticate"}'
     if "userId" not in request.json:
@@ -98,8 +87,10 @@ def update_user():
                           request.json["password"], request.json["profilePic"])
 
 
-@app.route('/User/updateFcmToken', methods=['POST'])
+@app.route('/AppUser/updateFcmToken', methods=['POST'])
 def update_fcm_token():
+    if request.headers.get("Content-type") != "application/json":
+        return '{"status":1,"message":"Require Content-type"}'
     if request.headers.get("ps_auth_token") is None:
         return '{"status":1,"message":"Failed to authenticate"}'
     if "userId" not in request.json:
@@ -109,6 +100,90 @@ def update_fcm_token():
     if not isinstance(request.json, dict):
         return '{"status":1,"message":"Require json body."}'
     return db.update_fcm_token(request.headers.get("ps_auth_token"), request.json["userId"], request.json["fcmToken"])
+
+
+@app.route('/AppUser/getPhoneVerificationCode/<mobile_no>', methods=['GET'])
+def get_phone_verification_code(mobile_no):
+    return db.get_phone_verification_code(mobile_no)
+
+
+@app.route('/AppUser/resetPassword', methods=['POST'])
+def reset_password():
+    if request.headers.get("Content-type") != "application/json":
+        return '{"status":1,"message":"Require Content-type"}'
+    if "mobileNo" not in request.json:
+        return '{"status":1,"message":"Require mobileNo"}'
+    if "phoneVerificationCode" not in request.json:
+        return '{"status":1,"message":"Require phoneVerificationCode"}'
+    if "password" not in request.json:
+        return '{"status":1,"message":"Require password"}'
+    print(request.json)
+    if not isinstance(request.json, dict):
+        return '{"status":1,"message":"Require json body."}'
+    return db.reset_password(request.json["mobileNo"], request.json["phoneVerificationCode"], request.json["password"])
+
+
+@app.route('/User/logout', methods=['POST'])
+def logout():
+    if request.headers.get("ps_auth_token") is None:
+        return '{"status":1,"message":"Failed to authenticate"}'
+    if request.headers.get("Content-type") != "application/json":
+        return '{"status":1,"message":"Failed to authenticate"}'
+    if "userId" not in request.json:
+        return '{"status":1,"message":"Require userId"}'
+    if not isinstance(request.json, dict):
+        return '{"status":1,"message":"Require json body."}'
+    return db.logout(request.headers.get("ps_auth_token"), request.json["userId"])
+
+
+@app.route('/Service/getServices', methods=['GET'])
+def get_services():
+    return db.get_services()
+
+
+@app.route('/Barber/getBarbers', methods=['GET'])
+def get_barbers():
+    return db.get_barbers()
+
+
+@app.route('/Barber/getBarberServices', methods=['POST'])
+def get_barbers_services():
+    return db.get_services()
+
+
+@app.route('/Offers/getCoupons', methods=['GET'])
+def get_coupons():
+    return db.get_coupons()
+
+
+@app.route('/Offers/getList', methods=['GET'])
+def get_offers():
+    return db.get_offers()
+
+
+@app.route('/ShopContacts/getList', methods=['GET'])
+def get_contacts():
+    return db.get_contacts()
+
+
+@app.route('/Albums/getList', methods=['GET'])
+def get_albums():
+    return db.get_albums()
+
+
+@app.route('/Albums/photos/<album_id>', methods=['GET'])
+def get_album_photos(album_id):
+    return db.get_album_photos(album_id)
+
+
+@app.route('/WorkingHours/getList', methods=['GET'])
+def get_working_hours():
+    return db.get_working_hours()
+
+
+@app.route('/Appointment/currentAppointments/<barber_id>', methods=['GET'])
+def get_current_appointments(barber_id):
+    return db.get_current_appointments(barber_id)
 
 
 @app.route('/Appointment/book', methods=['POST'])
@@ -178,31 +253,6 @@ def reschedule_appointment():
                                      request.json["timeFrom"], request.json["timeTo"], request.json["aptDate"])
 
 
-@app.route('/Service/getServices', methods=['GET'])
-def get_services():
-    return db.get_services()
-
-
-@app.route('/Offers/getCoupons', methods=['GET'])
-def get_coupons():
-    return db.get_coupons()
-
-
-@app.route('/ShopContacts/getList', methods=['GET'])
-def get_contacts():
-    return db.get_contacts()
-
-
-@app.route('/WorkingHours/getList', methods=['GET'])
-def get_working_hours():
-    return db.get_working_hours()
-
-
-@app.route('/Appointment/currentAppointments/<barber_id>', methods=['GET'])
-def get_current_appointments(barber_id):
-    return db.get_current_appointments(barber_id)
-
-
 @app.route('/User/addReviews', methods=['POST'])
 def add_reviews():
     if request.headers.get("ps_auth_token") is None:
@@ -234,14 +284,9 @@ def get_reviews():
     return db.get_reviews(request.json["pageSize"], request.json["pageNo"])
 
 
-@app.route('/Albums/getList', methods=['GET'])
-def get_albums():
-    return db.get_albums()
-
-
-@app.route('/Albums/photos/<album_id>', methods=['GET'])
-def get_album_photos(album_id):
-    return db.get_album_photos(album_id)
+@app.route('/Alert/getList', methods=['GET'])
+def get_alert():
+    return db.get_alert()
 
 
 @app.route('/AppUser/dashboard', methods=['GET'])

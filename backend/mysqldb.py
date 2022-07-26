@@ -22,7 +22,8 @@ class Mysqldb:
                              user='root',
                              password=self.sql_password,
                              database='barber')
-        user_id = ""
+
+        phone_verification_code = str(random.randint(0, 10000))
         cursor = db.cursor()
         sql = "SELECT * FROM user WHERE mobileNo = %s;" % mobile_no
         try:
@@ -33,8 +34,9 @@ class Mysqldb:
             md5 = hashlib.md5()
             md5.update(password.encode('utf-8'))
             dt = time.strftime('%Y-%m-%d %H:%M:%S')
-            sql = "INSERT INTO user(mobileNo, password, createdOn, updatedOn, fcmToken) \
-                           VALUES ('%s', '%s', '%s', '%s', '%s')" % (mobile_no, md5.hexdigest(), dt, dt, fcm_token)
+            sql = "INSERT INTO user(mobileNo, password, createdOn, updatedOn, fcmToken, mobileVerificationCode) \
+                           VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" \
+                  % (mobile_no, md5.hexdigest(), dt, dt, fcm_token, phone_verification_code)
             cursor.execute(sql)
             db.commit()
             user_id = str(db.insert_id())
@@ -43,10 +45,8 @@ class Mysqldb:
             db.close()
             return '{"status":1,"message":"Signup error."}'
         db.close()
-        result = {"status": 0, "message": "Success"}
-        opt = str(random.randint(0, 10000))
-        result["otp"] = opt
-        result["userId"] = user_id
+        result = {"status": 0, "message": "Success", "otp": phone_verification_code, "userId": user_id}
+
         return json.dumps(result)
 
     def login(self, mobile_no: str, password: str, ip: str):
@@ -59,6 +59,7 @@ class Mysqldb:
         result = {"status": 0, "message": "Authenticated successfully"}
         user_id = ""
         token = ""
+        email_verification_code = str(random.randint(0, 10000))
         try:
             cursor.execute(sql)
             results = cursor.fetchall()
@@ -86,7 +87,7 @@ class Mysqldb:
                 result["isEmailVerified"] = row[10]
                 result["fcmToken"] = row[11]
                 result["ipAddress"] = ip
-                result["emailVerificationCode"] = row[13]
+                result["emailVerificationCode"] = email_verification_code
                 result["evcExpiresOn"] = row[14]
                 result["apiToken"] = token
                 result["tokenValidUpTo"] = str(row[16])
@@ -99,8 +100,8 @@ class Mysqldb:
             return '{"status":1,"message":"Login error."}'
         cursor = db.cursor()
 
-        sql = "UPDATE user SET isActive = 1, apiToken = '%s', ipAddress = '%s' WHERE userId = '%s';" \
-              % (token, ip, user_id)
+        sql = "UPDATE user SET isActive = 1, apiToken = '%s', ipAddress = '%s', emailVerificationCode = '%s' " \
+              "WHERE userId = '%s';" % (token, ip, email_verification_code, user_id)
         try:
             cursor.execute(sql)
             db.commit()
@@ -189,6 +190,142 @@ class Mysqldb:
         db.close()
         return json.dumps(result)
 
+    def get_phone_verification_code(self, mobile_no):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        phone_verification_code = str(random.randint(0, 10000))
+        cursor = db.cursor()
+        sql = "SELECT * FROM user WHERE mobileNo = %s;" % mobile_no
+        result = {"status": 0, "message": "Success", "opt": phone_verification_code}
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            if len(results) == 0:
+                db.close()
+                return '{"status":1,"message":"Account not exit."}'
+        except RuntimeError:
+            db.close()
+            return '{"status":1,"message":"Get phone verification code error."}'
+        cursor = db.cursor()
+        sql = "UPDATE user SET mobileVerificationCode = '%s' WHERE mobileNo = '%s'" \
+              % (phone_verification_code, mobile_no)
+        try:
+            cursor.execute(sql)
+            db.commit()
+        except RuntimeError:
+            db.rollback()
+            db.close()
+            return '{"status":1,"message":"Get phone verification code error."}'
+        db.close()
+        return json.dumps(result)
+
+    def reset_password(self, mobile_no, phone_verification_code, password):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        sql = "SELECT * FROM user WHERE mobileNo = %s;" % mobile_no
+        result = {"status": 0, "message": "Success"}
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            if len(results) == 0:
+                db.close()
+                return '{"status":1,"message":"Account not exit."}'
+            for row in results:
+                if phone_verification_code != row[21]:
+                    db.close()
+                    return '{"status":1,"message":"Phone verification code not correct."}'
+        except RuntimeError:
+            db.close()
+            return '{"status":1,"message":"Get phone verification code error."}'
+        cursor = db.cursor()
+        md5 = hashlib.md5()
+        md5.update(password.encode('utf-8'))
+        new_password = md5.hexdigest()
+        sql = "UPDATE user SET password = '%s' WHERE mobileNo = '%s'" \
+              % (new_password, mobile_no)
+        try:
+            cursor.execute(sql)
+            db.commit()
+        except RuntimeError:
+            db.rollback()
+            db.close()
+            return '{"status":1,"message":"Get phone verification code error."}'
+        db.close()
+        return json.dumps(result)
+
+    # No API
+    def verify_mobile(self, user_id, phone_verification_code):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        sql = "SELECT * FROM user WHERE userId = %s;" % user_id
+        result = {"status": 0, "message": "Success"}
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            if len(results) == 0:
+                db.close()
+                return '{"status":1,"message":"Account not exit."}'
+            for row in results:
+                if phone_verification_code != row[21]:
+                    db.close()
+                    return '{"status":1,"message":"Phone verification code not correct."}'
+        except RuntimeError:
+            db.close()
+            return '{"status":1,"message":"Verify mobile error."}'
+        cursor = db.cursor()
+        sql = "UPDATE user SET isMobileVerified = 1 WHERE userId = '%s'" % user_id
+        try:
+            cursor.execute(sql)
+            db.commit()
+        except RuntimeError:
+            db.rollback()
+            db.close()
+            return '{"status":1,"message":"Verify mobile error."}'
+        db.close()
+        return json.dumps(result)
+
+    # No API
+    def verify_email(self, user_id, email_verification_code):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        sql = "SELECT * FROM user WHERE userId = %s;" % user_id
+        result = {"status": 0, "message": "Success"}
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            if len(results) == 0:
+                db.close()
+                return '{"status":1,"message":"Account not exit."}'
+            for row in results:
+                if email_verification_code != row[13]:
+                    db.close()
+                    return '{"status":1,"message":"Email verification code not correct."}'
+        except RuntimeError:
+            db.close()
+            return '{"status":1,"message":"Verify email error."}'
+        cursor = db.cursor()
+        sql = "UPDATE user SET isEmailVerified = 1 WHERE userId = '%s'" % user_id
+        try:
+            cursor.execute(sql)
+            db.commit()
+        except RuntimeError:
+            db.rollback()
+            db.close()
+            return '{"status":1,"message":"Verify email error."}'
+        db.close()
+        return json.dumps(result)
+
     def logout(self, ps_auth_token, user_id):
         if not self.api_key_check(ps_auth_token, user_id):
             return '{"status":1,"message":"Failed to authenticate"}'
@@ -216,8 +353,7 @@ class Mysqldb:
                              database='barber')
         cursor = db.cursor()
         sql = "SELECT * FROM services;"
-        result = {"status": 0, "services": {}}
-
+        result = {"status": 0, "message": "Successfully", "services": {}}
         try:
             cursor.execute(sql)
             results = cursor.fetchall()
@@ -231,8 +367,33 @@ class Mysqldb:
                     result["services"][row[2]].append(service)
         except RuntimeError:
             db.close()
-            return '{"status":1,"message":"Failed to authenticate."}'
+            return '{"status":1,"message":"Database error."}'
         db.close()
+        return json.dumps(result)
+
+    def get_barbers(self):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        result = {"status": 0, "message": "Successfully"}
+        barbers = []
+        sql = "SELECT * FROM barbers;"
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for row in results:
+                barber = {"barberId": row[0], "barberName": row[1], "isAdmin": row[2], "isBarber": row[3],
+                          "mobileNo": row[4], "profilePic": row[5], "gender": row[6], "breakTimeFrom": str(row[7])[:-3],
+                          "breakTimeTo": str(row[8])[:-3], "hasDefaultServices": row[9], "holiday": row[10],
+                          "userRating": row[11], "password": row[12], "type": row[13], "payment": row[14]}
+                barbers.append(barber)
+        except RuntimeError:
+            db.close()
+            return '{"status":1,"message":"Database error."}'
+        db.close()
+        result["barbers"] = barbers
         return json.dumps(result)
 
     def get_coupons(self):
@@ -255,6 +416,29 @@ class Mysqldb:
         except RuntimeError:
             db.close()
             return '{"status":1,"message":"Failed to authenticate."}'
+        db.close()
+        return json.dumps(result)
+
+    def get_offers(self):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        sql = "SELECT * FROM coupons;"
+        result = {"status": 0, "message": "Success", "coupons": [], "products": []}
+
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for row in results:
+                coupon = {"couponId": row[0], "couponCode": row[1], "couponType": row[2], "fromDate": str(row[3]),
+                          "toDate": str(row[4]), "terms": row[5], "minimumRqrdCost": row[6], "couponText": row[7],
+                          "couponValue": row[8]}
+                result["coupons"].append(coupon)
+        except RuntimeError:
+            db.close()
+            return '{"status":1,"message":"Database error."}'
         db.close()
         return json.dumps(result)
 
@@ -534,6 +718,27 @@ class Mysqldb:
         db.close()
         return json.dumps(result)
 
+    def get_alert(self):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        sql = "SELECT * FROM alert;"
+        result = {"status": 0, "message": "Success", "alert": []}
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for row in results:
+                alert = {"id": row[0], "message": row[1], "type": row[2], "createdOn": str(row[3])}
+                result["alert"].append(alert)
+        except RuntimeError:
+            db.close()
+            return '{"status":1,"message":"Database error."}'
+        db.close()
+        return json.dumps(result)
+
+    # Not API
     def get_user(self, user_id):
         db = pymysql.connect(host=self.sql_host,
                              user='root',
