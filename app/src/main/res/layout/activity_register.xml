@@ -6,87 +6,57 @@
     android:padding="30dp">
 
     <TextView
-        android:id="@+id/tv_register_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/register"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_register_name"
+        android:id="@+id/tv_register_mobile_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/full_name"
+        android:text="Mobile Number"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_register_title" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <EditText
-        android:id="@+id/et_register_name"
+        android:id="@+id/et_register_mobile_number"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:paddingHorizontal="15dp"
-        android:background="@drawable/shape_input_field"
-        android:hint="@string/please_input_full_name"
-        app:layout_constraintTop_toBottomOf="@+id/tv_register_name" />
-
-    <TextView
-        android:id="@+id/tv_register_phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/mobile_no"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_register_name" />
-
-    <EditText
-        android:id="@+id/et_register_phone"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:paddingHorizontal="15dp"
-        android:background="@drawable/shape_input_field"
-        android:hint="@string/please_input_mobile_no"
-        app:layout_constraintTop_toBottomOf="@+id/tv_register_phone" />
-
-    <TextView
-        android:id="@+id/tv_register_email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/email_id"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_register_phone" />
-
-    <EditText
-        android:id="@+id/et_register_email"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:paddingHorizontal="15dp"
-        android:background="@drawable/shape_input_field"
-        android:hint="@string/please_input_email_id"
-        app:layout_constraintTop_toBottomOf="@+id/tv_register_email" />
+        android:hint="Mobile Number"
+        app:layout_constraintTop_toBottomOf="@+id/tv_register_mobile_number" />
 
     <TextView
         android:id="@+id/tv_register_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/password"
+        android:text="Password"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_register_email" />
+        app:layout_constraintTop_toBottomOf="@+id/et_register_mobile_number" />
 
     <EditText
         android:id="@+id/et_register_password"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:paddingHorizontal="15dp"
-        android:background="@drawable/shape_input_field"
-        android:hint="@string/please_input_password"
+        android:hint="Password"
         android:inputType="textPassword"
         app:layout_constraintTop_toBottomOf="@+id/tv_register_password" />
+
+    <TextView
+        android:id="@+id/tv_register_confirm_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Confirm Password"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_register_password" />
+
+    <EditText
+        android:id="@+id/et_register_confirm_password"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingHorizontal="15dp"
+        android:hint="Re-enter Password"
+        android:inputType="textPassword"
+        app:layout_constraintTop_toBottomOf="@+id/tv_register_confirm_password" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_register"
@@ -94,19 +64,18 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="@drawable/shape_button"
-        android:text="@string/register"
+        android:text="SIGN UP"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_register_password" />
+        app:layout_constraintTop_toBottomOf="@id/et_register_confirm_password" />
 
     <TextView
         android:id="@+id/tv_register_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/i_have_an_account"
-        android:textColor="@color/orange"
+        android:text="ALREADY HAVE ACCOUNT? SIGN IN"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -42,7 +42,7 @@ class Mysqldb:
         db.close()
         return '{"status":0,"message":"Success"}'
 
-    def login(self, mobile_no, password, ip):
+    def login(self, mobile_no: str, password: str, ip: str):
         db = pymysql.connect(host=self.sql_host,
                              user='root',
                              password=self.sql_password,
@@ -92,7 +92,8 @@ class Mysqldb:
             return '{"status":1,"message":"Login error."}'
         cursor = db.cursor()
 
-        sql = "UPDATE user SET isActive = 1, apiToken = '%s' WHERE userId = '%s';" % (token, user_id)
+        sql = "UPDATE user SET isActive = 1, apiToken = '%s', ipAddress = '%s' WHERE userId = '%s';" \
+              % (token, ip, user_id)
         try:
             cursor.execute(sql)
             db.commit()

@@ -8,19 +8,25 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.example.mysalon.R
+import com.example.mysalon.databinding.ActivityLoginBinding
+import com.example.mysalon.viewModel.LoginViewModel
 
 class LoginActivity : AppCompatActivity() {
-    lateinit var sharedPreferences: SharedPreferences
-    lateinit var editor: SharedPreferences.Editor
+    lateinit var binding: ActivityLoginBinding
+    lateinit var loginViewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-        val btnLogin: Button = findViewById(R.id.btn_login)
-        val etLoginEmail: EditText = findViewById(R.id.et_login_email)
-        val etLoginPassword: EditText = findViewById(R.id.et_login_password)
-        val tvLoginRegister: TextView = findViewById(R.id.tv_login_register)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+        binding.btnLogin.setOnClickListener {
+            val phone = binding.etMobilePhone.text.toString()
+            val password = binding.etLoginPassword.text.toString()
+            loginViewModel.login(phone, password)
+        }
 
     }
 

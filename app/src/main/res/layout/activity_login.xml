@@ -9,7 +9,7 @@
         android:id="@+id/tv_login_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login"
+        android:text="My Salon"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,45 +19,42 @@
         android:id="@+id/iv_login_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/ic_baseline_shopping_cart_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_login_title" />
 
     <TextView
-        android:id="@+id/tv_login_email"
+        android:id="@+id/tv_mobile_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/email_id"
+        android:text="Mobile Number"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_login_image" />
 
     <EditText
-        android:id="@+id/et_login_email"
+        android:id="@+id/et_mobile_phone"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:paddingHorizontal="15dp"
-        android:background="@drawable/shape_input_field"
-        android:hint="@string/please_input_email_id"
-        app:layout_constraintTop_toBottomOf="@+id/tv_login_email" />
+        android:hint="Mobile Number"
+        app:layout_constraintTop_toBottomOf="@+id/tv_mobile_phone" />
 
     <TextView
         android:id="@+id/tv_login_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/password"
+        android:text="Password"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_login_email" />
+        app:layout_constraintTop_toBottomOf="@+id/et_mobile_phone" />
 
     <EditText
         android:id="@+id/et_login_password"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:paddingHorizontal="15dp"
-        android:background="@drawable/shape_input_field"
-        android:hint="@string/please_input_password"
+        android:hint="Password"
         android:inputType="textPassword"
         app:layout_constraintTop_toBottomOf="@+id/tv_login_password" />
 
@@ -67,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="@drawable/shape_button"
-        android:text="@string/login"
+        android:text="SIGN IN"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -78,7 +75,7 @@
         android:id="@+id/tv_login_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/i_don_t_have_an_account"
+        android:text="Don't have account? SIGN UP"
         android:textColor="@color/orange"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
