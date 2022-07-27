@@ -15,7 +15,7 @@ class SplashActivity : AppCompatActivity() {
             var intent: Intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
-        }, 2000)
+        }, 1000)
 
     }
 

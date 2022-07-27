@@ -29,7 +29,7 @@ alert = Blueprint("alert", __name__)
 
 @test.route('/get', methods=['GET'])
 def test_get():
-    """Return Params as json format
+    """Return params as json format
 
     @@@
     #### args
@@ -50,7 +50,7 @@ def test_get():
 
 @test.route('/get/<test_id>', methods=['GET'])
 def test_get1(test_id):
-    """Return Params as json format
+    """Return params as json format
 
         @@@
         #### args
@@ -59,7 +59,7 @@ def test_get1(test_id):
 
         #### return
         - ##### json
-        > {"status": 0, "message": "Success", "testId": "<test_id>"}
+        > {"status": 0, "message": "Success", "testId": "test_id"}
         @@@
     """
     result = {"status": "0", "message": "Success", "testId": test_id}
@@ -68,7 +68,7 @@ def test_get1(test_id):
 
 @test.route('/post', methods=['POST'])
 def test_post():
-    """Return Params as json format
+    """Return body as json format
 
         @@@
         #### args
@@ -77,7 +77,7 @@ def test_post():
 
         #### return
         - ##### json
-        > {"status": 0, "message": "<body of post request>" }
+        > {"status": 0, "message": "body of post request" }
         @@@
     """
     return '{"status": "0", "message":"%s"}' % str(request.get_data())
@@ -85,7 +85,7 @@ def test_post():
 
 @test.route('/header', methods=['GET', 'POST'])
 def test_header():
-    """Return Params as json format
+    """Return headers as json format
 
             @@@
             #### args
@@ -94,7 +94,7 @@ def test_header():
 
             #### return
             - ##### json
-            > {"status": 0, "message": "Success", "headers": {<request header key>: <request header value>}}
+            > {"status": 0, "message": "Success", "headers": {request header key: request header value}}
             @@@
         """
     headers = {}
@@ -107,7 +107,7 @@ def test_header():
 
 @app_user.route('/signup', methods=['POST'])
 def signup():
-    """Sign Up a new account
+    """
 
         @@@
         #### args
@@ -117,6 +117,8 @@ def signup():
         |    mobileNo   |    false  |    string   |    9 digits                 |
         |    password   |    false  |    string   |    at least 8 characters    |
         |    fcmToken   |    false  |    string   |    fcm token                |
+        - ##### json
+        > {"mobileNo": 123456789, "password": "12345678", "fcmToken": "8e2f1c6f2774a3"}
 
         #### return
         - ##### json
@@ -153,6 +155,8 @@ def login():
         |--------|--------|--------|--------|
         |    mobileNo   |    false  |    string   |    9 digits                 |
         |    password   |    false  |    string   |    at least 8 characters    |
+        - ##### json
+        > {"username":"9999999999", "password":"password"}
 
         #### return
         - ##### json
@@ -347,27 +351,127 @@ def get_reviews():
 
         @@@
     """
+    if not isinstance(request.json, dict):
+        return '{"status":1,"message":"Require json body."}'
     if request.headers.get("Content-type") != "application/json":
         return '{"status":1,"message":"Failed to authenticate"}'
     if "pageSize" not in request.json:
         return '{"status":1,"message":"Require pageSize"}'
+    if not request.json["pageSize"].isdigit():
+        return '{"status":1,"message":"The pageSize must be digit."}'
+    if int(request.json["pageSize"]) < 1:
+        return '{"status":1,"message":"The pageSize at least 1."}'
     if "pageNo" not in request.json:
         return '{"status":1,"message":"Require pageNo"}'
-    if not isinstance(request.json, dict):
-        return '{"status":1,"message":"Require json body."}'
+    if not request.json["pageNo"].isdigit():
+        return '{"status":1,"message":"The pageNo must be digit."}'
+    if int(request.json["pageSize"]) < 1:
+        return '{"status":1,"message":"The pageNo at least 1."}'
+
     return db.get_reviews(request.json["pageSize"], request.json["pageNo"])
 
 
 @app_user.route('/dashboard', methods=['GET'])
 def dashboard():
+    if db.get_shop_status():
+        is_shop_opened = "Now open"
+    else:
+        is_shop_opened = "Now close"
     return '{"banners":[{"photoName":"Gold Facial","photoUrl":"/uploads/images/Albums/photos/photo11.jpg"},' \
            '{"photoName":"Gold Makeup","photoUrl":"/uploads/images/Albums/photos/photo14.jpg"}],' \
-           '"isShopOpened":"Now open","alertMessage":"Some message if created today otherwise empty"}'
+           '"isShopOpened":"%s","alertMessage":"Some message if created today otherwise empty"}' % is_shop_opened
 
 
 @service.route('/getServices', methods=['GET'])
 def get_services():
     return db.get_services()
+
+
+@barber.route('/addBarber', methods=['POST'])
+def add_barber():
+    """
+
+            @@@
+            #### args
+
+            | args | nullable | type | remark |
+            |--------|--------|--------|--------|
+            |    barberName   |    false  |    string   |    9 digits                 |
+            |    isAdmin   |    false  |    int   |    0: false 1: true    |
+            |    isBarber   |    false  |    int   |    0: false 1: true                |
+            |    mobileNo   |    false  |    string   |    9 digits                |
+            |    profilePic   |    false  |    string   |                    |
+            |    gender   |    false  |    string   |    M/F                |
+            |    breakTimeFrom   |    false  |    string   |    hh:mm                |
+            |    breakTimeTo   |    false  |    string   |    hh:mm                |
+            |    hasDefaultServices   |    false  |    int   |    1                |
+            |    holiday   |    false  |    string   |   Monday,Wednesday     |
+            |    userRating   |    false  |    double   |                    |
+            |    password   |    false  |    string   |    at least 8 characters                |
+            |    type   |    false  |    string   |                    |
+            |    payment   |    false  |    double   |                    |
+
+
+            #### return
+            - ##### json
+            > {"status": 0, "message": "Success", "barberId": "1"}
+            @@@
+        """
+    print(request.json)
+    if not isinstance(request.json, dict):
+        return '{"status":1,"message":"Require json body."}'
+    if request.headers.get("Content-type") != "application/json":
+        return '{"status":1,"message":"Failed to authenticate"}'
+    if "barberName" not in request.json:
+        return '{"status":1,"message":"Require barberName"}'
+    if "isAdmin" not in request.json:
+        return '{"status":1,"message":"Require isAdmin"}'
+    if not request.json["isAdmin"].isdigit():
+        return '{"status":1,"message":"The isAdmin must be digit."}'
+    if "isBarber" not in request.json:
+        return '{"status":1,"message":"Require isBarber"}'
+    if not request.json["isBarber"].isdigit():
+        return '{"status":1,"message":"The isBarber must be digit."}'
+    if "mobileNo" not in request.json:
+        return '{"status":1,"message":"Require mobileNo"}'
+    phone_rule = re.compile(r'^\d{9}$')
+    if not re.match(phone_rule, request.json["mobileNo"]):
+        return '{"status":1,"message":"MobileNo should be 9 digits."}'
+    if "profilePic" not in request.json:
+        return '{"status":1,"message":"Require profilePic"}'
+    if "gender" not in request.json:
+        return '{"status":1,"message":"Require gender"}'
+    if "breakTimeFrom" not in request.json:
+        return '{"status":1,"message":"Require breakTimeFrom"}'
+    time_rule = re.compile(r'^\d{2}:\d{2}$')
+    if not re.match(time_rule, request.json["breakTimeFrom"]):
+        return '{"status":1,"message":"breakTimeFrom should be hh:mm."}'
+    if "breakTimeTo" not in request.json:
+        return '{"status":1,"message":"Require breakTimeTo"}'
+    if not re.match(time_rule, request.json["breakTimeTo"]):
+        return '{"status":1,"message":"breakTimeTo should be hh:mm."}'
+    if "hasDefaultServices" not in request.json:
+        return '{"status":1,"message":"Require hasDefaultServices"}'
+    if not request.json["hasDefaultServices"].isdigit():
+        return '{"status":1,"message":"The hasDefaultServices must be digit."}'
+    if "holiday" not in request.json:
+        return '{"status":1,"message":"Require holiday"}'
+    if "userRating" not in request.json:
+        return '{"status":1,"message":"Require userRating"}'
+    if "password" not in request.json:
+        return '{"status":1,"message":"Require password"}'
+    if len(request.json["password"]) < 8:
+        return '{"status":1,"message":"Password at least 8 characters."}'
+    if "type" not in request.json:
+        return '{"status":1,"message":"Require type"}'
+    if "payment" not in request.json:
+        return '{"status":1,"message":"Require payment"}'
+
+    return db.add_barber(request.json["barberName"], request.json["isAdmin"], request.json["isBarber"],
+                         request.json["mobileNo"], request.json["profilePic"], request.json["gender"],
+                         request.json["breakTimeFrom"], request.json["breakTimeTo"], request.json["hasDefaultServices"],
+                         request.json["holiday"], request.json["userRating"], request.json["password"],
+                         request.json["type"], request.json["payment"])
 
 
 @barber.route('/getBarbers', methods=['GET'])
@@ -383,6 +487,39 @@ def get_barbers_services():
 @offers.route('/getCoupons', methods=['GET'])
 def get_coupons():
     return db.get_coupons()
+
+
+@offers.route('/getProducts', methods=['POST'])
+def get_products():
+    """
+        @@@
+        #### arg
+
+        | args | nullable | type | remark |
+        |--------|--------|--------|--------|
+        |    pageSize         |    false  |    string   |         |
+        |    pageNo       |    false  |    string   |         |
+
+        @@@
+    """
+    if not isinstance(request.json, dict):
+        return '{"status":1,"message":"Require json body."}'
+    if request.headers.get("Content-type") != "application/json":
+        return '{"status":1,"message":"Failed to authenticate"}'
+    if "pageSize" not in request.json:
+        return '{"status":1,"message":"Require pageSize"}'
+    if not request.json["pageSize"].isdigit():
+        return '{"status":1,"message":"The pageSize must be digit."}'
+    if int(request.json["pageSize"]) < 1:
+        return '{"status":1,"message":"The pageSize at least 1."}'
+    if "pageNo" not in request.json:
+        return '{"status":1,"message":"Require pageNo"}'
+    if not request.json["pageNo"].isdigit():
+        return '{"status":1,"message":"The pageNo must be digit."}'
+    if int(request.json["pageSize"]) < 1:
+        return '{"status":1,"message":"The pageNo at least 1."}'
+
+    return db.get_products(request.json["pageSize"], request.json["pageNo"])
 
 
 @offers.route('/getList', methods=['GET'])

@@ -28,12 +28,15 @@ class LoginViewModel: ViewModel() {
         val reqJson: String = Gson().toJson(map)
         val body: RequestBody =
             reqJson.toRequestBody("application/json".toMediaTypeOrNull())
-        val movieCall: Call<LoginResponse> = apiService.login(body)
-        movieCall.enqueue(object : Callback<LoginResponse> {
+        val call: Call<LoginResponse> = apiService.login(body)
+        call.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 if (response.isSuccessful) {
-                    userLiveData.postValue(response.body())
-                    Log.e("response.body()", response.body()!!.message)
+                    if(response.body()!!.status == 0){
+                        userLiveData.postValue(response.body())
+                    } else {
+                        Log.e("response error", response.body()!!.message)
+                    }
                 }
             }
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {

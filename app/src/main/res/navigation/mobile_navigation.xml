@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@+id/home_dest">
+    <fragment
+        android:id="@+id/home_dest"
+        android:name="com.example.mysalon.view.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home">
+<!--        <action-->
+<!--            android:id="@+id/next_action"-->
+<!--            app:destination="@+id/sub_category_dest"-->
+<!--            app:enterAnim="@anim/slide_in_right"-->
+<!--            app:exitAnim="@anim/slide_out_left"-->
+<!--            app:popEnterAnim="@anim/slide_in_left"-->
+<!--            app:popExitAnim="@anim/slide_out_right" />-->
+<!--        <action-->
+<!--            android:id="@+id/search_action"-->
+<!--            app:destination="@+id/search_dest"-->
+<!--            app:enterAnim="@anim/slide_in_right"-->
+<!--            app:exitAnim="@anim/slide_out_left"-->
+<!--            app:popEnterAnim="@anim/slide_in_left"-->
+<!--            app:popExitAnim="@anim/slide_out_right" />-->
+    </fragment>
+
+<!--    <fragment-->
+<!--        android:id="@+id/search_dest"-->
+<!--        android:name="com.example.ecommerce.view.home.SearchProductFragment"-->
+<!--        android:label="Home"-->
+<!--        tools:layout="@layout/fragment_search_product">-->
+<!--        <action-->
+<!--            android:id="@+id/product_detail_action"-->
+<!--            app:destination="@+id/product_detail_dest"-->
+<!--            app:enterAnim="@anim/slide_in_right"-->
+<!--            app:exitAnim="@anim/slide_out_left"-->
+<!--            app:popEnterAnim="@anim/slide_in_left"-->
+<!--            app:popExitAnim="@anim/slide_out_right" />-->
+<!--    </fragment>-->
+<!--    <fragment-->
+<!--        android:id="@+id/sub_category_dest"-->
+<!--        android:name="com.example.ecommerce.view.home.SubCategoryFragment"-->
+<!--        android:label="Sub Category"-->
+<!--        tools:layout="@layout/fragment_sub_category">-->
+<!--        <action-->
+<!--            android:id="@+id/product_detail_action"-->
+<!--            app:destination="@+id/product_detail_dest"-->
+<!--            app:enterAnim="@anim/slide_in_right"-->
+<!--            app:exitAnim="@anim/slide_out_left"-->
+<!--            app:popEnterAnim="@anim/slide_in_left"-->
+<!--            app:popExitAnim="@anim/slide_out_right" />-->
+<!--        <argument-->
+<!--            android:name="category_id"-->
+<!--            android:defaultValue="1"-->
+<!--            app:argType="string" />-->
+<!--    </fragment>-->
+<!--    <fragment-->
+<!--        android:id="@+id/product_detail_dest"-->
+<!--        android:name="com.example.ecommerce.view.home.ProductDetailFragment"-->
+<!--        android:label="Cart"-->
+<!--        tools:layout="@layout/fragment_product_detail">-->
+<!--        <argument-->
+<!--            android:name="product_id"-->
+<!--            android:defaultValue="1"-->
+<!--            app:argType="string" />-->
+<!--    </fragment>-->
+<!--    <fragment-->
+<!--        android:id="@+id/cart_dest"-->
+<!--        android:name="com.example.ecommerce.view.cart.CartFragment"-->
+<!--        android:label="Cart"-->
+<!--        tools:layout="@layout/fragment_cart">-->
+<!--        <action-->
+<!--            android:id="@+id/cart_product_detail_action"-->
+<!--            app:destination="@+id/product_detail_dest"-->
+<!--            app:enterAnim="@anim/slide_in_right"-->
+<!--            app:exitAnim="@anim/slide_out_left"-->
+<!--            app:popEnterAnim="@anim/slide_in_left"-->
+<!--            app:popExitAnim="@anim/slide_out_right" />-->
+<!--        <action-->
+<!--            android:id="@+id/place_order_action"-->
+<!--            app:destination="@+id/checkout_dest"-->
+<!--            app:enterAnim="@anim/slide_in_right"-->
+<!--            app:exitAnim="@anim/slide_out_left"-->
+<!--            app:popEnterAnim="@anim/slide_in_left"-->
+<!--            app:popExitAnim="@anim/slide_out_right" />-->
+<!--    </fragment>-->
+
+<!--    <fragment-->
+<!--        android:id="@+id/checkout_dest"-->
+<!--        android:name="com.example.ecommerce.view.cart.CheckoutFragment"-->
+<!--        android:label="Order"-->
+<!--        tools:layout="@layout/fragment_checkout">-->
+<!--        <action-->
+<!--            android:id="@+id/finish_order_action"-->
+<!--            app:destination="@+id/cart_dest"-->
+<!--            app:enterAnim="@anim/slide_in_right"-->
+<!--            app:exitAnim="@anim/slide_out_left"-->
+<!--            app:popEnterAnim="@anim/slide_in_left"-->
+<!--            app:popExitAnim="@anim/slide_out_right" />-->
+<!--    </fragment>-->
+
+<!--    <fragment-->
+<!--        android:id="@+id/order_dest"-->
+<!--        android:name="com.example.ecommerce.view.order.OrderFragment"-->
+<!--        android:label="Order"-->
+<!--        tools:layout="@layout/fragment_order">-->
+<!--        <action-->
+<!--            android:id="@+id/order_detail_action"-->
+<!--            app:destination="@+id/order_detail_dest"-->
+<!--            app:enterAnim="@anim/slide_in_right"-->
+<!--            app:exitAnim="@anim/slide_out_left"-->
+<!--            app:popEnterAnim="@anim/slide_in_left"-->
+<!--            app:popExitAnim="@anim/slide_out_right" />-->
+<!--    </fragment>-->
+
+<!--    <fragment-->
+<!--        android:id="@+id/order_detail_dest"-->
+<!--        android:name="com.example.ecommerce.view.order.OrderDetailFragment"-->
+<!--        android:label="Order"-->
+<!--        tools:layout="@layout/fragment_order_detail">-->
+<!--        <argument-->
+<!--            android:name="order_id"-->
+<!--            android:defaultValue="1"-->
+<!--            app:argType="string" />-->
+<!--    </fragment>-->
+
+
+</navigation>

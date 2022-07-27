@@ -3,6 +3,7 @@ package com.example.mysalon.view
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -29,10 +30,21 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.tvLoginRegister.setOnClickListener {
-            val intent: Intent = Intent(this, RegisterActivity::class.java)
+            val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
 
+        loginViewModel.userLiveData.observe(this){
+            val intent = Intent(this, MainActivity::class.java)
+            Log.e(LOGIN_INFO, it.toString())
+            intent.putExtra(LOGIN_INFO, it)
+            startActivity(intent)
+        }
+
+    }
+
+    companion object {
+        const val LOGIN_INFO = "login_info"
     }
 
 }

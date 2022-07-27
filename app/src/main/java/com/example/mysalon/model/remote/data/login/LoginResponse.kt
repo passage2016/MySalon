@@ -1,14 +1,18 @@
 package com.example.mysalon.model.remote.data.login
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class LoginResponse(
     val apiToken: String,
     val createdOn: String,
     val dateOfBirth: String,
     val deletedOn: String,
     val emailId: String,
-    val emailVerificationCode: Any,
-    val evcExpiresOn: Any,
-    val fcmToken: Any,
+    val emailVerificationCode: String,
+    val evcExpiresOn: String,
+    val fcmToken: String,
     val fullName: String,
     val gender: String,
     val ipAddress: String,
@@ -19,9 +23,9 @@ data class LoginResponse(
     val message: String,
     val mobileNo: String,
     val password: String,
-    val profilePic: Any,
+    val profilePic: String,
     val status: Int,
     val tokenValidUpTo: String,
     val updatedOn: String,
     val userId: Int
-)
+): Parcelable

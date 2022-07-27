@@ -34,9 +34,11 @@ class Mysqldb:
             md5 = hashlib.md5()
             md5.update(password.encode('utf-8'))
             dt = time.strftime('%Y-%m-%d %H:%M:%S')
-            sql = "INSERT INTO user(mobileNo, password, createdOn, updatedOn, fcmToken, mobileVerificationCode) \
-                           VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" \
-                  % (mobile_no, md5.hexdigest(), dt, dt, fcm_token, phone_verification_code)
+            dt_7 = (datetime.datetime.now() + datetime.timedelta(days=7)).strftime("%Y-%m-%d")
+            sql = "INSERT INTO user(mobileNo, password, createdOn, updatedOn, fcmToken, mobileVerificationCode, " \
+                  "dateOfBirth, evcExpiresOn, tokenValidUpTo, deletedOn) \
+                           VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '1001-01-01', '%s', '%s', '1001-01-01 00:00:00')" \
+                  % (mobile_no, md5.hexdigest(), dt, dt, fcm_token, phone_verification_code, dt_7, dt_7)
             cursor.execute(sql)
             user_id = str(db.insert_id())
             db.commit()
@@ -80,7 +82,11 @@ class Mysqldb:
                 result["gender"] = row[3]
                 result["mobileNo"] = row[4]
                 result["password"] = row[5]
-                result["dateOfBirth"] = str(row[6])
+                date_of_birth = row[6]
+                if date_of_birth is None:
+                    result["dateOfBirth"] = ""
+                else:
+                    result["dateOfBirth"] = str(date_of_birth)
                 result["profilePic"] = row[7]
                 result["isActive"] = 1
                 result["isMobileVerified"] = row[9]
@@ -88,12 +94,24 @@ class Mysqldb:
                 result["fcmToken"] = row[11]
                 result["ipAddress"] = ip
                 result["emailVerificationCode"] = email_verification_code
-                result["evcExpiresOn"] = row[14]
+                evc_expires_on = row[14]
+                if evc_expires_on is None:
+                    result["evcExpiresOn"] = ""
+                else:
+                    result["evcExpiresOn"] = str(evc_expires_on)
                 result["apiToken"] = token
-                result["tokenValidUpTo"] = str(row[16])
+                token_valid_up_to = row[16]
+                if token_valid_up_to is None:
+                    result["tokenValidUpTo"] = ""
+                else:
+                    result["tokenValidUpTo"] = str(token_valid_up_to)
                 result["createdOn"] = str(row[17])
                 result["updatedOn"] = str(row[18])
-                result["deletedOn"] = str(row[19])
+                deleted_on = row[19]
+                if evc_expires_on is None:
+                    result["deletedOn"] = ""
+                else:
+                    result["deletedOn"] = str(deleted_on)
                 result["isDeleted"] = row[20]
         except RuntimeError:
             db.close()
@@ -371,6 +389,40 @@ class Mysqldb:
         db.close()
         return json.dumps(result)
 
+    def add_barber(self, barber_name, is_admin, is_barber, mobile_no, profile_pic, gender, break_time_from,
+                   break_time_to, has_default_services, holiday, user_rating, password, barber_type, payment):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+
+        cursor = db.cursor()
+        sql = "SELECT * FROM barbers WHERE mobileNo = %s;" % mobile_no
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            if len(results) > 0:
+                return '{"status":1,"message":"Mobile No already register."}'
+            md5 = hashlib.md5()
+            md5.update(password.encode('utf-8'))
+            dt = time.strftime('%Y-%m-%d %H:%M:%S')
+            sql = "INSERT INTO barbers(barberName, isAdmin, isBarber, mobileNo, profilePic, gender, breakTimeFrom, " \
+                  "breakTimeTo, hasDefaultServices, holiday, userRating, password, type, payment) \
+                           VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" \
+                  % (barber_name, is_admin, is_barber, mobile_no, profile_pic, gender, break_time_from,
+                     break_time_to, has_default_services, holiday, user_rating, md5.hexdigest(), barber_type, payment)
+            cursor.execute(sql)
+            barber_id = str(db.insert_id())
+            db.commit()
+        except RuntimeError:
+            db.rollback()
+            db.close()
+            return '{"status":1,"message":"Signup error."}'
+        db.close()
+        result = {"status": 0, "message": "Success", "barberId": barber_id}
+
+        return json.dumps(result)
+
     def get_barbers(self):
         db = pymysql.connect(host=self.sql_host,
                              user='root',
@@ -419,6 +471,37 @@ class Mysqldb:
         db.close()
         return json.dumps(result)
 
+    def get_products(self, page_size, page_no):
+        page_no = page_no - 1
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        result = {"status": 0, "message": "Success", "products": []}
+        try:
+            sql = "SELECT * FROM products LIMIT %d,%d;" % (page_no * page_size, page_size)
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for row in results:
+                product = {"productId": row[0], "productName": row[1], "price": row[2], "offer": row[3],
+                           "offerType": row[4], "offerValidUpTo": str(row[5]), "description": row[6],
+                           "productPic": row[7]}
+                result["products"].append(product)
+            sql = "SELECT * FROM reviews;"
+            rows = cursor.execute(sql)
+            result["isFirstPage"] = page_no == 0
+            result["isLastPage"] = rows <= (page_no + 1) * page_size
+            result["totalPages"] = math.ceil(rows / page_size)
+            # result["totalProducts"] = rows
+            result["pageNo"] = page_no
+            result["pageSize"] = page_size
+        except RuntimeError:
+            db.close()
+            return '{"status":1,"message":"Database error."}'
+        db.close()
+        return json.dumps(result)
+
     def get_offers(self):
         db = pymysql.connect(host=self.sql_host,
                              user='root',
@@ -436,6 +519,14 @@ class Mysqldb:
                           "toDate": str(row[4]), "terms": row[5], "minimumRqrdCost": row[6], "couponText": row[7],
                           "couponValue": row[8]}
                 result["coupons"].append(coupon)
+            sql = "SELECT * FROM products;"
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for row in results:
+                product = {"productId": row[0], "productName": row[1], "price": row[2], "offer": row[3],
+                           "offerType": row[4], "offerValidUpTo": str(row[5]), "description": row[6],
+                           "productPic": row[7]}
+                result["products"].append(product)
         except RuntimeError:
             db.close()
             return '{"status":1,"message":"Database error."}'
@@ -691,6 +782,7 @@ class Mysqldb:
         return '{"status":0,"message":"Success"}'
 
     def get_reviews(self, page_size, page_no):
+        page_no = page_no - 1
         db = pymysql.connect(host=self.sql_host,
                              user='root',
                              password=self.sql_password,
@@ -945,6 +1037,33 @@ class Mysqldb:
             result["appointment"]["services"].append(service)
         result["appointment"]["previousTimePhotos"] = appointment["previousTimePhotos"]
         return result
+
+    def get_shop_status(self):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+
+        int_weekday = (datetime.datetime.now()).weekday()
+        string_weekday = utils.get_string_weekday(int_weekday)
+        sql = "SELECT * FROM workingHours WHERE day = '%s';" % string_weekday
+        status = False
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for row in results:
+                from_time = str(row[1])
+                to_time = str(row[2])
+                now = datetime.datetime.now().strftime("%H:%M:%S")
+                if utils.time_before(from_time, now) and utils.time_before(now, to_time):
+                    status = True
+
+        except RuntimeError:
+            db.close()
+            return False
+        db.close()
+        return status
 
     def api_key_check(self, ps_auth_token, user_id):
         db = pymysql.connect(host=self.sql_host,
