@@ -12,7 +12,7 @@ app.config['API_DOC_MEMBER'] = ['test', 'app_user', 'service', 'barber', 'offers
 ApiDoc(
     app,
     title="Barber App",
-    version="3.0.0",
+    version="3.0.1",
     description="Barber App API",
 )
 test = Blueprint("test", __name__)
@@ -38,13 +38,16 @@ def test_get():
 
     #### return
     - ##### json
-    > {"status": 0, "message": "Success"}
+    ```json
+    {"status": 0, "message": "Success"}
+    ```
     @@@
     """
     result = request.args.to_dict()
     result["status"] = "0"
     result["message"] = "Success"
     str_json = json.dumps(result)
+    print(str_json)
     return str_json
 
 
@@ -59,10 +62,13 @@ def test_get1(test_id):
 
         #### return
         - ##### json
-        > {"status": 0, "message": "Success", "testId": "test_id"}
+        ```json
+        {"status": 0, "message": "Success", "testId": "test_id"}
+        ```
         @@@
     """
     result = {"status": "0", "message": "Success", "testId": test_id}
+    print(json.dumps(result))
     return json.dumps(result)
 
 
@@ -77,9 +83,12 @@ def test_post():
 
         #### return
         - ##### json
-        > {"status": 0, "message": "body of post request" }
+        ```json
+        {"status": 0, "message": "body of post request" }
+        ```
         @@@
     """
+    print('{"status": "0", "message":"%s"}' % str(request.get_data()))
     return '{"status": "0", "message":"%s"}' % str(request.get_data())
 
 
@@ -94,7 +103,9 @@ def test_header():
 
             #### return
             - ##### json
-            > {"status": 0, "message": "Success", "headers": {request header key: request header value}}
+            ```json
+            {"status": 0, "message": "Success", "headers": {request header key: request header value}}
+            ```
             @@@
         """
     headers = {}
@@ -102,6 +113,7 @@ def test_header():
         headers[i] = request.headers.get(i)
     result = {"status": 0, "message": "Success", "headers": headers}
     str_json = json.dumps(result)
+    print(str_json)
     return str_json
 
 
@@ -114,16 +126,29 @@ def signup():
 
         | args | nullable | type | remark |
         |--------|--------|--------|--------|
-        |    mobileNo   |    false  |    string   |    9 digits                 |
+        |    mobileNo   |    false  |    string   |    8-13 digits                 |
         |    password   |    false  |    string   |    at least 8 characters    |
         |    fcmToken   |    false  |    string   |    fcm token                |
         - ##### json
-        > {"mobileNo": 123456789, "password": "12345678", "fcmToken": "8e2f1c6f2774a3"}
+        ```json
+        {"mobileNo": 1234567890, "password": "12345678", "fcmToken": "8e2f1c6f2774a3"}
+        ```
 
         #### return
         - ##### json
-        > {"status": 0, "message": "Success", "otp": "6200", "userId": "1"}
+        ```json
+        {"status": 0, "message": "Success", "otp": "6200", "userId": "1"}
+        ```
+
+        #### update
+        - ##### 3.0.1:
+        ```
+        change mobileNo to 8-13 digits
+        ```
+
         @@@
+
+
     """
     print(request.json)
     if not isinstance(request.json, dict):
@@ -134,9 +159,9 @@ def signup():
         return '{"status":1,"message":"Require fcmToken"}'
     if "mobileNo" not in request.json:
         return '{"status":1,"message":"Require mobileNo"}'
-    phone_rule = re.compile(r'^\d{9}$')
+    phone_rule = re.compile(r'^\d{8,13}$')
     if not re.match(phone_rule, request.json["mobileNo"]):
-        return '{"status":1,"message":"MobileNo should be 9 digits."}'
+        return '{"status":1,"message":"MobileNo should be 8-13 digits."}'
     if len(request.json["password"]) < 8:
         return '{"status":1,"message":"Password at least 8 characters."}'
     if "password" not in request.json:
@@ -153,32 +178,45 @@ def login():
 
         | args | nullable | type | remark |
         |--------|--------|--------|--------|
-        |    mobileNo   |    false  |    string   |    9 digits                 |
+        |    mobileNo   |    false  |    string   |    8-13 digits                 |
         |    password   |    false  |    string   |    at least 8 characters    |
-        - ##### json
-        > {"username":"9999999999", "password":"password"}
+        ```json
+        {"mobileNo":"9999999999", "password":"password"}
+        ```
 
         #### return
         - ##### json
-        > {"status": 0, "message": "Authenticated successfully", "userId": 1,
+        ```json
+        {"status": 0, "message": "Authenticated successfully", "userId": 1,
         "fullName": "", "emailId": "", "gender": "", "mobileNo": "9999999999", "password":
         "912ec803b2ce49e4a541068d495ab570", "dateOfBirth": "", "profilePic": "", "isActive": 1,
         "isMobileVerified": 0, "isEmailVerified": 0, "fcmToken": "", "ipAddress": "127.0.0.1",
         "emailVerificationCode": "2213", "evcExpiresOn": "", "apiToken": "8333404feb6243fa94217433168078cd",
         "tokenValidUpTo": "", "createdOn": "2022-07-23 16:19:32", "updatedOn": "2022-07-23 16:19:32",
         "deletedOn": "", "isDeleted": 0}
+        ```
+
+        #### update
+        - ##### 3.0.1:
+        ```
+        change username to mobileNo
+        change mobileNo to 8-13 digits
+        ```
         @@@
     """
     if request.headers.get("Content-type") != "application/json":
         return '{"status":1,"message":"Require Content-type"}'
-    if "username" not in request.json:
-        return '{"status":1,"message":"Require username"}'
+    if "mobileNo" not in request.json:
+        return '{"status":1,"message":"Require mobileNo"}'
+    phone_rule = re.compile(r'^\d{8,13}$')
+    if not re.match(phone_rule, request.json["mobileNo"]):
+        return '{"status":1,"message":"MobileNo should be 8-13 digits."}'
     if "password" not in request.json:
         return '{"status":1,"message":"Require password"}'
     print(request.json)
     if not isinstance(request.json, dict):
         return '{"status":1,"message":"Require json body."}'
-    return db.login(request.json["username"], request.json["password"], request.remote_addr)
+    return db.login(request.json["mobileNo"], request.json["password"], request.remote_addr)
 
 
 @app_user.route('/updateUser', methods=['POST'])
@@ -251,7 +289,25 @@ def update_fcm_token():
 
 
 @app_user.route('/getPhoneVerificationCode/<mobile_no>', methods=['GET'])
-def get_phone_verification_code(mobile_no):
+def get_phone_verification_code(mobile_no: str):
+    """
+        @@@
+        #### arg
+
+        | args | nullable | type | remark |
+        |--------|--------|--------|--------|
+        |    mobile_no         |    false  |    string   |   8-13 digits   |
+
+        #### update
+        - ##### 3.0.1:
+        ```
+        change mobile_no to 8-13 digits
+        ```
+        @@@
+    """
+    phone_rule = re.compile(r'^\d{8,13}$')
+    if not re.match(phone_rule, mobile_no):
+        return '{"status":1,"message":"MobileNo should be 8-13 digits."}'
     return db.get_phone_verification_code(mobile_no)
 
 
@@ -263,10 +319,15 @@ def reset_password():
 
         | args | nullable | type | remark |
         |--------|--------|--------|--------|
-        |    mobileNo         |    false  |    string   |         |
+        |    mobileNo         |    false  |    string   |   8-13 digits   |
         |    phoneVerificationCode       |    false  |    string   |         |
         |    password        |    false  |    string   |         |
 
+        #### update
+        - ##### 3.0.1:
+        ```
+        change mobileNo to 8-13 digits
+        ```
         @@@
     """
     print(request.json)
@@ -276,6 +337,9 @@ def reset_password():
         return '{"status":1,"message":"Require Content-type"}'
     if "mobileNo" not in request.json:
         return '{"status":1,"message":"Require mobileNo"}'
+    phone_rule = re.compile(r'^\d{8,13}$')
+    if not re.match(phone_rule, request.json["mobileNo"]):
+        return '{"status":1,"message":"MobileNo should be 8-13 digits."}'
     if "phoneVerificationCode" not in request.json:
         return '{"status":1,"message":"Require phoneVerificationCode"}'
     if "password" not in request.json:
@@ -399,7 +463,7 @@ def add_barber():
             |    barberName   |    false  |    string   |    9 digits                 |
             |    isAdmin   |    false  |    int   |    0: false 1: true    |
             |    isBarber   |    false  |    int   |    0: false 1: true                |
-            |    mobileNo   |    false  |    string   |    9 digits                |
+            |    mobileNo   |    false  |    string   |    8-13 digits                |
             |    profilePic   |    false  |    string   |                    |
             |    gender   |    false  |    string   |    M/F                |
             |    breakTimeFrom   |    false  |    string   |    hh:mm                |
@@ -414,7 +478,9 @@ def add_barber():
 
             #### return
             - ##### json
-            > {"status": 0, "message": "Success", "barberId": "1"}
+            ```json
+            {"status": 0, "message": "Success", "barberId": "1"}
+            ```
             @@@
         """
     print(request.json)
@@ -434,9 +500,9 @@ def add_barber():
         return '{"status":1,"message":"The isBarber must be digit."}'
     if "mobileNo" not in request.json:
         return '{"status":1,"message":"Require mobileNo"}'
-    phone_rule = re.compile(r'^\d{9}$')
+    phone_rule = re.compile(r'^\d{8,13}$')
     if not re.match(phone_rule, request.json["mobileNo"]):
-        return '{"status":1,"message":"MobileNo should be 9 digits."}'
+        return '{"status":1,"message":"MobileNo should be 8-13 digits."}'
     if "profilePic" not in request.json:
         return '{"status":1,"message":"Require profilePic"}'
     if "gender" not in request.json:
@@ -666,7 +732,6 @@ app.register_blueprint(albums, url_prefix="/albums")
 app.register_blueprint(working_hours, url_prefix="/workingHours")
 app.register_blueprint(appointment, url_prefix="/appointment")
 app.register_blueprint(alert, url_prefix="/alert")
-app.register_blueprint(barber, url_prefix="/barber")
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True, port=2333)
