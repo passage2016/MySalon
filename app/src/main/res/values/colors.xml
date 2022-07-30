@@ -13,4 +13,10 @@
     <color name="transparent">#00000000</color>
     <color name="green">#00E676</color>
     <color name="red">#FF1100</color>
+    <color name="time_slot_background">#ffffffff</color>
+    <color name="time_slot_booked">#ffeeeeee</color>
+    <color name="time_slot_border">#ffcccccc</color>
+    <color name="time_slot_current_selected">#ff01978a</color>
+    <color name="separator_color">#ff999999</color>
+    <color name="date_background_color">#fff2f2f2</color>
 </resources>

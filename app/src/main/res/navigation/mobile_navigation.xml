@@ -9,13 +9,13 @@
         android:name="com.example.mysalon.view.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home">
-<!--        <action-->
-<!--            android:id="@+id/next_action"-->
-<!--            app:destination="@+id/sub_category_dest"-->
-<!--            app:enterAnim="@anim/slide_in_right"-->
-<!--            app:exitAnim="@anim/slide_out_left"-->
-<!--            app:popEnterAnim="@anim/slide_in_left"-->
-<!--            app:popExitAnim="@anim/slide_out_right" />-->
+        <action
+            android:id="@+id/book_action"
+            app:destination="@+id/book_select_barber"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
 <!--        <action-->
 <!--            android:id="@+id/search_action"-->
 <!--            app:destination="@+id/search_dest"-->
@@ -25,11 +25,11 @@
 <!--            app:popExitAnim="@anim/slide_out_right" />-->
     </fragment>
 
-<!--    <fragment-->
-<!--        android:id="@+id/search_dest"-->
-<!--        android:name="com.example.ecommerce.view.home.SearchProductFragment"-->
-<!--        android:label="Home"-->
-<!--        tools:layout="@layout/fragment_search_product">-->
+    <fragment
+        android:id="@+id/book_select_barber"
+        android:name="com.example.mysalon.view.book.BookSelectBarberFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_book_select_barber">
 <!--        <action-->
 <!--            android:id="@+id/product_detail_action"-->
 <!--            app:destination="@+id/product_detail_dest"-->
@@ -37,7 +37,7 @@
 <!--            app:exitAnim="@anim/slide_out_left"-->
 <!--            app:popEnterAnim="@anim/slide_in_left"-->
 <!--            app:popExitAnim="@anim/slide_out_right" />-->
-<!--    </fragment>-->
+    </fragment>
 <!--    <fragment-->
 <!--        android:id="@+id/sub_category_dest"-->
 <!--        android:name="com.example.ecommerce.view.home.SubCategoryFragment"-->

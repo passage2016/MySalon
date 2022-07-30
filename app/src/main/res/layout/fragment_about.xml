@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/white"
+    android:paddingLeft="@dimen/common_padding"
+    android:paddingRight="@dimen/common_padding">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@id/ivLogo"
+            android:layout_width="fill_parent"
+            android:layout_height="100.0dip"
+            android:src="@drawable/sample_logo" />
+
+        <TextView
+            android:id="@id/tvAppName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin_small"
+            android:layout_marginBottom="@dimen/common_margin_small"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:id="@id/tvAppVersion"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin_small"
+            android:layout_marginBottom="@dimen/common_margin_small"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin"
+            android:gravity="center_horizontal"
+            android:text="@string/label_designed_developed_by" />
+
+        <ImageView
+            android:layout_width="100.0dip"
+            android:layout_height="100.0dip"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/psmobitech_logo" />
+
+        <TextView
+            android:id="@id/tvCompany"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/common_margin_small"
+            android:gravity="center_horizontal"
+            android:text="@string/msg_designed_developed_by" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin"
+            android:gravity="center_horizontal"
+            android:text="@string/label_website" />
+
+        <TextView
+            android:id="@id/tvWebSite"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin_small"
+            android:layout_marginBottom="@dimen/common_margin_small"
+            android:autoLink="web"
+            android:gravity="center_horizontal"
+            android:text="http://psmobitech.com" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin"
+            android:gravity="center_horizontal"
+            android:text="@string/label_contact_number" />
+
+        <TextView
+            android:id="@id/tvPhone1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin_small"
+            android:layout_marginBottom="@dimen/common_margin_small"
+            android:autoLink="phone"
+            android:gravity="center_horizontal"
+            android:text="+919156558184" />
+
+        <TextView
+            android:id="@id/tvPhone2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin_small"
+            android:layout_marginBottom="@dimen/common_margin_small"
+            android:autoLink="phone"
+            android:gravity="center_horizontal"
+            android:text="+919405314565" />
+
+        <TextView
+            android:id="@id/tvPhone3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin_small"
+            android:layout_marginBottom="@dimen/common_margin_small"
+            android:autoLink="phone"
+            android:gravity="center_horizontal"
+            android:text="+918412901801" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin"
+            android:gravity="center_horizontal"
+            android:text="@string/label_email" />
+
+        <TextView
+            android:id="@id/tvEmail1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin_small"
+            android:layout_marginBottom="@dimen/common_margin_small"
+            android:autoLink="email"
+            android:gravity="center_horizontal"
+            android:text="info@psmobitech.com" />
+
+        <TextView
+            android:id="@id/tvEmail2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin_small"
+            android:layout_marginBottom="@dimen/common_margin_small"
+            android:autoLink="email"
+            android:gravity="center_horizontal"
+            android:text="psmobitech@gmail.com" />
+    </LinearLayout>
+</ScrollView>

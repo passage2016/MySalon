@@ -2,6 +2,7 @@ from flask import Flask, request, Blueprint
 from flask_docs import ApiDoc
 import json
 import re
+import requests
 
 import mysqldb
 
@@ -12,7 +13,7 @@ app.config['API_DOC_MEMBER'] = ['test', 'app_user', 'service', 'barber', 'offers
 ApiDoc(
     app,
     title="Barber App",
-    version="3.0.1",
+    version="3.0.2",
     description="Barber App API",
 )
 test = Blueprint("test", __name__)
@@ -724,6 +725,7 @@ def get_alert():
 
 app.register_blueprint(test, url_prefix="/test")
 app.register_blueprint(app_user, url_prefix="/appUser")
+app.register_blueprint(app_user, url_prefix="/user")
 app.register_blueprint(service, url_prefix="/service")
 app.register_blueprint(barber, url_prefix="/barber")
 app.register_blueprint(offers, url_prefix="/offers")
@@ -734,4 +736,10 @@ app.register_blueprint(appointment, url_prefix="/appointment")
 app.register_blueprint(alert, url_prefix="/alert")
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=True, port=2333)
+    ip = requests.get('https://checkip.amazonaws.com').text.strip()
+    if ip == "45.77.74.164":
+        app.run(debug=True, host='0.0.0.0', port=2333, ssl_context=(
+            '/etc/letsencrypt/archive/passageoftime.me/fullchain2.pem',
+            '/etc/letsencrypt/archive/passageoftime.me/privkey2.key'))
+    else:
+        app.run(host="0.0.0.0", debug=True, port=2333)

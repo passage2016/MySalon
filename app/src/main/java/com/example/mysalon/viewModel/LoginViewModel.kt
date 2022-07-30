@@ -20,9 +20,9 @@ class LoginViewModel: ViewModel() {
     val apiService: ApiService= retrofit.create(ApiService::class.java)
     val userLiveData = MutableLiveData<LoginResponse>()
 
-    fun login(username: String, password: String) {
+    fun login(mobileNo: String, password: String) {
         val map = HashMap<String, String>()
-        map["username"] = username
+        map["mobileNo"] = mobileNo
         map["password"] = password
 
         val reqJson: String = Gson().toJson(map)

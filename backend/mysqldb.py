@@ -405,7 +405,6 @@ class Mysqldb:
                 return '{"status":1,"message":"Mobile No already register."}'
             md5 = hashlib.md5()
             md5.update(password.encode('utf-8'))
-            dt = time.strftime('%Y-%m-%d %H:%M:%S')
             sql = "INSERT INTO barbers(barberName, isAdmin, isBarber, mobileNo, profilePic, gender, breakTimeFrom, " \
                   "breakTimeTo, hasDefaultServices, holiday, userRating, password, type, payment) \
                            VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" \

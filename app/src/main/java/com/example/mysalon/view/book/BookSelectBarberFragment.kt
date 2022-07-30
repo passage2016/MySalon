@@ -1,24 +1,23 @@
-package com.example.mysalon.view
+package com.example.mysalon.view.book
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import com.example.mysalon.R
+import com.example.mysalon.databinding.FragmentBookSelectBarberBinding
 import com.example.mysalon.databinding.FragmentHomeBinding
 
-class HomeFragment: Fragment() {
+class BookSelectBarberFragment: Fragment() {
     lateinit var currentView: View
-    lateinit var binding: FragmentHomeBinding
+    lateinit var binding: FragmentBookSelectBarberBinding
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
+        binding = FragmentBookSelectBarberBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
@@ -26,10 +25,6 @@ class HomeFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         currentView = view
 
-        binding.cvHomeBookAppointment.setOnClickListener {
-            val action = HomeFragmentDirections.bookAction()
-            currentView.findNavController().navigate(action)
-        }
 
     }
 }
