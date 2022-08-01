@@ -10,7 +10,6 @@ import com.example.mysalon.R
 import com.example.mysalon.databinding.FragmentHomeBinding
 
 class HomeFragment: Fragment() {
-    lateinit var currentView: View
     lateinit var binding: FragmentHomeBinding
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,11 +23,15 @@ class HomeFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        currentView = view
 
         binding.cvHomeBookAppointment.setOnClickListener {
             val action = HomeFragmentDirections.bookAction()
-            currentView.findNavController().navigate(action)
+            binding.root.findNavController().navigate(action)
+        }
+
+        binding.imbBookAppointment.setOnClickListener {
+            val action = HomeFragmentDirections.bookAction()
+            binding.root.findNavController().navigate(action)
         }
 
     }

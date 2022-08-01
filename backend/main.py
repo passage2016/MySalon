@@ -449,7 +449,41 @@ def dashboard():
 
 @service.route('/getServices', methods=['GET'])
 def get_services():
+    """
+        @@@
+        #### arg
+
+        > None
+
+        #### return
+        - ##### json
+
+
+        @@@
+    """
     return db.get_services()
+
+
+@service.route('/getServices1', methods=['GET'])
+def new_get_services():
+    """
+        @@@
+        #### arg
+
+        > None
+
+        #### return
+        - ##### json
+
+        #### update
+        - ##### 3.0.3:
+        ```
+        add getServices1 with new response format
+        ```
+
+        @@@
+    """
+    return db.new_get_services()
 
 
 @barber.route('/addBarber', methods=['POST'])
@@ -543,12 +577,98 @@ def add_barber():
 
 @barber.route('/getBarbers', methods=['GET'])
 def get_barbers():
+    """
+        @@@
+        #### arg
+
+        > None
+
+        #### return
+        - ##### json
+         ```json
+         {"status": 0, "message": "Successfully", "barbers": [{"barberId": 1,
+        "barberName": "Any Barber", "isAdmin": 0, "isBarber": 1, "mobileNo": "8888098647", "profilePic":
+        "uploads/images/Barbers/1.jpg", "gender": "M", "breakTimeFrom": "14:00", "breakTimeTo": "14:30",
+        "hasDefaultServices": 1, "holiday": "", "userRating": 4.5, "password": "e19d5cd5af0378da05f63f891c7467af",
+        "type": " ", "payment": 0.0}, {"barberId": 2, "barberName": "Raghvendra Malve", "isAdmin": 1, "isBarber": 1,
+        "mobileNo": "8412901801", "profilePic": "uploads/images/Barbers/2.jpg", "gender": "M", "breakTimeFrom":
+        "13:00", "breakTimeTo": "14:00", "hasDefaultServices": 1, "holiday": "Monday,Monday", "userRating": 3.5,
+        "password": "e19d5cd5af0378da05f63f891c7467af", "type": "sharing", "payment": 50.0}, {"barberId": 3,
+        "barberName": "Ranjit Kumar Sen", "isAdmin": 0, "isBarber": 1, "mobileNo": "7412901801", "profilePic":
+        "/uploads/images/Barbers/_20181201_225829.jpg", "gender": "M", "breakTimeFrom": "13:00", "breakTimeTo":
+        "13:30", "hasDefaultServices": 1, "holiday": "Wednesday,Wednesday", "userRating": 0.0, "password":
+        "e19d5cd5af0378da05f63f891c7467af", "type": "salary", "payment": 35000.0}, {"barberId": 6, "barberName":
+        "Swapnil Raut", "isAdmin": 1, "isBarber": 1, "mobileNo": "9405314565", "profilePic":
+        "/uploads/images/Barbers/Rahul_Indian_Santa_Kid_YkdkRGtfdA2.jpg", "gender": "F", "breakTimeFrom": "13:00",
+        "breakTimeTo": "14:00", "hasDefaultServices": 1, "holiday": "", "userRating": 0.0, "password":
+        "e19d5cd5af0378da05f63f891c7467af", "type": "", "payment": 0.0}, {"barberId": 30, "barberName": "Roshan
+        Rote", "isAdmin": 0, "isBarber": 1, "mobileNo": "8080909065", "profilePic":
+        "/uploads/images/Barbers/Zk1lQ2JZ.jpg", "gender": "", "breakTimeFrom": "13:00", "breakTimeTo": "13:30",
+        "hasDefaultServices": 1, "holiday": "Monday", "userRating": 0.0, "password":
+        "e19d5cd5af0378da05f63f891c7467af", "type": " ", "payment": 0.0}, {"barberId": 37, "barberName": "krishna
+        Raut", "isAdmin": 0, "isBarber": 1, "mobileNo": "7083242322", "profilePic":
+        "/uploads/images/Barbers/ui-danro.jpg", "gender": "", "breakTimeFrom": "14:00", "breakTimeTo": "14:30",
+        "hasDefaultServices": 1, "holiday": "Monday,Monday", "userRating": 0.0, "password":
+        "e19d5cd5af0378da05f63f891c7467af", "type": "salary", "payment": 20000.0}, {"barberId": 38, "barberName":
+        "Nandkumar Yadav", "isAdmin": 0, "isBarber": 1, "mobileNo": "8888444411", "profilePic":
+        "/uploads/images/Barbers/IMG-20180928-WA0027.jpg", "gender": "", "breakTimeFrom": "14:00", "breakTimeTo":
+        "14:30", "hasDefaultServices": 1, "holiday": "Monday", "userRating": 0.0, "password":
+        "e19d5cd5af0378da05f63f891c7467af", "type": "sharing", "payment": 35.0}, {"barberId": 39, "barberName":
+        "Suraj Sonawane", "isAdmin": 0, "isBarber": 1, "mobileNo": "9775881022", "profilePic":
+        "/uploads/images/Barbers/CustomerPhoto_1564396861722.jpg", "gender": "", "breakTimeFrom": "13:00",
+        "breakTimeTo": "13:30", "hasDefaultServices": 1, "holiday": "Monday,Monday", "userRating": 0.0, "password":
+        "e19d5cd5af0378da05f63f891c7467af", "type": "salary", "payment": 15000.0}, {"barberId": 40, "barberName":
+        "Narendra M", "isAdmin": 0, "isBarber": 1, "mobileNo": "8885556661", "profilePic":
+        "/uploads/images/Barbers/Screenshot_2016-01-03-10-12-57.png", "gender": "", "breakTimeFrom": "13:00",
+        "breakTimeTo": "14:00", "hasDefaultServices": 1, "holiday": "Friday,Friday", "userRating": 0.0, "password":
+        "e19d5cd5af0378da05f63f891c7467af", "type": "salary", "payment": 8000.0}, {"barberId": 41, "barberName":
+        "Prasad Pawtekar", "isAdmin": 0, "isBarber": 1, "mobileNo": "8010909680", "profilePic":
+        "/uploads/images/Barbers/IMG_20211106_023328.jpg", "gender": "", "breakTimeFrom": "13:00", "breakTimeTo":
+        "14:00", "hasDefaultServices": 1, "holiday": "Friday,Friday", "userRating": 0.0, "password":
+        "e19d5cd5af0378da05f63f891c7467af", "type": "sharing", "payment": 50.0}]}
+        ```
+
+        @@@
+    """
     return db.get_barbers()
 
 
 @barber.route('/getBarberServices', methods=['POST'])
 def get_barbers_services():
+    """
+        @@@
+        #### arg
+
+        > None
+
+        #### return
+        - ##### json
+
+        @@@
+    """
     return db.get_services()
+
+
+@barber.route('/getBarberServices1', methods=['POST'])
+def new_get_barbers_services():
+    """
+        @@@
+        #### arg
+
+        > None
+
+        #### return
+        - ##### json
+
+        #### update
+        - ##### 3.0.3:
+        ```
+        add getBarberServices1 with new response format
+        ```
+
+        @@@
+    """
+    return db.new_get_services()
 
 
 @offers.route('/getCoupons', methods=['GET'])
@@ -638,8 +758,23 @@ def book():
         |    couponCode     |    false  |    string   |         |
         |    sendSms     |    false  |    string   |         |
 
+        #### return
+        - ##### json
+         ```json
+        {"status": 0, "message": "Book appointment successfully", "appointment": {"aptNo": 2, "aptDate":
+        "2022-08-02", "timeFrom": "11:00", "timeTo": "11:45", "userId": 1, "fullName": "", "mobileNo": "9999999999",
+        "totalCost": 50.0, "couponDiscount": 0.0, "finalCost": 0.0, "totalDuration": 43.0, "aptStatus": "Confirmed",
+        "couponCode": "", "barberId": 1, "barberName": "Any Barber", "profilePic": "uploads/images/Barbers/1.jpg",
+        "userProfilePic": "", "services": [{"serviceId": 1, "serviceName": "Blowout", "serviceType": "Haircuts",
+        "duration": 15.0, "cost": 15.0, "servicePic": "uploads/images/Services/1.jpg"}, {"serviceId": 2,
+        "serviceName": "Edge Up", "serviceType": "Haircuts", "duration": 16.0, "cost": 20.0, "servicePic":
+        "uploads/images/Services/2.jpg"}, {"serviceId": 3, "serviceName": "Even Steven Cut", "serviceType":
+        "Haircuts", "duration": 12.0, "cost": 15.0, "servicePic": "uploads/images/Services/3.jpg"}],
+        "previousTimePhotos": ""}}
+        ```
         @@@
     """
+    print(request.json)
     if request.headers.get("Content-type") != "application/json":
         return '{"status":1,"message":"Failed to authenticate"}'
     if request.headers.get("ps_auth_token") is None:

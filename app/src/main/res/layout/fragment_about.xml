@@ -1,138 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@android:color/white"
-    android:paddingLeft="@dimen/common_padding"
-    android:paddingRight="@dimen/common_padding">
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <ImageView
-            android:id="@id/ivLogo"
-            android:layout_width="fill_parent"
+            android:id="@+id/iv_logo"
+            android:layout_width="match_parent"
             android:layout_height="100.0dip"
             android:src="@drawable/sample_logo" />
 
         <TextView
-            android:id="@id/tvAppName"
-            android:layout_width="fill_parent"
+            android:id="@+id/tv_app_name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_margin_small"
-            android:layout_marginBottom="@dimen/common_margin_small"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:gravity="center_horizontal" />
 
         <TextView
-            android:id="@id/tvAppVersion"
-            android:layout_width="fill_parent"
+            android:id="@+id/tvApp_version"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_margin_small"
-            android:layout_marginBottom="@dimen/common_margin_small"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:gravity="center_horizontal" />
 
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_margin"
+            android:layout_marginTop="16dp"
             android:gravity="center_horizontal"
-            android:text="@string/label_designed_developed_by" />
+            android:text="Designed Developed By" />
 
         <ImageView
             android:layout_width="100.0dip"
             android:layout_height="100.0dip"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/psmobitech_logo" />
+            android:src="@drawable/yehuo" />
 
         <TextView
-            android:id="@id/tvCompany"
-            android:layout_width="fill_parent"
+            android:id="@+id/tv_company"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/common_margin_small"
+            android:layout_marginBottom="4dp"
             android:gravity="center_horizontal"
-            android:text="@string/msg_designed_developed_by" />
+            android:text="Ruipeng Sun" />
 
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_margin"
+            android:layout_marginTop="16dp"
             android:gravity="center_horizontal"
-            android:text="@string/label_website" />
+            android:text="Website" />
 
         <TextView
-            android:id="@id/tvWebSite"
-            android:layout_width="fill_parent"
+            android:id="@+id/tv_web_site"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_margin_small"
-            android:layout_marginBottom="@dimen/common_margin_small"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:autoLink="web"
             android:gravity="center_horizontal"
-            android:text="http://psmobitech.com" />
+            android:text="https://passageoftime.me:2333/docs/api/" />
 
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_margin"
+            android:layout_marginTop="16dp"
             android:gravity="center_horizontal"
-            android:text="@string/label_contact_number" />
+            android:text="Contact Number" />
 
         <TextView
-            android:id="@id/tvPhone1"
-            android:layout_width="fill_parent"
+            android:id="@+id/tv_phone1"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_margin_small"
-            android:layout_marginBottom="@dimen/common_margin_small"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:autoLink="phone"
             android:gravity="center_horizontal"
-            android:text="+919156558184" />
+            android:text="+1 (999)999-9999" />
+
 
         <TextView
-            android:id="@id/tvPhone2"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_margin_small"
-            android:layout_marginBottom="@dimen/common_margin_small"
-            android:autoLink="phone"
+            android:layout_marginTop="16dp"
             android:gravity="center_horizontal"
-            android:text="+919405314565" />
+            android:text="Email" />
 
         <TextView
-            android:id="@id/tvPhone3"
-            android:layout_width="fill_parent"
+            android:id="@+id/tv_email1"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_margin_small"
-            android:layout_marginBottom="@dimen/common_margin_small"
-            android:autoLink="phone"
-            android:gravity="center_horizontal"
-            android:text="+918412901801" />
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_margin"
-            android:gravity="center_horizontal"
-            android:text="@string/label_email" />
-
-        <TextView
-            android:id="@id/tvEmail1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_margin_small"
-            android:layout_marginBottom="@dimen/common_margin_small"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:autoLink="email"
             android:gravity="center_horizontal"
-            android:text="info@psmobitech.com" />
+            android:text="info@passageoftime.me" />
 
-        <TextView
-            android:id="@id/tvEmail2"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_margin_small"
-            android:layout_marginBottom="@dimen/common_margin_small"
-            android:autoLink="email"
-            android:gravity="center_horizontal"
-            android:text="psmobitech@gmail.com" />
     </LinearLayout>
 </ScrollView>

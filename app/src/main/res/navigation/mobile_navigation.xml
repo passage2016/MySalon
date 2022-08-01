@@ -11,7 +11,7 @@
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/book_action"
-            app:destination="@+id/book_select_barber"
+            app:destination="@+id/book_select_barber_dest"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -26,93 +26,125 @@
     </fragment>
 
     <fragment
-        android:id="@+id/book_select_barber"
+        android:id="@+id/book_select_barber_dest"
         android:name="com.example.mysalon.view.book.BookSelectBarberFragment"
-        android:label="Home"
+        android:label="Select Barber"
         tools:layout="@layout/fragment_book_select_barber">
-<!--        <action-->
-<!--            android:id="@+id/product_detail_action"-->
-<!--            app:destination="@+id/product_detail_dest"-->
-<!--            app:enterAnim="@anim/slide_in_right"-->
-<!--            app:exitAnim="@anim/slide_out_left"-->
-<!--            app:popEnterAnim="@anim/slide_in_left"-->
-<!--            app:popExitAnim="@anim/slide_out_right" />-->
+        <action
+            android:id="@+id/book_select_service_action"
+            app:destination="@+id/book_select_service_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
-<!--    <fragment-->
-<!--        android:id="@+id/sub_category_dest"-->
-<!--        android:name="com.example.ecommerce.view.home.SubCategoryFragment"-->
-<!--        android:label="Sub Category"-->
-<!--        tools:layout="@layout/fragment_sub_category">-->
-<!--        <action-->
-<!--            android:id="@+id/product_detail_action"-->
-<!--            app:destination="@+id/product_detail_dest"-->
-<!--            app:enterAnim="@anim/slide_in_right"-->
-<!--            app:exitAnim="@anim/slide_out_left"-->
-<!--            app:popEnterAnim="@anim/slide_in_left"-->
-<!--            app:popExitAnim="@anim/slide_out_right" />-->
-<!--        <argument-->
-<!--            android:name="category_id"-->
-<!--            android:defaultValue="1"-->
-<!--            app:argType="string" />-->
-<!--    </fragment>-->
-<!--    <fragment-->
-<!--        android:id="@+id/product_detail_dest"-->
-<!--        android:name="com.example.ecommerce.view.home.ProductDetailFragment"-->
-<!--        android:label="Cart"-->
-<!--        tools:layout="@layout/fragment_product_detail">-->
-<!--        <argument-->
-<!--            android:name="product_id"-->
-<!--            android:defaultValue="1"-->
-<!--            app:argType="string" />-->
-<!--    </fragment>-->
-<!--    <fragment-->
-<!--        android:id="@+id/cart_dest"-->
-<!--        android:name="com.example.ecommerce.view.cart.CartFragment"-->
-<!--        android:label="Cart"-->
-<!--        tools:layout="@layout/fragment_cart">-->
-<!--        <action-->
-<!--            android:id="@+id/cart_product_detail_action"-->
-<!--            app:destination="@+id/product_detail_dest"-->
-<!--            app:enterAnim="@anim/slide_in_right"-->
-<!--            app:exitAnim="@anim/slide_out_left"-->
-<!--            app:popEnterAnim="@anim/slide_in_left"-->
-<!--            app:popExitAnim="@anim/slide_out_right" />-->
-<!--        <action-->
-<!--            android:id="@+id/place_order_action"-->
-<!--            app:destination="@+id/checkout_dest"-->
-<!--            app:enterAnim="@anim/slide_in_right"-->
-<!--            app:exitAnim="@anim/slide_out_left"-->
-<!--            app:popEnterAnim="@anim/slide_in_left"-->
-<!--            app:popExitAnim="@anim/slide_out_right" />-->
-<!--    </fragment>-->
+    <fragment
+        android:id="@+id/book_select_service_dest"
+        android:name="com.example.mysalon.view.book.BookSelectServiceFragment"
+        android:label="Select Services"
+        tools:layout="@layout/fragment_book_select_service">
+        <action
+            android:id="@+id/book_change_barber_action"
+            app:destination="@+id/book_select_barber_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/book_select_time_action"
+            app:destination="@+id/book_select_time_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <argument
+            android:name="barber_id"
+            android:defaultValue="-1"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/book_select_time_dest"
+        android:name="com.example.mysalon.view.book.BookSelectTimeFragment"
+        android:label="Time Selection"
+        tools:layout="@layout/fragment_book_select_time">
+        <action
+            android:id="@+id/book_cancel_action"
+            app:destination="@+id/home_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/book_summary_action"
+            app:destination="@+id/book_summary_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/book_summary_dest"
+        android:name="com.example.mysalon.view.book.BookSummaryFragment"
+        android:label="Summary"
+        tools:layout="@layout/fragment_book_summary">
+        <action
+            android:id="@+id/book_cancel_action"
+            app:destination="@+id/home_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/book_confirm_action"
+            app:destination="@+id/book_indo_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
-<!--    <fragment-->
-<!--        android:id="@+id/checkout_dest"-->
-<!--        android:name="com.example.ecommerce.view.cart.CheckoutFragment"-->
-<!--        android:label="Order"-->
-<!--        tools:layout="@layout/fragment_checkout">-->
-<!--        <action-->
-<!--            android:id="@+id/finish_order_action"-->
-<!--            app:destination="@+id/cart_dest"-->
-<!--            app:enterAnim="@anim/slide_in_right"-->
-<!--            app:exitAnim="@anim/slide_out_left"-->
-<!--            app:popEnterAnim="@anim/slide_in_left"-->
-<!--            app:popExitAnim="@anim/slide_out_right" />-->
-<!--    </fragment>-->
+    <fragment
+        android:id="@+id/book_indo_dest"
+        android:name="com.example.mysalon.view.book.BookInfoFragment"
+        android:label="Appointment Detail"
+        tools:layout="@layout/fragment_book_info">
+        <action
+            android:id="@+id/book_exit_action"
+            app:destination="@+id/home_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/book_reschedule_action"
+            app:destination="@+id/book_reschedule_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
 
-<!--    <fragment-->
-<!--        android:id="@+id/order_dest"-->
-<!--        android:name="com.example.ecommerce.view.order.OrderFragment"-->
-<!--        android:label="Order"-->
-<!--        tools:layout="@layout/fragment_order">-->
-<!--        <action-->
-<!--            android:id="@+id/order_detail_action"-->
-<!--            app:destination="@+id/order_detail_dest"-->
-<!--            app:enterAnim="@anim/slide_in_right"-->
-<!--            app:exitAnim="@anim/slide_out_left"-->
-<!--            app:popEnterAnim="@anim/slide_in_left"-->
-<!--            app:popExitAnim="@anim/slide_out_right" />-->
-<!--    </fragment>-->
+    </fragment>
+
+    <fragment
+        android:id="@+id/book_reschedule_dest"
+        android:name="com.example.mysalon.view.book.BookRescheduleFragment"
+        android:label="Order"
+        tools:layout="@layout/fragment_book_reschedule">
+        <action
+            android:id="@+id/book_cancel_action"
+            app:destination="@+id/book_indo_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/book_confirm_action"
+            app:destination="@+id/book_indo_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
 <!--    <fragment-->
 <!--        android:id="@+id/order_detail_dest"-->

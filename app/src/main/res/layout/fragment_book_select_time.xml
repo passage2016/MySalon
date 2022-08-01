@@ -2,29 +2,20 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:background="@color/white"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/tvMsg"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:padding="8dp"
-            android:text="Loading data please wait"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:visibility="gone" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btn_cancel">
 
         <LinearLayout
-            android:id="@+id/llDateDropDown"
+            android:id="@+id/ll_date_drop_down"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -36,7 +27,7 @@
             android:paddingBottom="4dp">
 
             <TextView
-                android:id="@+id/tvSelectedDayDate"
+                android:id="@+id/tv_selected_day_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="29 Jul"
@@ -45,22 +36,22 @@
                 android:textStyle="bold" />
 
             <ImageView
-                android:id="@+id/idDropDown"
-                android:layout_width="36.0dip"
+                android:id="@+id/iv_drop_down"
+                android:layout_width="36dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center_vertical"
                 app:srcCompat="@drawable/ic_down_arrow" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvDates"
-            android:layout_width="wrap_content"
+            android:id="@+id/rv_dates"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:itemCount="1"
             tools:listitem="@layout/view_book_select_date" />
 
         <TextView
-            android:id="@+id/tvSelectSlots"
+            android:id="@+id/tv_select_slots"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
@@ -68,16 +59,18 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/srLayout"
+            android:id="@+id/sr_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvTimeSlots"
+                android:id="@+id/rv_time_slots"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                tools:itemCount="10"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="4"
+                tools:itemCount="20"
                 tools:listitem="@layout/view_book_select_time" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>

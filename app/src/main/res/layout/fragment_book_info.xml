@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="16dp">
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/ll_info_wrapper"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp">
 
                 <TextView
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Date &amp; Time" />
 
                 <TextView
-                    android:id="@id/tvSelectedDayDate"
+                    android:id="@id/tv_selected_day_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Today, 05 February, 2022"
@@ -48,12 +48,12 @@
             </LinearLayout>
 
             <View
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/separator_color" />
 
             <RelativeLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp">
@@ -67,14 +67,14 @@
                     app:srcCompat="@drawable/barber" />
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@id/iv_barber_pic"
                     android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Barber" />
 
@@ -90,12 +90,12 @@
             </RelativeLayout>
 
             <View
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/separator_color" />
 
             <TextView
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
@@ -104,7 +104,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_selected"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:listitem="@layout/view_book_service_info"
             tools:itemCount="3"
@@ -112,7 +112,7 @@
 
         <TextView
             android:id="@+id/tv_total_cost"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
             android:paddingTop="4dp"
@@ -123,14 +123,14 @@
             android:textStyle="bold" />
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
@@ -184,13 +184,13 @@
 
         <LinearLayout
             android:id="@+id/ll_bottom_wrapper"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_cancel"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_weight="1.0"
@@ -200,7 +200,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_reschedule"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_weight="1.0"

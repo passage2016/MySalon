@@ -5,12 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mysalon.databinding.FragmentBookSelectBarberBinding
-import com.example.mysalon.databinding.FragmentHomeBinding
+import com.example.mysalon.view.book.adapter.BarberAdapter
+import com.example.mysalon.viewModel.MainViewModel
 
-class BookSelectBarberFragment: Fragment() {
-    lateinit var currentView: View
+class BookSelectBarberFragment : Fragment() {
     lateinit var binding: FragmentBookSelectBarberBinding
+    lateinit var adapter: BarberAdapter
+    lateinit var mainViewModel: MainViewModel
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -23,7 +27,28 @@ class BookSelectBarberFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        currentView = view
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+        if (mainViewModel.barbersLiveData.value == null) {
+            mainViewModel.setBarbers()
+        } else {
+            adapter = BarberAdapter(
+                requireActivity().applicationContext,
+                mainViewModel.barbersLiveData.value!!
+            )
+            binding.rvBarbers.adapter = adapter
+            binding.rvBarbers.layoutManager = LinearLayoutManager(view.context)
+        }
+
+        mainViewModel.barbersLiveData.observe(requireActivity()) {
+            it?.let {
+                adapter = BarberAdapter(requireActivity().applicationContext, it)
+                binding.rvBarbers.adapter = adapter
+                binding.rvBarbers.layoutManager = LinearLayoutManager(view.context)
+
+            }
+
+        }
+
 
 
     }

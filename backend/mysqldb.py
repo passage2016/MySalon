@@ -389,6 +389,28 @@ class Mysqldb:
         db.close()
         return json.dumps(result)
 
+    def new_get_services(self):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        sql = "SELECT * FROM services;"
+        result = {"status": 0, "message": "Successfully", "services": []}
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for row in results:
+                service = {"serviceId": row[0], "serviceName": row[1], "serviceType": row[2],
+                           "duration": row[3], "cost": row[4],
+                           "servicePic": row[5]}
+                result["services"].append(service)
+        except RuntimeError:
+            db.close()
+            return '{"status":1,"message":"Database error."}'
+        db.close()
+        return json.dumps(result)
+
     def add_barber(self, barber_name, is_admin, is_barber, mobile_no, profile_pic, gender, break_time_from,
                    break_time_to, has_default_services, holiday, user_rating, password, barber_type, payment):
         db = pymysql.connect(host=self.sql_host,
@@ -641,18 +663,19 @@ class Mysqldb:
                                                      (datetime.datetime.now() + datetime.timedelta(days=6))
                                                      .strftime("%Y-%m-%d"), barber_id)
         for appointment in appointments:
-            day_time = appointment["timeFrom"]
-            while utils.time_before(day_time, appointment["timeTo"]):
-                slots[appointment["aptDate"]]["slots"]["%s-%s" % (day_time, utils.get_next_15min(day_time))] = True
-                day_time = utils.get_next_15min(day_time)
+            if appointment["aptStatus"] == "Confirmed":
+                day_time = appointment["timeFrom"]
+                while utils.time_before(day_time, appointment["timeTo"]):
+                    slots[appointment["aptDate"]]["slots"]["%s-%s" % (day_time, utils.get_next_15min(day_time))] = True
+                    day_time = utils.get_next_15min(day_time)
 
         result = {"status": 0, "message": "Success", "slots": []}
         for key in slots:
             result["slots"].append(slots[key])
         return json.dumps(result)
 
-    def book(self, ps_auth_token, user_id, barber_id, services: str, apt_date, time_from,
-             time_to, total_duration, total_cost, coupon_code, send_sms: str):
+    def book(self, ps_auth_token, user_id, barber_id, services, apt_date, time_from,
+             time_to, total_duration, total_cost, coupon_code, send_sms):
         if not self.api_key_check(ps_auth_token, user_id):
             return '{"status":1,"message":"Failed to authenticate."}'
         db = pymysql.connect(host=self.sql_host,
@@ -666,9 +689,12 @@ class Mysqldb:
         barber = self.get_barber(barber_id)
         if barber is None:
             return '{"status":1,"message":"Failed to get barber."}'
+        if isinstance(services, list):
+            services = str(services)
         services = services.replace(" ", "")[1:-1]
-        send_sms = send_sms.lower()
-        if send_sms == "true":
+        if isinstance(send_sms, str):
+            send_sms = send_sms.lower() == "true"
+        if send_sms is True:
             send_sms = 1
         else:
             send_sms = 0
@@ -724,7 +750,7 @@ class Mysqldb:
                              database='barber')
         cursor = db.cursor()
         try:
-            sql = "UPDATE appointment SET isDeleted = 1 WHERE aptNo = '%s';" % appointment_id
+            sql = "UPDATE appointment SET aptStatus = 'canceled' WHERE aptNo = '%s';" % appointment_id
             cursor.execute(sql)
             db.commit()
         except RuntimeError:
