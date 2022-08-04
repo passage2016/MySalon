@@ -7,7 +7,7 @@
     <ImageView
         android:id="@+id/iv_category_photo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:scaleType="fitXY"
         app:srcCompat="@drawable/ic_services" />
 

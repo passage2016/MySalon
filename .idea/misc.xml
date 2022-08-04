@@ -24,6 +24,7 @@
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/activity_register.xml" value="0.264" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/activity_splash.xml" value="0.1125" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_about.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_appointments.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_book_info.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_book_reschedule.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_book_select_barber.xml" value="0.2526041666666667" />
@@ -32,10 +33,12 @@
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_book_select_time.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_book_summary.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_home.xml" value="0.2526041666666667" />
+        <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_product_detail.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_products.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_rate_us.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_reviews.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_service.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_service_detail.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_services.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_services_class.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_show_cafse.xml" value="0.25364583333333335" />

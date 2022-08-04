@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -37,6 +38,7 @@ class BookSelectTimeFragment : Fragment() {
 
         binding.rvDates.visibility = View.GONE
 
+        mainViewModel.appointmentsStartFromLiveData.postValue(-1)
 
         mainViewModel.currentAppointmentsLiveData.observe(requireActivity()) {
             val availableSlots = it.filter { it.slots.size > 0 }
@@ -45,7 +47,7 @@ class BookSelectTimeFragment : Fragment() {
             binding.rvDates.layoutManager =
                 LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
             binding.tvSelectedDayDate.text = "${availableSlots[0].day}, ${availableSlots[0].date}"
-            mainViewModel.setAppointmentsDate(availableSlots[0].date)
+            mainViewModel.appointmentsDateLiveData.postValue(availableSlots[0].date)
         }
 
         mainViewModel.appointmentsDateLiveData.observe(requireActivity()) { date ->
@@ -75,8 +77,20 @@ class BookSelectTimeFragment : Fragment() {
         }
 
         binding.btnContinue.setOnClickListener {
-            val action = BookSelectTimeFragmentDirections.bookSummaryAction()
-            binding.root.findNavController().navigate(action)
+            if(mainViewModel.appointmentsStartFromLiveData.value!! == -1){
+                val builder = AlertDialog.Builder(requireContext())
+                    .setTitle("Time Error")
+                    .setMessage("Please select time.")
+                    .setPositiveButton("Ok") { _, _ ->
+                    }
+                val alertDialog: AlertDialog = builder.create()
+                alertDialog.setCancelable(true)
+                alertDialog.show()
+            } else {
+                val action = BookSelectTimeFragmentDirections.bookSummaryAction()
+                binding.root.findNavController().navigate(action)
+            }
+
         }
 
         binding.btnCancel.setOnClickListener {

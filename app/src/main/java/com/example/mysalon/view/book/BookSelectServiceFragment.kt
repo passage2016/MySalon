@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -53,9 +54,21 @@ class BookSelectServiceFragment : Fragment() {
         }
 
         binding.btnContinue.setOnClickListener {
-            mainViewModel.updateAppointmentsSlot()
-            val action = BookSelectServiceFragmentDirections.bookSelectTimeAction()
-            binding.root.findNavController().navigate(action)
+            if(mainViewModel.barberServicesSelectLiveData.value!!.size == 0){
+                val builder = AlertDialog.Builder(requireContext())
+                    .setTitle("Services Error")
+                    .setMessage("Please select at least 1 services.")
+                    .setPositiveButton("Ok") { _, _ ->
+                    }
+                val alertDialog: AlertDialog = builder.create()
+                alertDialog.setCancelable(true)
+                alertDialog.show()
+            } else {
+                mainViewModel.updateAppointmentsSlot()
+                val action = BookSelectServiceFragmentDirections.bookSelectTimeAction()
+                binding.root.findNavController().navigate(action)
+            }
+
         }
 
         binding.btnChangeBarber.setOnClickListener {

@@ -1,9 +1,7 @@
 package com.example.mysalon.model.remote
 
 import com.example.mysalon.model.remote.data.getBarber.GetBarbersResponse
-import com.example.mysalon.model.remote.data.getBarberService.GetBarberServiceResponse
-import com.example.mysalon.model.remote.data.login.LoginResponse
-import com.example.mysalon.model.remote.data.signUp.SignUpResponse
+import com.example.mysalon.model.remote.data.getService.GetServiceResponse
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -15,5 +13,5 @@ interface BarberApiService {
 
     @Headers("Content-type: application/json")
     @POST("barber/getBarberServices1")
-    fun getBarberServices(@Body getBarberServicesReq: RequestBody): Call<GetBarberServiceResponse>
+    fun getBarberServices(@Body getBarberServicesReq: RequestBody): Call<GetServiceResponse>
 }

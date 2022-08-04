@@ -16,9 +16,16 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/my_appointment_action"
+            app:destination="@+id/appointments_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
 <!--        <action-->
-<!--            android:id="@+id/search_action"-->
-<!--            app:destination="@+id/search_dest"-->
+<!--            android:id="@+id/service_class_action"-->
+<!--            app:destination="@+id/service_class_dest"-->
 <!--            app:enterAnim="@anim/slide_in_right"-->
 <!--            app:exitAnim="@anim/slide_out_left"-->
 <!--            app:popEnterAnim="@anim/slide_in_left"-->
@@ -122,6 +129,10 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <argument
+            android:name="appointment_id"
+            android:defaultValue="-1"
+            app:argType="integer" />
 
     </fragment>
 
@@ -146,16 +157,76 @@
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
-<!--    <fragment-->
-<!--        android:id="@+id/order_detail_dest"-->
-<!--        android:name="com.example.ecommerce.view.order.OrderDetailFragment"-->
-<!--        android:label="Order"-->
-<!--        tools:layout="@layout/fragment_order_detail">-->
-<!--        <argument-->
-<!--            android:name="order_id"-->
-<!--            android:defaultValue="1"-->
-<!--            app:argType="string" />-->
-<!--    </fragment>-->
+    <fragment
+        android:id="@+id/appointments_dest"
+        android:name="com.example.mysalon.view.AppointmentsFragment"
+        android:label="Order"
+        tools:layout="@layout/fragment_appointments">
+        <action
+            android:id="@+id/appointment_detail_action"
+            app:destination="@+id/book_indo_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/service_class_dest"
+        android:name="com.example.mysalon.view.ServiceClassFragment"
+        android:label="ServiceCategory"
+        tools:layout="@layout/fragment_services_class">
+        <action
+            android:id="@+id/services_action"
+            app:destination="@+id/services_list_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/services_list_dest"
+        android:name="com.example.mysalon.view.ServiceListFragment"
+        android:label="Services"
+        tools:layout="@layout/fragment_service">
+        <action
+            android:id="@+id/service_detail_action"
+            app:destination="@+id/service_detail_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/service_detail_dest"
+        android:name="com.example.mysalon.view.ServiceDetailFragment"
+        android:label="Service Detail"
+        tools:layout="@layout/fragment_service_detail">
+    </fragment>
+
+    <fragment
+        android:id="@+id/show_case_class_dest"
+        android:name="com.example.mysalon.view.ShowCaseClassFragment"
+        android:label="Show Case"
+        tools:layout="@layout/fragment_show_case_class">
+        <action
+            android:id="@+id/show_case_action"
+            app:destination="@+id/show_case_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/show_case_dest"
+        android:name="com.example.mysalon.view.ShowCaseFragment"
+        android:label="Photos"
+        tools:layout="@layout/fragment_show_case">
+
+    </fragment>
 
 
 </navigation>

@@ -1,16 +1,14 @@
 package com.example.mysalon.view.book.adapter
 
-import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mysalon.databinding.ViewBookServiceItemBinding
 import com.example.mysalon.model.remote.Constants.BASE_IMAGE_URL
-import com.example.mysalon.model.remote.data.getBarberService.Service
+import com.example.mysalon.model.remote.data.getService.Service
 import com.example.mysalon.view.book.BookSelectServiceFragment
 import com.example.mysalon.viewModel.MainViewModel
 

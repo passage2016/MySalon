@@ -62,8 +62,7 @@ class SelectDateAdapter(private val fragment: Fragment, val infoList: List<Slot>
                 }
             }
             binding.root.setOnClickListener {
-                mainViewModel.setAppointmentsDate(slot.date)
-                mainViewModel.setAppointmentsStartFrom(-1)
+                mainViewModel.appointmentsDateLiveData.postValue(slot.date)
             }
         }
     }

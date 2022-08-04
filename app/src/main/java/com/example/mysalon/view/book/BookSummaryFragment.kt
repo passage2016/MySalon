@@ -63,7 +63,7 @@ class BookSummaryFragment : Fragment() {
         adapter = ServiceItemAdapter(this, selectedServiceList)
         binding.rvSelectedService.adapter = adapter
         binding.rvSelectedService.layoutManager = LinearLayoutManager(view.context)
-        mainViewModel.setCouponCode("")
+        mainViewModel.couponCodeLiveData.postValue("")
         binding.tvCouponCode.setOnClickListener {
 
         }
@@ -72,7 +72,6 @@ class BookSummaryFragment : Fragment() {
             cost += it.cost
         }
         binding.tvTotalCost.text = "Total Cost: ${cost}"
-
 
         binding.btnContinue.setOnClickListener {
             val map = HashMap<String, Any>()
@@ -84,16 +83,14 @@ class BookSummaryFragment : Fragment() {
             map["timeTo"] = toTimeString
             map["totalDuration"] = totalDuration
             map["totalCost"] = cost
-            map["couponCode"] = mainViewModel.CouponCodeLiveData.value!!
+            map["couponCode"] = mainViewModel.couponCodeLiveData.value!!
             map["sendSms"] = false
             mainViewModel.bookAppointment(map)
+            val action = BookSummaryFragmentDirections.bookConfirmAction(-1)
+            binding.root.findNavController().navigate(action)
 
         }
-        val navController = binding.root.findNavController()
-        mainViewModel.appointmentLiveData.observe(requireActivity()) {
-            val action = BookSummaryFragmentDirections.bookConfirmAction()
-            navController.navigate(action)
-        }
+
 
 
         binding.btnCancel.setOnClickListener {

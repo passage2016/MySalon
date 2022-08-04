@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mysalon.databinding.ViewBookServiceInfoBinding
 import com.example.mysalon.model.remote.Constants.BASE_IMAGE_URL
-import com.example.mysalon.model.remote.data.getBarberService.Service
+import com.example.mysalon.model.remote.data.getService.Service
 import com.example.mysalon.view.book.BookSummaryFragment
 import com.example.mysalon.viewModel.MainViewModel
 

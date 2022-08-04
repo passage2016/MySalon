@@ -2,6 +2,7 @@ package com.example.mysalon.model.remote
 
 import com.example.mysalon.model.remote.data.book.BookResponse
 import com.example.mysalon.model.remote.data.currentAppointments.CurrentAppointmentsResponse
+import com.example.mysalon.model.remote.data.getAppointments.GetAppoitmentsResponse
 import com.example.mysalon.model.remote.data.login.LoginResponse
 import com.example.mysalon.model.remote.data.signUp.SignUpResponse
 import okhttp3.RequestBody
@@ -22,6 +23,14 @@ interface AppointmentApiService {
     fun rescheduleAppointment(@Header("ps_auth_token") ps_auth_token: String, @Body bookReq: RequestBody): Call<BookResponse>
 
     @Headers("Content-type: application/json")
-    @POST
+    @GET
     fun cancelAppointment(@Url url: String, @Header("ps_auth_token") ps_auth_token: String): Call<BookResponse>
+
+    @Headers("Content-type: application/json")
+    @GET
+    fun getAppointments(@Url url: String, @Header("ps_auth_token") ps_auth_token: String): Call<GetAppoitmentsResponse>
+
+    @Headers("Content-type: application/json")
+    @GET
+    fun getAppointmentDetail(@Url url: String, @Header("ps_auth_token") ps_auth_token: String): Call<BookResponse>
 }

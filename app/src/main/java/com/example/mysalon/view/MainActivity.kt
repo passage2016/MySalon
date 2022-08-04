@@ -102,8 +102,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
-
     override fun onSupportNavigateUp(): Boolean {
         drawerLayout.closeDrawer(GravityCompat.START)
         return findNavController(R.id.my_nav_host_fragment).navigateUp(appBarConfiguration) || super.onSupportNavigateUp()

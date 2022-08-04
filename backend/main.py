@@ -438,11 +438,25 @@ def get_reviews():
 
 @app_user.route('/dashboard', methods=['GET'])
 def dashboard():
+    """
+        @@@
+        #### return
+        - ##### json
+        ```json
+        {"status":0,"message":"successfully","banners":[{"photoName":"Gold Facial",
+        "photoUrl":"/uploads/images/Albums/photos/photo11.jpg"},
+        {"photoName":"Gold Makeup","photoUrl":"/uploads/images/Albums/photos/photo14.jpg"}],
+        "isShopOpened":"Now open","alertMessage":"Some message if created today otherwise empty"}
+        ```
+
+        @@@
+    """
     if db.get_shop_status():
-        is_shop_opened = "Now open"
+        is_shop_opened = "Now Open"
     else:
-        is_shop_opened = "Now close"
-    return '{"banners":[{"photoName":"Gold Facial","photoUrl":"/uploads/images/Albums/photos/photo11.jpg"},' \
+        is_shop_opened = "Now Close"
+    return '{"status":0,"message":"successfully","banners":[{"photoName":"Gold Facial",' \
+           '"photoUrl":"/uploads/images/Albums/photos/photo11.jpg"},' \
            '{"photoName":"Gold Makeup","photoUrl":"/uploads/images/Albums/photos/photo14.jpg"}],' \
            '"isShopOpened":"%s","alertMessage":"Some message if created today otherwise empty"}' % is_shop_opened
 
@@ -484,6 +498,52 @@ def new_get_services():
         @@@
     """
     return db.new_get_services()
+
+
+@service.route('/getServiceCategory', methods=['GET'])
+def get_services_category():
+    """
+        @@@
+        #### arg
+
+        > None
+
+        #### return
+        - ##### json
+        ```json
+        {"status": 0, "message": "Successfully", "serviceCategories": [{
+        "categoryId": 1, "category": "Haircuts", "categoryImage": "/uploads/images/Services/5.jpg"}, {"categoryId":
+        8, "category": "Massages & Spa", "categoryImage": "/uploads/images/Services/images1.jpeg"}, {"categoryId":
+        13, "category": "Head Massage", "categoryImage": "/uploads/images/Services/images_(2)1.jpeg"}, {"categoryId":
+        18, "category": "Official looks", "categoryImage":
+        "/uploads/images/Services/formal-hairstyles-for-men-chic.jpg"}, {"categoryId": 20, "category": "Hair colors",
+        "categoryImage": "/uploads/images/Services/images_(6).jpeg"}, {"categoryId": 21, "category": "Beard styles",
+        "categoryImage": "/uploads/images/Services/images_(8).jpeg"}, {"categoryId": 22, "category": "Combo Offers",
+        "categoryImage": "/uploads/images/Services/special-offer-baska-krk.gif"}]}
+        ```
+
+        @@@
+    """
+    return db.get_services_category()
+
+
+@service.route('/category/<category_id>', methods=['GET'])
+def get_services_by_category(category_id):
+    """
+        @@@
+        #### arg
+
+        | args | nullable | type | remark |
+        |--------|--------|--------|--------|
+        |    category_id         |    false  |    string   |         |
+
+        #### return
+        - ##### json
+
+
+        @@@
+    """
+    return db.get_services_by_category(category_id)
 
 
 @barber.route('/addBarber', methods=['POST'])
@@ -810,14 +870,74 @@ def book():
 
 @appointment.route('/myAppointments/<user_id>', methods=['GET'])
 def get_appointments(user_id):
+    """
+        @@@
+        #### arg
+
+        | args | nullable | type | remark |
+        |--------|--------|--------|--------|
+        |    appointment_id         |    false  |    string   |         |
+
+        #### return
+        - ##### json
+        ```json
+        {"status": 0, "message": "Success", "appointments": [{"aptNo": 1, "aptDate":
+        "2022-07-29", "timeFrom": "11:00", "timeTo": "11:45", "totalDuration": 31.0, "aptStatus": "Confirmed"}]}
+        ```
+        @@@
+    """
     if request.headers.get("ps_auth_token") is None:
         return '{"status":1,"message":"Failed to authenticate"}'
     return db.get_appointments(request.headers.get("ps_auth_token"), user_id)
 
 
+@appointment.route('/getAppointmentDetail/<appointment_id>', methods=['GET'])
+def get_appointment_detail(appointment_id):
+    """
+        @@@
+        #### arg
+
+        | args | nullable | type | remark |
+        |--------|--------|--------|--------|
+        |    appointment_id         |    false  |    string   |         |
+
+        #### return
+        - ##### json
+        ```
+        same with book
+        ```
+        #### update
+        - ##### 3.0.4:
+        ```
+        add getAppointmentDetail API
+        ```
+        @@@
+    """
+    if request.headers.get("ps_auth_token") is None:
+        return '{"status":1,"message":"Failed to authenticate"}'
+    return db.get_appointment_detail(request.headers.get("ps_auth_token"), appointment_id)
+
+
 @appointment.route('/cancelAppointment/<appointment_id>', methods=['GET'])
 def cancel_appointment(appointment_id):
-    return db.cancel_appointment(appointment_id)
+    """
+        @@@
+        #### arg
+
+        | args | nullable | type | remark |
+        |--------|--------|--------|--------|
+        |    appointment_id         |    false  |    string   |         |
+
+        #### return
+        - ##### json
+         ```
+        same with book
+        ```
+        @@@
+    """
+    if request.headers.get("ps_auth_token") is None:
+        return '{"status":1,"message":"Failed to authenticate"}'
+    return db.cancel_appointment(request.headers.get("ps_auth_token"), appointment_id)
 
 
 @appointment.route('/reschedule', methods=['POST'])
@@ -833,8 +953,14 @@ def reschedule_appointment():
         |    timeTo        |    false  |    string   |         |
         |    aptDate    |    false  |    string   |         |
 
+        #### return
+        - ##### json
+         ```
+        same with book
+        ```
         @@@
     """
+
     if request.headers.get("Content-type") != "application/json":
         return '{"status":1,"message":"Failed to authenticate"}'
     if request.headers.get("ps_auth_token") is None:

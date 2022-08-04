@@ -1,4 +1,4 @@
-package com.example.mysalon.model.remote.data.getBarberService
+package com.example.mysalon.model.remote.data.getService
 
 data class Service(
     val cost: Double,

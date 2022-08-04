@@ -3,22 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/mi_book_appointment"
+            android:id="@+id/book_select_barber_dest"
             android:icon="@drawable/ic_baseline_date_range_24"
             android:title="Book Appointment"
             app:showAsAction="always" />
         <item
-            android:id="@+id/mi_my_appointments"
+            android:id="@+id/appointments_dest"
             android:icon="@drawable/ic_baseline_date_range_24"
             android:title="My Appointments"
             app:showAsAction="always" />
         <item
-            android:id="@+id/mi_our_services"
+            android:id="@+id/service_class_dest"
             android:icon="@drawable/ic_baseline_design_services_24"
             android:title="Our Services"
             app:showAsAction="always" />
         <item
-            android:id="@+id/mi_show_case"
+            android:id="@+id/show_case_class_dest"
             android:icon="@drawable/ic_baseline_photo_library_24"
             android:title="Show Case"
             app:showAsAction="always" />

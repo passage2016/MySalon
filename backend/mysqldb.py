@@ -411,6 +411,48 @@ class Mysqldb:
         db.close()
         return json.dumps(result)
 
+    def get_services_category(self):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        sql = "SELECT * FROM serviceCategory;"
+        result = {"status": 0, "message": "Successfully", "serviceCategories": []}
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for row in results:
+                service = {"categoryId": row[0], "category": row[1], "categoryImage": row[2]}
+                result["serviceCategories"].append(service)
+        except RuntimeError:
+            db.close()
+            return '{"status":1,"message":"Database error."}'
+        db.close()
+        return json.dumps(result)
+
+    def get_services_by_category(self, category_id):
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        sql = "SELECT * FROM services WHERE categoryId = '%s';" % category_id
+        result = {"status": 0, "message": "Successfully", "services": []}
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for row in results:
+                service = {"serviceId": row[0], "serviceName": row[1], "serviceType": row[2],
+                           "duration": row[3], "cost": row[4],
+                           "servicePic": row[5], "description": row[7]}
+                result["services"].append(service)
+        except RuntimeError:
+            db.close()
+            return '{"status":1,"message":"Database error."}'
+        db.close()
+        return json.dumps(result)
+
     def add_barber(self, barber_name, is_admin, is_barber, mobile_no, profile_pic, gender, break_time_from,
                    break_time_to, has_default_services, holiday, user_rating, password, barber_type, payment):
         db = pymysql.connect(host=self.sql_host,
@@ -743,14 +785,21 @@ class Mysqldb:
         result = {"status": 0, "message": "Success", "appointments": appointments}
         return json.dumps(result)
 
-    def cancel_appointment(self, appointment_id):
+    def get_appointment_detail(self, ps_auth_token, appointment_id):
+        if not self.api_key_check_without_user_id(ps_auth_token):
+            return '{"status":1,"message":"Failed to authenticate."}'
+        return self.get_appointment_result(appointment_id)
+
+    def cancel_appointment(self, ps_auth_token, appointment_id):
+        if not self.api_key_check_without_user_id(ps_auth_token):
+            return '{"status":1,"message":"Failed to authenticate."}'
         db = pymysql.connect(host=self.sql_host,
                              user='root',
                              password=self.sql_password,
                              database='barber')
         cursor = db.cursor()
         try:
-            sql = "UPDATE appointment SET aptStatus = 'canceled' WHERE aptNo = '%s';" % appointment_id
+            sql = "UPDATE appointment SET aptStatus = 'Canceled' WHERE aptNo = '%s';" % appointment_id
             cursor.execute(sql)
             db.commit()
         except RuntimeError:
@@ -758,7 +807,8 @@ class Mysqldb:
             db.close()
             return '{"status":1,"message":"Database error."}'
         db.close()
-        return '{"status":0,"message":"Success"}'
+        result = self.get_appointment_result(appointment_id)
+        return json.dumps(result)
 
     def reschedule_appointment(self, ps_auth_token, appointment_id, time_from, time_to, apt_date):
         if not self.api_key_check_without_user_id(ps_auth_token):

@@ -64,7 +64,7 @@ class SelectTimeAdapter(
                 val slots = mainViewModel.appointmentsSlotLiveData.value!!
                 val freeSlots = freeSlots(slots, position)
                 if (freeSlots == -1) {
-                    mainViewModel.setAppointmentsStartFrom(position)
+                    mainViewModel.appointmentsStartFromLiveData.postValue(position)
                 } else {
                     val builder = AlertDialog.Builder(fragment.requireContext())
                         .setTitle("Login Error")

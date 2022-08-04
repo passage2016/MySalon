@@ -1,5 +1,6 @@
 package com.example.mysalon.model.remote
 
+import com.example.mysalon.model.remote.data.dashboard.DashboardResponse
 import com.example.mysalon.model.remote.data.login.LoginResponse
 import com.example.mysalon.model.remote.data.signUp.SignUpResponse
 import okhttp3.RequestBody
@@ -14,5 +15,9 @@ interface AppUserApiService {
     @Headers("Content-type: application/json")
     @POST("appUser/signup")
     fun signUp(@Body signUpReq: RequestBody): Call<SignUpResponse>
+
+    @Headers("Content-type: application/json")
+    @GET("appUser/dashboard")
+    fun dashboard(): Call<DashboardResponse>
 
 }
