@@ -76,6 +76,11 @@ class LoginActivity : AppCompatActivity() {
         }
 
         loginViewModel.userLiveData.observe(this){
+            FirebaseMessaging.getInstance().token.addOnCompleteListener {
+                if (it.isSuccessful) {
+                    loginViewModel.updateFcmToken(it.result)
+                }
+            }
             val intent = Intent(this, MainActivity::class.java)
             Log.e(LOGIN_INFO, it.toString())
             intent.putExtra(LOGIN_INFO, it)

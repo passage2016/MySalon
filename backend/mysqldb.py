@@ -9,6 +9,7 @@ import uuid
 import datetime
 
 import utils
+import fmc
 
 
 class Mysqldb:
@@ -175,7 +176,7 @@ class Mysqldb:
         db.close()
         return json.dumps(result)
 
-    def update_fcm_token(self, ps_auth_token, user_id, fcm_token):
+    def update_fcm_token(self, ps_auth_token, user_id, fcm_token, application):
         db = pymysql.connect(host=self.sql_host,
                              user='root',
                              password=self.sql_password,
@@ -197,7 +198,8 @@ class Mysqldb:
             db.close()
             return '{"status":1,"message":"Update user error."}'
         cursor = db.cursor()
-        sql = "UPDATE user SET fcmToken = '%s' WHERE userId = '%s'" % (fcm_token, user_id)
+        sql = "UPDATE user SET fcmToken = '%s', application = '%s' WHERE userId = '%s'" % \
+              (fcm_token, user_id, application)
         try:
             cursor.execute(sql)
             db.commit()
@@ -758,6 +760,8 @@ class Mysqldb:
             db.close()
             return '{"status":1,"message":"Book appointment error."}'
         db.close()
+        fmc.send_notification('Appointment confirmation', 'Your appointment is confirmed', user["fcmToken"],
+                              user['application'])
         result = self.get_appointment_result(appointment_id)
         return json.dumps(result)
 
@@ -944,6 +948,7 @@ class Mysqldb:
                 user["updatedOn"] = str(row[18])
                 user["deletedOn"] = str(row[19])
                 user["isDeleted"] = row[20]
+                user['application'] = row[22]
         except RuntimeError:
             db.close()
             return None

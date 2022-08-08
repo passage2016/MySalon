@@ -2,8 +2,7 @@ package com.example.mysalon.model.remote
 
 import com.example.mysalon.model.remote.data.dashboard.DashboardResponse
 import com.example.mysalon.model.remote.data.login.LoginResponse
-import com.example.mysalon.model.remote.data.logout.LogoutResponse
-import com.example.mysalon.model.remote.data.product.ProductsResponse
+import com.example.mysalon.model.remote.data.BaseResponse
 import com.example.mysalon.model.remote.data.review.addReview.AddReviewResponse
 import com.example.mysalon.model.remote.data.review.getReview.GetReviewResponse
 import com.example.mysalon.model.remote.data.signUp.SignUpResponse
@@ -31,9 +30,13 @@ interface AppUserApiService {
 
     @Headers("Content-type: application/json")
     @POST("appUser/logout")
-    fun logout(@Header("ps_auth_token") ps_auth_token: String, @Body logoutReq: RequestBody): Single<LogoutResponse>
+    fun logout(@Header("ps_auth_token") ps_auth_token: String, @Body logoutReq: RequestBody): Single<BaseResponse>
 
     @Headers("Content-type: application/json")
     @POST("appUser/addReviews")
     fun addReview(@Header("ps_auth_token") ps_auth_token: String, @Body addReviewReq: RequestBody): Single<AddReviewResponse>
+
+    @Headers("Content-type: application/json")
+    @POST("appUser/updateFcmToken")
+    fun updateFcmToken(@Header("ps_auth_token") ps_auth_token: String, @Body updateReq: RequestBody): Single<BaseResponse>
 }

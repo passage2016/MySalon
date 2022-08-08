@@ -273,9 +273,12 @@ def update_fcm_token():
         |--------|--------|--------|--------|
         |    userId         |    false  |    string   |         |
         |    fcmToken       |    false  |    string   |         |
+        |    application       |    false  |    string   |         |
 
         @@@
     """
+    if not isinstance(request.json, dict):
+        return '{"status":1,"message":"Require json body."}'
     if request.headers.get("Content-type") != "application/json":
         return '{"status":1,"message":"Require Content-type"}'
     if request.headers.get("ps_auth_token") is None:
@@ -284,9 +287,10 @@ def update_fcm_token():
         return '{"status":1,"message":"Require userId"}'
     if "fcmToken" not in request.json:
         return '{"status":1,"message":"Require fcmToken"}'
-    if not isinstance(request.json, dict):
-        return '{"status":1,"message":"Require json body."}'
-    return db.update_fcm_token(request.headers.get("ps_auth_token"), request.json["userId"], request.json["fcmToken"])
+    if "application" not in request.json:
+        return '{"status":1,"message":"Require application"}'
+    return db.update_fcm_token(request.headers.get("ps_auth_token"), request.json["userId"],
+                               request.json["fcmToken"], request.json["application"])
 
 
 @app_user.route('/getPhoneVerificationCode/<mobile_no>', methods=['GET'])
@@ -399,6 +403,7 @@ def add_reviews():
         return '{"status":1,"message":"Require comment"}'
     if not isinstance(request.json, dict):
         return '{"status":1,"message":"Require json body."}'
+    print(request.json)
     return db.add_reviews(request.headers.get("ps_auth_token"), request.json["userId"], request.json["rating"],
                           request.json["comment"])
 
