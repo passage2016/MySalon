@@ -11,7 +11,7 @@ import com.example.mysalon.databinding.ViewServiceClassBinding
 import com.example.mysalon.databinding.ViewShowCaseClassBinding
 import com.example.mysalon.model.remote.Constants
 import com.example.mysalon.model.remote.data.albumList.Album
-import com.example.mysalon.view.ShowCaseClassFragmentDirections
+import com.example.mysalon.view.fragment.ShowCaseClassFragmentDirections
 import com.example.mysalon.viewModel.MainViewModel
 
 class ShowCaseClassAdapter(private val fragment: Fragment, val infoList: ArrayList<Album>) :

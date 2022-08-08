@@ -1,11 +1,12 @@
 package com.example.mysalon.view
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -23,7 +24,7 @@ import com.example.mysalon.model.remote.data.login.LoginResponse
 import com.example.mysalon.view.LoginActivity.Companion.LOGIN_INFO
 import com.example.mysalon.viewModel.MainViewModel
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.messaging.FirebaseMessaging
+
 
 class MainActivity : AppCompatActivity() {
     lateinit var mainViewModel: MainViewModel
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
         Log.e("intent.extras", intent.extras.toString())
         var info = intent.extras?.get(LOGIN_INFO)
-        if(info != null) {
+        if (info != null) {
             var loginInfo = info as LoginResponse
             mainViewModel.setUserLiveData(loginInfo)
         }
@@ -52,10 +53,27 @@ class MainActivity : AppCompatActivity() {
 
         val navigationView = findViewById<View>(R.id.nav_view) as NavigationView
 
-        navigationView.setNavigationItemSelectedListener{ menuItem->
-            when(menuItem.itemId){
-                R.id.mi_logout->{
-
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.mi_logout -> {
+                    mainViewModel.logout()
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.mi_share -> {
+                    val intent = Intent()
+                    intent.action = "android.intent.action.SEND"
+                    intent.putExtra("android.intent.extra.SUBJECT", getString(R.string.app_name))
+                    intent.putExtra(
+                        "android.intent.extra.TEXT",
+                        "Hey check out our shop app at: https://play.google.com/store/apps/details"
+                    )
+                    intent.type = "text/plain"
+                    startActivity(intent)
+                    (findViewById<View>(R.id.drawer_layout) as DrawerLayout).closeDrawer(
+                        GravityCompat.START
+                    )
+                    true
                 }
                 else -> {
                     menuItem.onNavDestinationSelected(findNavController(R.id.my_nav_host_fragment))
@@ -80,7 +98,6 @@ class MainActivity : AppCompatActivity() {
             drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
-
 
 
     }

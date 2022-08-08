@@ -13,9 +13,7 @@ import com.example.mysalon.databinding.ViewServiceClassBinding
 import com.example.mysalon.model.remote.Constants
 import com.example.mysalon.model.remote.data.book.Service
 import com.example.mysalon.model.remote.data.getServiceCategory.ServiceCategory
-import com.example.mysalon.view.AppointmentsFragmentDirections
-import com.example.mysalon.view.ServiceClassFragmentDirections
-import com.example.mysalon.view.ServiceListFragmentDirections
+import com.example.mysalon.view.fragment.ServiceClassFragmentDirections
 import com.example.mysalon.viewModel.MainViewModel
 
 class ServiceCategoriesAdapter(private val fragment: Fragment, val infoList: ArrayList<ServiceCategory>) :

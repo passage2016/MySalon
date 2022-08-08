@@ -10,6 +10,5 @@
             android:id="@+id/rv_services"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/view_book_service_info"/>
-
+            tools:listitem="@layout/view_alert"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

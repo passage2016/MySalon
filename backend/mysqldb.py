@@ -551,13 +551,13 @@ class Mysqldb:
                            "offerType": row[4], "offerValidUpTo": str(row[5]), "description": row[6],
                            "productPic": row[7]}
                 result["products"].append(product)
-            sql = "SELECT * FROM reviews;"
+            sql = "SELECT * FROM products;"
             rows = cursor.execute(sql)
             result["isFirstPage"] = page_no == 0
             result["isLastPage"] = rows <= (page_no + 1) * page_size
             result["totalPages"] = math.ceil(rows / page_size)
             # result["totalProducts"] = rows
-            result["pageNo"] = page_no
+            result["pageNo"] = page_no + 1
             result["pageSize"] = page_size
         except RuntimeError:
             db.close()
@@ -819,7 +819,8 @@ class Mysqldb:
                              database='barber')
         cursor = db.cursor()
         try:
-            sql = "UPDATE appointment SET timeFrom = '%s', timeTo = '%s' , aptDate = '%s' WHERE aptNo = '%s';" \
+            sql = "UPDATE appointment SET aptStatus = 'Rescheduled', timeFrom = '%s', " \
+                  "timeTo = '%s' , aptDate = '%s' WHERE aptNo = '%s';" \
                   % (time_from + ":00", time_to + ":00", apt_date, appointment_id)
             cursor.execute(sql)
             db.commit()
@@ -878,7 +879,7 @@ class Mysqldb:
             result["isLastPage"] = rows <= (page_no + 1) * page_size
             result["totalPages"] = math.ceil(rows / page_size)
             result["totalRecords"] = rows
-            result["pageNo"] = page_no
+            result["pageNo"] = page_no + 1
             result["pageSize"] = page_size
         except RuntimeError:
             db.close()
@@ -892,7 +893,7 @@ class Mysqldb:
                              password=self.sql_password,
                              database='barber')
         cursor = db.cursor()
-        sql = "SELECT * FROM alert;"
+        sql = "SELECT * FROM alert order by id desc;"
         result = {"status": 0, "message": "Success", "alert": []}
         try:
             cursor.execute(sql)

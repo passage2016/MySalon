@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mysalon.R
 import com.example.mysalon.databinding.ViewAppointmentBinding
 import com.example.mysalon.model.remote.data.getAppointments.AppointmentInfo
-import com.example.mysalon.view.AppointmentsFragmentDirections
+import com.example.mysalon.view.fragment.AppointmentsFragmentDirections
 import com.example.mysalon.viewModel.MainViewModel
 
 
@@ -49,6 +49,8 @@ class AppointmentAdapter(
                 "${appointmentInfo.timeFrom} to ${appointmentInfo.timeTo} (${appointmentInfo.totalDuration} Minutes)"
             binding.tvStatus.text = appointmentInfo.aptStatus
             if (appointmentInfo.aptStatus == "Confirmed") {
+                binding.ivStatus.setImageResource(R.drawable.ic_baseline_check_circle_outline_24)
+            } else if (appointmentInfo.aptStatus == "Rescheduled") {
                 binding.ivStatus.setImageResource(R.drawable.ic_baseline_check_circle_outline_24)
             } else {
                 binding.ivStatus.setImageResource(R.drawable.ic_baseline_close_24)

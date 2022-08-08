@@ -12,10 +12,9 @@ import com.example.mysalon.databinding.ViewBookServiceInfoBinding
 import com.example.mysalon.model.remote.Constants.BASE_IMAGE_URL
 import com.example.mysalon.model.remote.data.book.Service
 import com.example.mysalon.model.remote.data.getServicesByCategory.ServiceDetail
-import com.example.mysalon.view.ServiceClassFragmentDirections
-import com.example.mysalon.view.ServiceListFragmentDirections
 import com.example.mysalon.view.book.BookInfoFragment
 import com.example.mysalon.view.book.BookSummaryFragment
+import com.example.mysalon.view.fragment.ServiceListFragmentDirections
 import com.example.mysalon.viewModel.MainViewModel
 
 

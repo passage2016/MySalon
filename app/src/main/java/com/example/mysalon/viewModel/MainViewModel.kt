@@ -3,13 +3,16 @@ package com.example.mysalon.viewModel
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.mysalon.model.remote.*
 import com.example.mysalon.model.remote.data.albumList.Album
 import com.example.mysalon.model.remote.data.albumList.AlbumListResponse
 import com.example.mysalon.model.remote.data.albumPhotos.AlbumPhotosResponse
 import com.example.mysalon.model.remote.data.albumPhotos.Photo
+import com.example.mysalon.model.remote.data.alert.Alert
 import com.example.mysalon.model.remote.data.book.Appointment
 import com.example.mysalon.model.remote.data.book.BookResponse
+import com.example.mysalon.model.remote.data.contacts.Contact
 import com.example.mysalon.model.remote.data.currentAppointments.CurrentAppointmentsResponse
 import com.example.mysalon.model.remote.data.currentAppointments.Slot
 import com.example.mysalon.model.remote.data.dashboard.DashboardResponse
@@ -24,7 +27,18 @@ import com.example.mysalon.model.remote.data.getServiceCategory.ServiceCategory
 import com.example.mysalon.model.remote.data.getServicesByCategory.GetServicesByCategoryResponse
 import com.example.mysalon.model.remote.data.getServicesByCategory.ServiceDetail
 import com.example.mysalon.model.remote.data.login.LoginResponse
+import com.example.mysalon.model.remote.data.product.Product
+import com.example.mysalon.model.remote.data.product.ProductsResponse
+import com.example.mysalon.model.remote.data.review.getReview.GetReviewResponse
+import com.example.mysalon.model.remote.data.review.getReview.Review
+import com.example.mysalon.model.remote.data.workingHour.Weekday
+import com.example.mysalon.utils.PageTool
 import com.google.gson.Gson
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -32,10 +46,14 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.math.roundToInt
 
 class MainViewModel : ViewModel() {
     val retrofit: Retrofit = ApiClient.getRetrofit()
+    var compositeDisposable: CompositeDisposable = CompositeDisposable()
     val barberApiService: BarberApiService = retrofit.create(BarberApiService::class.java)
     val appointmentApiService: AppointmentApiService =
         retrofit.create(AppointmentApiService::class.java)
@@ -65,20 +83,206 @@ class MainViewModel : ViewModel() {
     val albumIdLiveData = MutableLiveData<Int>()
     val albumPhotosLiveData = MutableLiveData<ArrayList<Photo>>()
     val productPageLiveData = MutableLiveData<PageTool>()
+    val productsListLiveData = MutableLiveData<ArrayList<Product>>()
+    val productLiveData = MutableLiveData<Product>()
+    val contactsLiveData = MutableLiveData<ArrayList<Contact>>()
+    val workingHourLiveData = MutableLiveData<Map<String, Weekday>>()
+    val alertLiveData = MutableLiveData<ArrayList<Alert>>()
     val reviewPageLiveData = MutableLiveData<PageTool>()
+    val reviewsListLiveData = MutableLiveData<ArrayList<Review>>()
+    val reviewLiveData = MutableLiveData<Review>()
 
-    fun loadProducts(){
-        if(productPageLiveData.value == null){
+    fun addReview(rating: Double, comment: String) {
+        val ps_auth_token = userLiveData.value!!.apiToken
+        val map = HashMap<String, Any>()
+        map["userId"] = userLiveData.value!!.userId
+        map["rating"] = rating
+        map["comment"] = comment
+        val reqJson: String = Gson().toJson(map)
+        val body: RequestBody =
+            reqJson.toRequestBody("application/json".toMediaTypeOrNull())
+        compositeDisposable.add(appUserApiService.addReview(ps_auth_token, body)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    Log.e("message", it.message)
+                },
+                { t: Throwable? -> Log.i("Throwable", t?.message ?: "error") }
+            )
+
+        )
+    }
+
+    fun logout() {
+        val ps_auth_token = userLiveData.value!!.apiToken
+        val map = HashMap<String, Any>()
+        map["userId"] = userLiveData.value!!.userId
+        val reqJson: String = Gson().toJson(map)
+        val body: RequestBody =
+            reqJson.toRequestBody("application/json".toMediaTypeOrNull())
+        compositeDisposable.add(appUserApiService.logout(ps_auth_token, body)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+
+                },
+                { t: Throwable? -> Log.i("Throwable", t?.message ?: "error") }
+            )
+
+        )
+    }
+
+    fun loadReviews() {
+        if (reviewPageLiveData.value == null) {
             val productPage = PageTool(0, false, false, 0, 0, 10)
+            reviewPageLiveData.value = productPage
         }
+        val map = HashMap<String, Any>()
+        map["pageSize"] = reviewPageLiveData.value!!.pageSize
+        map["pageNo"] = reviewPageLiveData.value!!.currentPage + 1
+        val reqJson: String = Gson().toJson(map)
+        val body: RequestBody =
+            reqJson.toRequestBody("application/json".toMediaTypeOrNull())
+        val call: Call<GetReviewResponse> = appUserApiService.getReviews(body)
+        call.enqueue(object : Callback<GetReviewResponse> {
+            override fun onResponse(
+                call: Call<GetReviewResponse>,
+                response: Response<GetReviewResponse>
+            ) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.status == 0) {
+                        Log.e("loadProducts", response.body().toString())
+                        var reviewList = ArrayList<Review>()
+                        reviewsListLiveData.value?.let {
+                            reviewList.addAll(it)
+                        }
+                        reviewList.addAll(response.body()!!.reviews)
+                        reviewPageLiveData.value!!.isLastPage = response.body()!!.isLastPage
+                        reviewPageLiveData.value!!.totalPage = response.body()!!.totalPages
+                        reviewsListLiveData.postValue(reviewList)
+                        reviewPageLiveData.value!!.isLoading = false
+                    } else {
+                        Log.e("loadProducts error", response.body()!!.message)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<GetReviewResponse>, t: Throwable) {
+                Log.e("response.body()", t.toString())
+                t.printStackTrace()
+            }
+        })
+    }
+
+    fun getAlert() {
+        compositeDisposable.add(baseApiService.getAlert()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    alertLiveData.postValue(it.alert)
+                },
+                { t: Throwable? -> Log.i("Throwable", t?.message ?: "error") }
+            )
+
+        )
+    }
+
+    fun getWorkingHour() {
+        compositeDisposable.add(baseApiService.getWorkingHours()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    val workingHour = it.timings.entries.sortedBy { getWeekOfDate(it.key) }.associateBy({ it.key }, { it.value })
+                    workingHourLiveData.postValue(workingHour)
+                },
+                { t: Throwable? -> Log.i("Throwable", t?.message ?: "error") }
+            )
+
+        )
+    }
+    fun getWeekOfDate(day: String): Int {
+        val weekDays = arrayOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+        val intDay = weekDays.indexOf(day)
+        val cal = Calendar.getInstance()
+        var w = cal[Calendar.DAY_OF_WEEK] - 1
+        println((intDay + 7 - w) % 7)
+        if (w < 0) {
+            w = 0
+        }
+        return (intDay + 7 - w) % 7
+    }
+
+    fun getContacts() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = baseApiService.getContacts()
+                if (!response.isSuccessful) {
+                    return@launch
+                }
+                response.body()?.let {
+                    val contacts: ArrayList<Contact> = it.contacts
+                    contacts.sortBy { it.displayOrder }
+                    contactsLiveData.postValue(contacts)
+                }
+            } catch (e: Exception) {
+                Log.e("Exception", e.toString())
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun loadProducts() {
+        if (productPageLiveData.value == null) {
+            val productPage = PageTool(0, false, false, 0, 0, 10)
+            productPageLiveData.value = productPage
+        }
+        val map = HashMap<String, Any>()
+        map["pageSize"] = productPageLiveData.value!!.pageSize
+        map["pageNo"] = productPageLiveData.value!!.currentPage + 1
+        val reqJson: String = Gson().toJson(map)
+        val body: RequestBody =
+            reqJson.toRequestBody("application/json".toMediaTypeOrNull())
+        val call: Call<ProductsResponse> = baseApiService.getProducts(body)
+        call.enqueue(object : Callback<ProductsResponse> {
+            override fun onResponse(
+                call: Call<ProductsResponse>,
+                response: Response<ProductsResponse>
+            ) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.status == 0) {
+                        Log.e("loadProducts", response.body().toString())
+                        var productList = ArrayList<Product>()
+                        productsListLiveData.value?.let {
+                            productList.addAll(it)
+                        }
+                        productList.addAll(response.body()!!.products)
+                        productPageLiveData.value!!.isLastPage = response.body()!!.isLastPage
+                        productPageLiveData.value!!.totalPage = response.body()!!.totalPages
+                        productsListLiveData.postValue(productList)
+                        productPageLiveData.value!!.isLoading = false
+                    } else {
+                        Log.e("loadProducts error", response.body()!!.message)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ProductsResponse>, t: Throwable) {
+                Log.e("response.body()", t.toString())
+                t.printStackTrace()
+            }
+        })
     }
 
     fun setUserLiveData(loginResponse: LoginResponse) {
         userLiveData.postValue(loginResponse)
     }
 
-    fun loadAlbumList(){
-        if(albumListLiveData.value == null){
+    fun loadAlbumList() {
+        if (albumListLiveData.value == null) {
             val call: Call<AlbumListResponse> = baseApiService.getAlbumList()
             call.enqueue(object : Callback<AlbumListResponse> {
                 override fun onResponse(
@@ -101,6 +305,7 @@ class MainViewModel : ViewModel() {
             })
         }
     }
+
     fun getPhotosByAlbumL() {
         val url = "albums/photos/" + albumIdLiveData.value
         val call: Call<AlbumPhotosResponse> = baseApiService.getAlbumPhotos(url)
@@ -121,29 +326,6 @@ class MainViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<AlbumPhotosResponse>, t: Throwable) {
-                Log.e("response.body()", t.toString())
-                t.printStackTrace()
-            }
-        })
-    }
-
-    fun getProducts() {
-        val call: Call<DashboardResponse> = appUserApiService.dashboard()
-        call.enqueue(object : Callback<DashboardResponse> {
-            override fun onResponse(
-                call: Call<DashboardResponse>,
-                response: Response<DashboardResponse>
-            ) {
-                if (response.isSuccessful) {
-                    if (response.body()!!.status == 0) {
-                        dashboardLiveData.postValue(response.body()!!)
-                    } else {
-                        Log.e("getDashboard error", response.body()!!.message)
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<DashboardResponse>, t: Throwable) {
                 Log.e("response.body()", t.toString())
                 t.printStackTrace()
             }
@@ -200,7 +382,8 @@ class MainViewModel : ViewModel() {
 
     fun getServicesByCategory(categoryId: Int) {
         val url = "service/category/" + serviceCategoryIdLiveData.value
-        val call: Call<GetServicesByCategoryResponse> = baseApiService.getServicesByCategory(url)
+        val call: Call<GetServicesByCategoryResponse> =
+            baseApiService.getServicesByCategory(url)
         call.enqueue(object : Callback<GetServicesByCategoryResponse> {
             override fun onResponse(
                 call: Call<GetServicesByCategoryResponse>,
@@ -291,7 +474,8 @@ class MainViewModel : ViewModel() {
 
     fun loadCurrentAppointments() {
         val url = "appointment/currentAppointments/" + barberServicesIdLiveData.value
-        val call: Call<CurrentAppointmentsResponse> = appointmentApiService.currentAppointments(url)
+        val call: Call<CurrentAppointmentsResponse> =
+            appointmentApiService.currentAppointments(url)
         call.enqueue(object : Callback<CurrentAppointmentsResponse> {
             override fun onResponse(
                 call: Call<CurrentAppointmentsResponse>,
@@ -331,12 +515,19 @@ class MainViewModel : ViewModel() {
         val body: RequestBody =
             reqJson.toRequestBody("application/json".toMediaTypeOrNull())
         val ps_auth_token = userLiveData.value!!.apiToken
-        val call: Call<BookResponse> = appointmentApiService.bookAppointment(ps_auth_token, body)
+        val call: Call<BookResponse> =
+            appointmentApiService.bookAppointment(ps_auth_token, body)
         call.enqueue(object : Callback<BookResponse> {
-            override fun onResponse(call: Call<BookResponse>, response: Response<BookResponse>) {
+            override fun onResponse(
+                call: Call<BookResponse>,
+                response: Response<BookResponse>
+            ) {
                 if (response.isSuccessful) {
                     if (response.body()!!.status == 0) {
-                        Log.e("loadCurrentAppointments", response.body()!!.appointment.toString())
+                        Log.e(
+                            "loadCurrentAppointments",
+                            response.body()!!.appointment.toString()
+                        )
                         appointmentLiveData.postValue(response.body()!!.appointment)
 
                     } else {
@@ -360,10 +551,16 @@ class MainViewModel : ViewModel() {
         val call: Call<BookResponse> =
             appointmentApiService.rescheduleAppointment(ps_auth_token, body)
         call.enqueue(object : Callback<BookResponse> {
-            override fun onResponse(call: Call<BookResponse>, response: Response<BookResponse>) {
+            override fun onResponse(
+                call: Call<BookResponse>,
+                response: Response<BookResponse>
+            ) {
                 if (response.isSuccessful) {
                     if (response.body()!!.status == 0) {
-                        Log.e("loadCurrentAppointments", response.body()!!.appointment.toString())
+                        Log.e(
+                            "loadCurrentAppointments",
+                            response.body()!!.appointment.toString()
+                        )
                         appointmentLiveData.postValue(response.body()!!.appointment)
 
                     } else {
@@ -382,12 +579,19 @@ class MainViewModel : ViewModel() {
     fun cancelAppointment(appointmentId: Int) {
         val url = "appointment/cancelAppointment/" + appointmentId
         val ps_auth_token = userLiveData.value!!.apiToken
-        val call: Call<BookResponse> = appointmentApiService.cancelAppointment(url, ps_auth_token)
+        val call: Call<BookResponse> =
+            appointmentApiService.cancelAppointment(url, ps_auth_token)
         call.enqueue(object : Callback<BookResponse> {
-            override fun onResponse(call: Call<BookResponse>, response: Response<BookResponse>) {
+            override fun onResponse(
+                call: Call<BookResponse>,
+                response: Response<BookResponse>
+            ) {
                 if (response.isSuccessful) {
                     if (response.body()!!.status == 0) {
-                        Log.e("loadCurrentAppointments", response.body()!!.appointment.toString())
+                        Log.e(
+                            "loadCurrentAppointments",
+                            response.body()!!.appointment.toString()
+                        )
                         appointmentLiveData.postValue(response.body()!!.appointment)
 
                     } else {
@@ -415,7 +619,10 @@ class MainViewModel : ViewModel() {
             ) {
                 if (response.isSuccessful) {
                     if (response.body()!!.status == 0) {
-                        Log.e("loadCurrentAppointments", response.body()!!.appointments.toString())
+                        Log.e(
+                            "loadCurrentAppointments",
+                            response.body()!!.appointments.toString()
+                        )
                         appointmentsLiveData.postValue(response.body()!!.appointments)
 
                     } else {
@@ -437,10 +644,16 @@ class MainViewModel : ViewModel() {
         val call: Call<BookResponse> =
             appointmentApiService.getAppointmentDetail(url, ps_auth_token)
         call.enqueue(object : Callback<BookResponse> {
-            override fun onResponse(call: Call<BookResponse>, response: Response<BookResponse>) {
+            override fun onResponse(
+                call: Call<BookResponse>,
+                response: Response<BookResponse>
+            ) {
                 if (response.isSuccessful) {
                     if (response.body()!!.status == 0) {
-                        Log.e("loadCurrentAppointments", response.body()!!.appointment.toString())
+                        Log.e(
+                            "loadCurrentAppointments",
+                            response.body()!!.appointment.toString()
+                        )
                         appointmentLiveData.postValue(response.body()!!.appointment)
 
                     } else {
@@ -454,5 +667,10 @@ class MainViewModel : ViewModel() {
                 t.printStackTrace()
             }
         })
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.dispose()
     }
 }

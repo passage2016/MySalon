@@ -72,6 +72,12 @@ class BookInfoFragment : Fragment() {
                     .into(binding.ivStamp)
                 binding.btnCancel.visibility = View.VISIBLE
                 binding.btnReschedule.visibility = View.VISIBLE
+            } else if (appointment.aptStatus == "Rescheduled") {
+                Glide.with(requireActivity().applicationContext)
+                    .load(R.drawable.rescheduled)
+                    .into(binding.ivStamp)
+                binding.btnCancel.visibility = View.VISIBLE
+                binding.btnReschedule.visibility = View.VISIBLE
             } else {
                 Glide.with(requireActivity().applicationContext)
                     .load(R.drawable.canceled)

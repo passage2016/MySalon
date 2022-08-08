@@ -24,6 +24,8 @@
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/activity_register.xml" value="0.264" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/activity_splash.xml" value="0.1125" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_about.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_about_us.xml" value="0.2526041666666667" />
+        <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_alert.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_appointments.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_book_info.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_book_reschedule.xml" value="0.25364583333333335" />
@@ -36,6 +38,7 @@
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_product_detail.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_products.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_rate_us.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_review_detail.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_reviews.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_service.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_service_detail.xml" value="0.2526041666666667" />
@@ -44,8 +47,11 @@
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_show_cafse.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_show_case.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_show_case_class.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/fragment_workinng_hour.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/nav_view_header.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/test.xml" value="0.2526041666666667" />
+        <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/view_about_us.xml" value="0.2526041666666667" />
+        <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/view_alert.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/view_appointment.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/view_barber_select.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/view_book_barber_select.xml" value="0.25364583333333335" />
@@ -64,6 +70,7 @@
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/view_show_case.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/view_show_case_class.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/view_show_class.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/layout/view_working_hour.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/menu/menu_drawer_nav.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/15047/AndroidStudioProjects/MySalon/app/src/main/res/menu/menu_search.xml" value="0.25364583333333335" />
       </map>

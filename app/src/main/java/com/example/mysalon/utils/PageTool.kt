@@ -1,4 +1,4 @@
-package com.example.mysalon.viewModel
+package com.example.mysalon.utils
 
 data class PageTool(
     val pageStart: Int = 0,

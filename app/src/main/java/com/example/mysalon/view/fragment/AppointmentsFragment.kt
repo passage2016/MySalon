@@ -1,4 +1,4 @@
-package com.example.mysalon.view
+package com.example.mysalon.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,13 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mysalon.databinding.FragmentAppointmentsBinding
-import com.example.mysalon.databinding.FragmentBookSelectBarberBinding
 import com.example.mysalon.view.adapter.AppointmentAdapter
-import com.example.mysalon.view.book.BookSummaryFragmentDirections
-import com.example.mysalon.view.book.adapter.BarberAdapter
 import com.example.mysalon.viewModel.MainViewModel
 
 class AppointmentsFragment : Fragment() {

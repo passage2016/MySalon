@@ -1,4 +1,4 @@
-package com.example.mysalon.view
+package com.example.mysalon.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

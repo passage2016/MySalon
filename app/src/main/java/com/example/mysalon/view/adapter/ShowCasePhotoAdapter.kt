@@ -12,7 +12,6 @@ import com.example.mysalon.databinding.ViewShowCaseBinding
 import com.example.mysalon.model.remote.Constants
 import com.example.mysalon.model.remote.data.albumList.Album
 import com.example.mysalon.model.remote.data.albumPhotos.Photo
-import com.example.mysalon.view.ShowCaseClassFragmentDirections
 import com.example.mysalon.viewModel.MainViewModel
 
 class ShowCasePhotoAdapter(private val fragment: Fragment, val infoList: ArrayList<Photo>) :

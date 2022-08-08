@@ -1,4 +1,4 @@
-package com.example.mysalon.view
+package com.example.mysalon.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.mysalon.databinding.FragmentBookInfoBinding
-import com.example.mysalon.databinding.FragmentServiceBinding
 import com.example.mysalon.databinding.FragmentServicesClassBinding
 import com.example.mysalon.view.adapter.ServiceCategoriesAdapter
 import com.example.mysalon.viewModel.MainViewModel

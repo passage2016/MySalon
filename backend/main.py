@@ -388,9 +388,9 @@ def add_reviews():
         @@@
     """
     if request.headers.get("ps_auth_token") is None:
-        return '{"status":1,"message":"Failed to authenticate"}'
+        return '{"status":1,"message":"Require ps_auth_token"}'
     if request.headers.get("Content-type") != "application/json":
-        return '{"status":1,"message":"Failed to authenticate"}'
+        return '{"status":1,"message":"Require Content-type"}'
     if "userId" not in request.json:
         return '{"status":1,"message":"Require userId"}'
     if "rating" not in request.json:
@@ -422,17 +422,17 @@ def get_reviews():
         return '{"status":1,"message":"Failed to authenticate"}'
     if "pageSize" not in request.json:
         return '{"status":1,"message":"Require pageSize"}'
-    if not request.json["pageSize"].isdigit():
-        return '{"status":1,"message":"The pageSize must be digit."}'
+    if not isinstance(request.json["pageSize"], int) and not request.json["pageSize"].isdigit():
+        return '{"status":1,"message":"The pageSize must be int."}'
     if int(request.json["pageSize"]) < 1:
         return '{"status":1,"message":"The pageSize at least 1."}'
     if "pageNo" not in request.json:
         return '{"status":1,"message":"Require pageNo"}'
-    if not request.json["pageNo"].isdigit():
+    if not isinstance(request.json["pageNo"], int) and not request.json["pageNo"].isdigit():
         return '{"status":1,"message":"The pageNo must be digit."}'
     if int(request.json["pageSize"]) < 1:
         return '{"status":1,"message":"The pageNo at least 1."}'
-
+    print(request.json)
     return db.get_reviews(request.json["pageSize"], request.json["pageNo"])
 
 
@@ -747,6 +747,9 @@ def get_products():
         |    pageSize         |    false  |    string   |         |
         |    pageNo       |    false  |    string   |         |
 
+        #### return
+        - ##### json
+
         @@@
     """
     if not isinstance(request.json, dict):
@@ -755,17 +758,17 @@ def get_products():
         return '{"status":1,"message":"Failed to authenticate"}'
     if "pageSize" not in request.json:
         return '{"status":1,"message":"Require pageSize"}'
-    if not request.json["pageSize"].isdigit():
-        return '{"status":1,"message":"The pageSize must be digit."}'
+    if not isinstance(request.json["pageSize"], int) and not request.json["pageSize"].isdigit():
+        return '{"status":1,"message":"The pageSize must be int."}'
     if int(request.json["pageSize"]) < 1:
         return '{"status":1,"message":"The pageSize at least 1."}'
     if "pageNo" not in request.json:
         return '{"status":1,"message":"Require pageNo"}'
-    if not request.json["pageNo"].isdigit():
+    if not isinstance(request.json["pageNo"], int) and not request.json["pageNo"].isdigit():
         return '{"status":1,"message":"The pageNo must be digit."}'
     if int(request.json["pageSize"]) < 1:
         return '{"status":1,"message":"The pageNo at least 1."}'
-
+    print(request.json)
     return db.get_products(request.json["pageSize"], request.json["pageNo"])
 
 
@@ -781,11 +784,43 @@ def get_contacts():
 
 @albums.route('/getList', methods=['GET'])
 def get_albums():
+    """
+        @@@
+        #### arg
+        > None
+        #### return
+        - ##### json
+        ```json
+        {"status": 0, "message": "Success", "albums": [{"albumId": 1, "albumName": "New Hair Cuts",
+        "coverPhotoUrl": "uploads/images/Albums/Zk1lQ2JZ1.jpg"}, {"albumId": 3, "albumName": "Hair Cuts",
+        "coverPhotoUrl": "uploads/images/Albums/haircuts.jpg"}, {"albumId": 4, "albumName": "Facials",
+        "coverPhotoUrl": "uploads/images/Albums/facials.jpg"}]}
+        ```
+        @@@
+    """
     return db.get_albums()
 
 
 @albums.route('/photos/<album_id>', methods=['GET'])
 def get_album_photos(album_id):
+    """
+        @@@
+        #### arg
+        | args | nullable | type | remark |
+        |--------|--------|--------|--------|
+        |    album_id         |    false  |    string   |         |
+
+        #### return
+        - ##### json
+        ```json
+        {"status": 0, "message": "Success", "photos": [{"photoId": 53, "photoName": "Tiktok",
+        "photoUrl": "/uploads/images/Albums/photos/Screenshot_20190524_080542.jpg", "albumId": 3,
+        "albumName": "Hair Cuts"}]}
+
+        ```
+        @@@
+        @@@
+    """
     return db.get_album_photos(album_id)
 
 

@@ -23,27 +23,27 @@
             android:title="Show Case"
             app:showAsAction="always" />
         <item
-            android:id="@+id/mi_home_care_products"
+            android:id="@+id/product_list_dest"
             android:icon="@drawable/ic_baseline_propane_tank_24"
             android:title="Home Care Products"
             app:showAsAction="always" />
         <item
-            android:id="@+id/mi_how_to_reach"
-            android:icon="@drawable/ic_baseline_location_on_24"
+            android:id="@+id/about_us_dest"
+            android:icon="@drawable/ic_baseline_location_on_24_white"
             android:title="How To Reach?"
             app:showAsAction="always" />
         <item
-            android:id="@+id/mi_working_hours"
+            android:id="@+id/working_hour_dest"
             android:icon="@drawable/ic_baseline_work_history_24"
             android:title="Working Hours"
             app:showAsAction="always" />
         <item
-            android:id="@+id/mi_notifictions"
+            android:id="@+id/notifictions_dest"
             android:icon="@drawable/ic_baseline_notifications_none_24"
             android:title="Notifictions"
             app:showAsAction="always" />
         <item
-            android:id="@+id/mi_user_ratings"
+            android:id="@+id/review_list_dest"
             android:icon="@drawable/ic_baseline_reviews_24"
             android:title="User Ratings"
             app:showAsAction="always" />
@@ -54,21 +54,24 @@
             app:showAsAction="always" />
 
     </group>
-    <group  >
-        <item
-            android:id="@+id/mi_share"
-            android:icon="@drawable/ic_baseline_share_24"
-            android:title="Share"
-            app:showAsAction="always" />
-        <item
-            android:id="@+id/mi_rate_us"
-            android:icon="@drawable/ic_baseline_rate_review_24"
-            android:title="Rate Us"
-            app:showAsAction="always" />
-        <item
-            android:id="@+id/mi_about"
-            android:icon="@drawable/ic_outline_info_24"
-            android:title="About"
-            app:showAsAction="always" />
-    </group>
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/mi_share"
+                android:icon="@drawable/ic_baseline_share_24"
+                android:title="Share"
+                app:showAsAction="always" />
+            <item
+                android:id="@+id/add_review_dest"
+                android:icon="@drawable/ic_baseline_rate_review_24"
+                android:title="Rate Us"
+                app:showAsAction="always" />
+            <item
+                android:id="@+id/about_dest"
+                android:icon="@drawable/ic_outline_info_24"
+                android:title="About"
+                app:showAsAction="always" />
+        </menu>
+
+    </item>
 </menu>
