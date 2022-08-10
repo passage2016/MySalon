@@ -24,6 +24,7 @@ class LoginViewModel: ViewModel() {
 
     val apiService: AppUserApiService= retrofit.create(AppUserApiService::class.java)
     val userLiveData = MutableLiveData<LoginResponse>()
+    val errorMessage = MutableLiveData<String>()
 
     fun updateFcmToken (fcmToken: String) {
         val ps_auth_token = userLiveData.value!!.apiToken
@@ -39,7 +40,7 @@ class LoginViewModel: ViewModel() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-
+                    Log.e("updateFcmToken", it.message)
                 },
                 { t: Throwable? -> Log.i("Throwable", t?.message ?: "error") }
             )
@@ -63,6 +64,7 @@ class LoginViewModel: ViewModel() {
                         userLiveData.postValue(response.body())
                     } else {
                         Log.e("response error", response.body()!!.message)
+                        errorMessage.postValue(response.body()!!.message)
                     }
                 }
             }

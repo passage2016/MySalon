@@ -4,6 +4,7 @@ import com.example.mysalon.model.remote.data.albumList.AlbumListResponse
 import com.example.mysalon.model.remote.data.albumPhotos.AlbumPhotosResponse
 import com.example.mysalon.model.remote.data.alert.AlertResponse
 import com.example.mysalon.model.remote.data.contacts.ContactsResponse
+import com.example.mysalon.model.remote.data.coupon.CouponResponse
 import com.example.mysalon.model.remote.data.getService.GetServiceResponse
 import com.example.mysalon.model.remote.data.getServiceCategory.GetServiceCategoryResopnse
 import com.example.mysalon.model.remote.data.getServicesByCategory.GetServicesByCategoryResponse
@@ -48,6 +49,8 @@ interface BaseApiService {
     @GET("alert/getList")
     fun getAlert(): Single<AlertResponse>
 
-
+    @Headers("Content-type: application/json")
+    @GET("offers/getCoupons")
+    fun getCoupons(): Single<CouponResponse>
 
 }

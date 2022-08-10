@@ -87,14 +87,19 @@ class BookSelectTimeFragment : Fragment() {
                 alertDialog.setCancelable(true)
                 alertDialog.show()
             } else {
-                val action = BookSelectTimeFragmentDirections.bookSummaryAction()
-                binding.root.findNavController().navigate(action)
+                mainViewModel.getCoupons()
+
             }
 
         }
 
         binding.btnCancel.setOnClickListener {
             val action = BookSelectTimeFragmentDirections.bookCancelAction()
+            binding.root.findNavController().navigate(action)
+        }
+
+        mainViewModel.couponLiveData.observe(requireActivity()){
+            val action = BookSelectTimeFragmentDirections.bookSummaryAction()
             binding.root.findNavController().navigate(action)
         }
     }

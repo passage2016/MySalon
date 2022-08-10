@@ -7,6 +7,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -111,9 +113,10 @@ class BookInfoFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         if (item.itemId == android.R.id.home) {
-            Log.e("back", "back")
             val action = BookInfoFragmentDirections.bookExitAction()
             binding.root.findNavController().navigate(action)
+            requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout).closeDrawer(
+                GravityCompat.START)
         }
         return super.onOptionsItemSelected(item)
 

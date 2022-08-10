@@ -19,6 +19,7 @@ class RegisterViewModel: ViewModel() {
     val retrofit: Retrofit = ApiClient.getRetrofit()
     val apiService: AppUserApiService = retrofit.create(AppUserApiService::class.java)
     val userLiveData = MutableLiveData<SignUpResponse>()
+    val errorMessage = MutableLiveData<String>()
 
     fun signUp(mobileNo: String, password: String, fcmToken: String) {
         val map = HashMap<String, String>()
@@ -37,6 +38,7 @@ class RegisterViewModel: ViewModel() {
                         userLiveData.postValue(response.body())
                     } else {
                         Log.e("response error", response.body()!!.message)
+                        errorMessage.postValue(response.body()!!.message)
                     }
 
                 }

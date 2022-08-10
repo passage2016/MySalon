@@ -75,6 +75,11 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.tvForgetPassword.setOnClickListener {
+            val intent = Intent(this, ResetActivity::class.java)
+            startActivity(intent)
+        }
+
         loginViewModel.userLiveData.observe(this){
             FirebaseMessaging.getInstance().token.addOnCompleteListener {
                 if (it.isSuccessful) {
@@ -85,6 +90,17 @@ class LoginActivity : AppCompatActivity() {
             Log.e(LOGIN_INFO, it.toString())
             intent.putExtra(LOGIN_INFO, it)
             startActivity(intent)
+        }
+
+        loginViewModel.errorMessage.observe(this){
+            val builder = AlertDialog.Builder(this)
+                .setTitle("Login Error")
+                .setMessage(it)
+                .setPositiveButton("Ok") { _, _ ->
+                }
+            val alertDialog: AlertDialog = builder.create()
+            alertDialog.setCancelable(true)
+            alertDialog.show()
         }
 
     }

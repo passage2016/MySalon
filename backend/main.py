@@ -229,11 +229,11 @@ def update_user():
         | args | nullable | type | remark |
         |--------|--------|--------|--------|
         |    userId         |    false  |    string   |         |
-        |    fullName       |    false  |    string   |         |
-        |    emailId        |    false  |    string   |         |
-        |    dateOfBirth    |    false  |    string   |         |
-        |    password       |    false  |    string   |         |
-        |    profilePic     |    false  |    string   |         |
+        |    fullName       |    true  |    string   |         |
+        |    emailId        |    true  |    string   |         |
+        |    dateOfBirth    |    true  |    string   | yyyy-mm-dd  |
+        |    password       |    true  |    string   |         |
+        |    profilePic     |    true  |    string   |         |
 
         @@@
     """
@@ -243,24 +243,28 @@ def update_user():
     if request.headers.get("Content-type") != "application/json":
         return '{"status":1,"message":"Require Content-type"}'
     if request.headers.get("ps_auth_token") is None:
-        return '{"status":1,"message":"Failed to authenticate"}'
+        return '{"status":1,"message":"Require ps_auth_token"}'
     if "userId" not in request.json:
         return '{"status":1,"message":"Require userId"}'
-    if "fullName" not in request.json:
-        return '{"status":1,"message":"Require fullName"}'
-    if "emailId" not in request.json:
-        return '{"status":1,"message":"Require emailId"}'
-    if "dateOfBirth" not in request.json:
-        return '{"status":1,"message":"Require dateOfBirth"}'
-    if "password" not in request.json:
-        return '{"status":1,"message":"Require password"}'
-    if len(request.json["password"]) < 8:
+    full_name = None
+    if "fullName" in request.json:
+        full_name = request.json["fullName"]
+    email_id = None
+    if "emailId" in request.json:
+        email_id = request.json["emailId"]
+    date_of_birth = None
+    if "dateOfBirth" in request.json:
+        date_of_birth = request.json["dateOfBirth"]
+    password = None
+    if "password" in request.json:
+        password = request.json["password"]
+    if password is not None and len(request.json["password"]) < 8:
         return '{"status":1,"message":"Password at least 8 characters."}'
-    if "profilePic" not in request.json:
-        return '{"status":1,"message":"Require profilePic"}'
-    return db.update_user(request.headers.get("ps_auth_token"), request.json["userId"], request.json["fullName"],
-                          request.json["emailId"], request.json["dateOfBirth"],
-                          request.json["password"], request.json["profilePic"])
+    profile_pic = None
+    if "profilePic" in request.json:
+        profile_pic = request.json["profilePic"]
+    return db.update_user(request.headers.get("ps_auth_token"), request.json["userId"], full_name,
+                          email_id, date_of_birth, password, profile_pic)
 
 
 @app_user.route('/updateFcmToken', methods=['POST'])
@@ -289,6 +293,7 @@ def update_fcm_token():
         return '{"status":1,"message":"Require fcmToken"}'
     if "application" not in request.json:
         return '{"status":1,"message":"Require application"}'
+    print(request.json)
     return db.update_fcm_token(request.headers.get("ps_auth_token"), request.json["userId"],
                                request.json["fcmToken"], request.json["application"])
 
@@ -875,10 +880,12 @@ def book():
         @@@
     """
     print(request.json)
+    if request.headers.get("Content-type") is None:
+        return '{"status":1,"message":"Require application/json"}'
     if request.headers.get("Content-type") != "application/json":
-        return '{"status":1,"message":"Failed to authenticate"}'
+        return '{"status":1,"message":"Content-type should be application/json"}'
     if request.headers.get("ps_auth_token") is None:
-        return '{"status":1,"message":"Failed to authenticate"}'
+        return '{"status":1,"message":"Require ps_auth_token"}'
     if "userId" not in request.json:
         return '{"status":1,"message":"Require userId"}'
     if "barberId" not in request.json:
@@ -901,11 +908,14 @@ def book():
         return '{"status":1,"message":"Require sendSms"}'
     if not isinstance(request.json, dict):
         return '{"status":1,"message":"Require json body."}'
-    return db.book(request.headers.get("ps_auth_token"), request.json["userId"], request.json["barberId"],
+    print(request.headers.get("ps_auth_token"))
+    result = db.book(request.headers.get("ps_auth_token"), request.json["userId"], request.json["barberId"],
                    request.json["services"], request.json["aptDate"],
                    request.json["timeFrom"], request.json["timeTo"],
                    request.json["totalDuration"], request.json["totalCost"],
                    request.json["couponCode"], request.json["sendSms"])
+    print(result)
+    return result
 
 
 @appointment.route('/myAppointments/<user_id>', methods=['GET'])

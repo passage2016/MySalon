@@ -9,6 +9,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.bumptech.glide.Glide
 import com.example.mysalon.R
 import com.example.mysalon.databinding.FragmentHomeBinding
 import com.example.mysalon.viewModel.MainViewModel
@@ -35,6 +36,9 @@ class HomeFragment: Fragment() {
 
         mainViewModel.dashboardLiveData.observe(requireActivity()){
             binding.tvHomeShopStatusText.text = "Shop ${it.isShopOpened}"
+            if(it.isShopOpened == "Now Close"){
+                Glide.with(this).load(R.drawable.close).into(binding.ivHomeShopStatusIcon)
+            }
         }
 
 
@@ -50,11 +54,6 @@ class HomeFragment: Fragment() {
 
         binding.cvHomeExploreMore.setOnClickListener {
             requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout).openDrawer(GravityCompat.START)
-        }
-
-        binding.imbBookAppointment.setOnClickListener {
-            val action = HomeFragmentDirections.bookAction()
-            binding.root.findNavController().navigate(action)
         }
 
     }

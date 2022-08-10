@@ -58,7 +58,7 @@ class ReviewAdapter(private val fragment: Fragment, val infoList: ArrayList<Revi
 
             }
             Glide.with(fragment.requireActivity().applicationContext)
-                .load(BASE_IMAGE_URL + review.profilePic)
+                .load(review.profilePic)
                 .into(binding.ivProfilePic)
         }
     }

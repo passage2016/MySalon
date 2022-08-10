@@ -4,7 +4,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/book_select_barber_dest"
-            android:icon="@drawable/ic_baseline_date_range_24"
+            android:icon="@drawable/ic_outline_book_24"
             android:title="Book Appointment"
             app:showAsAction="always" />
         <item

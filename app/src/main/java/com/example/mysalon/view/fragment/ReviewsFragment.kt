@@ -34,9 +34,8 @@ class ReviewsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-        if(mainViewModel.reviewPageLiveData.value == null){
-            mainViewModel.loadReviews()
-        }
+        mainViewModel.reviewPageLiveData.value = null
+        mainViewModel.loadReviews()
 
 
 
@@ -64,7 +63,7 @@ class ReviewsFragment : Fragment() {
         override fun loadMoreItems() {
             pageTool.isLoading = true
             pageTool.currentPage += 1
-            mainViewModel.loadProducts()
+            mainViewModel.loadReviews()
         }
 
         override fun getTotalPageCount(): Int {

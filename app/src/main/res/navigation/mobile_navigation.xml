@@ -23,13 +23,14 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
-<!--        <action-->
-<!--            android:id="@+id/service_class_action"-->
-<!--            app:destination="@+id/service_class_dest"-->
-<!--            app:enterAnim="@anim/slide_in_right"-->
-<!--            app:exitAnim="@anim/slide_out_left"-->
-<!--            app:popEnterAnim="@anim/slide_in_left"-->
-<!--            app:popExitAnim="@anim/slide_out_right" />-->
+
+        <action
+            android:id="@+id/update_action"
+            app:destination="@+id/update_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -312,5 +313,19 @@
         android:name="com.example.mysalon.view.fragment.AboutFragment"
         android:label="About Application"
         tools:layout="@layout/fragment_about">
+    </fragment>
+
+    <fragment
+        android:id="@+id/update_dest"
+        android:name="com.example.mysalon.view.fragment.UpdateUserFragment"
+        android:label="Update user"
+        tools:layout="@layout/fragment_update_user">
+        <action
+            android:id="@+id/back_home_action"
+            app:destination="@+id/home_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 </navigation>

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -18,10 +19,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.bumptech.glide.Glide
 import com.example.mysalon.R
 import com.example.mysalon.databinding.ActivityMainBinding
+import com.example.mysalon.model.remote.Constants.BASE_IMAGE_URL
 import com.example.mysalon.model.remote.data.login.LoginResponse
 import com.example.mysalon.view.LoginActivity.Companion.LOGIN_INFO
+import com.example.mysalon.view.fragment.HomeFragmentDirections
+import com.example.mysalon.view.fragment.ProductsFragmentDirections
 import com.example.mysalon.viewModel.MainViewModel
 import com.google.android.material.navigation.NavigationView
 
@@ -42,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         var info = intent.extras?.get(LOGIN_INFO)
         if (info != null) {
             var loginInfo = info as LoginResponse
-            mainViewModel.setUserLiveData(loginInfo)
+            mainViewModel.userLiveData.value = loginInfo
         }
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -88,9 +93,28 @@ class MainActivity : AppCompatActivity() {
         val navView = navigationView.inflateHeaderView(R.layout.nav_view_header);
 
         val tvNavHeaderName: TextView = navView.findViewById(R.id.tv_nav_header_name)
-        tvNavHeaderName.text = mainViewModel.userLiveData.value?.fullName
+        val ivNavHeaderPicture: ImageView = navView.findViewById(R.id.iv_user_image)
+        ivNavHeaderPicture.setOnClickListener {
+            val action = HomeFragmentDirections.updateAction()
+
+            findNavController(R.id.fragment_home).navigate(action)
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+
+        tvNavHeaderName.text = mainViewModel.userLiveData.value!!.fullName
+        Glide.with(applicationContext)
+            .load(mainViewModel.userLiveData.value!!.profilePic)
+            .into(ivNavHeaderPicture)
         val host: NavHostFragment = supportFragmentManager
             .findFragmentById(R.id.my_nav_host_fragment) as NavHostFragment? ?: return
+
+        mainViewModel.dashboardLiveData.observe(this){
+            tvNavHeaderName.text = mainViewModel.userLiveData.value!!.fullName
+            Glide.with(applicationContext)
+                .load(mainViewModel.userLiveData.value!!.profilePic)
+                .into(ivNavHeaderPicture)
+        }
 
         val navController = host.navController
         appBarConfiguration = AppBarConfiguration(
@@ -103,11 +127,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.e("onBackPressed", "${item.itemId}")
-        val current: Fragment? = supportFragmentManager.findFragmentById(R.id.my_nav_host_fragment)
-        current?.let {
-            Log.e("Fragment", "${it.id}")
-        }
         if (item.itemId == android.R.id.home) {
             if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                 drawerLayout.closeDrawer(GravityCompat.START)

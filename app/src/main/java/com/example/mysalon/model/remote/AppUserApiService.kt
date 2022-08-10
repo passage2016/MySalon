@@ -3,9 +3,11 @@ package com.example.mysalon.model.remote
 import com.example.mysalon.model.remote.data.dashboard.DashboardResponse
 import com.example.mysalon.model.remote.data.login.LoginResponse
 import com.example.mysalon.model.remote.data.BaseResponse
+import com.example.mysalon.model.remote.data.getPhoneVerificationCode.GetPhoneVerificationCodeResponse
 import com.example.mysalon.model.remote.data.review.addReview.AddReviewResponse
 import com.example.mysalon.model.remote.data.review.getReview.GetReviewResponse
 import com.example.mysalon.model.remote.data.signUp.SignUpResponse
+import com.example.mysalon.model.remote.data.updateUser.UpdateUserResponse
 import io.reactivex.rxjava3.core.Single
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -39,4 +41,16 @@ interface AppUserApiService {
     @Headers("Content-type: application/json")
     @POST("appUser/updateFcmToken")
     fun updateFcmToken(@Header("ps_auth_token") ps_auth_token: String, @Body updateReq: RequestBody): Single<BaseResponse>
+
+    @Headers("Content-type: application/json")
+    @POST("appUser/updateUser")
+    fun updateUser (@Header("ps_auth_token") ps_auth_token: String, @Body updateReq: RequestBody): Single<UpdateUserResponse>
+
+    @Headers("Content-type: application/json")
+    @GET
+    suspend fun getPhoneVerificationCode (@Url url: String): GetPhoneVerificationCodeResponse
+
+    @Headers("Content-type: application/json")
+    @POST("appUser/resetPassword")
+    suspend fun resetPassword (@Body updateReq: RequestBody): BaseResponse
 }

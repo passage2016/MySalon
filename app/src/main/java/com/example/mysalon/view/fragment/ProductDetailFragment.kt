@@ -32,7 +32,7 @@ class ProductDetailFragment : Fragment() {
 
         mainViewModel.productLiveData.value?.let{
             binding.tvProductName.text = it.productName
-            binding.tvPrice.text = it.price.toString()
+            binding.tvPrice.text = "price: " + it.price.toString()
             binding.tvDescription.text = it.description
             Glide.with(requireActivity().applicationContext)
                 .load(Constants.BASE_IMAGE_URL + it.productPic)

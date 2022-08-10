@@ -32,8 +32,8 @@ class ServiceDetailFragment : Fragment() {
 
         mainViewModel.serviceLiveData.value?.let{
             binding.tvServiceName.text = it.serviceName
-            binding.tvDuration.text = it.duration.toString()
-            binding.tvCost.text = it.cost.toString()
+            binding.tvDuration.text = "duration: " + it.duration.toString()
+            binding.tvCost.text = "cost: " + it.cost.toString()
             binding.tvDescription.text = it.description
             Glide.with(requireActivity().applicationContext)
                 .load(Constants.BASE_IMAGE_URL + it.servicePic)

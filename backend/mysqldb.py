@@ -139,7 +139,7 @@ class Mysqldb:
         cursor = db.cursor()
         sql = "SELECT * FROM user WHERE userId = %s;" % user_id
         result = {"status": 0, "message": "Authenticated successfully"}
-        new_password = ""
+
         try:
             cursor.execute(sql)
             results = cursor.fetchall()
@@ -147,25 +147,33 @@ class Mysqldb:
                 db.close()
                 return '{"status":1,"message":"Account not exit."}'
             for row in results:
-                md5 = hashlib.md5()
-                md5.update(password.encode('utf-8'))
-                new_password = md5.hexdigest()
+
                 if ps_auth_token != row[15]:
                     db.close()
                     return '{"status":1,"message":"Failed to authenticate."}'
+                if full_name is None:
+                    full_name = row[1]
+                if email_id is None:
+                    email_id = row[2]
+                if date_of_birth is None:
+                    date_of_birth = row[6]
+                if date_of_birth is None:
+                    date_of_birth = '1000-01-01'
+                if profile_pic is None:
+                    profile_pic = row[7]
                 result["userId"] = user_id
                 result["fullName"] = full_name
                 result["emailId"] = email_id
-                result["password"] = new_password
                 result["dateOfBirth"] = date_of_birth
                 result["profilePic"] = profile_pic
+                result["password"] = row[5]
         except RuntimeError:
             db.close()
             return '{"status":1,"message":"Update user error."}'
         cursor = db.cursor()
 
-        sql = "UPDATE user SET fullName = '%s', emailId = '%s', password = '%s', dateOfBirth = '%s', profilePic = '%s'\
-         WHERE userId = '%s'" % (full_name, email_id, new_password, date_of_birth, profile_pic, user_id)
+        sql = "UPDATE user SET fullName = '%s', emailId = '%s', dateOfBirth = '%s', profilePic = '%s'\
+         WHERE userId = '%s'" % (full_name, email_id, date_of_birth, profile_pic, user_id)
         try:
             cursor.execute(sql)
             db.commit()
@@ -173,6 +181,19 @@ class Mysqldb:
             db.rollback()
             db.close()
             return '{"status":1,"message":"Update user error."}'
+        if password is not None:
+            md5 = hashlib.md5()
+            md5.update(password.encode('utf-8'))
+            new_password = md5.hexdigest()
+            result["password"] = new_password
+            sql = "UPDATE user SET password = '%s' WHERE userId = '%s'" % (new_password, user_id)
+            try:
+                cursor.execute(sql)
+                db.commit()
+            except RuntimeError:
+                db.rollback()
+                db.close()
+                return '{"status":1,"message":"Update user error."}'
         db.close()
         return json.dumps(result)
 
@@ -199,7 +220,7 @@ class Mysqldb:
             return '{"status":1,"message":"Update user error."}'
         cursor = db.cursor()
         sql = "UPDATE user SET fcmToken = '%s', application = '%s' WHERE userId = '%s'" % \
-              (fcm_token, user_id, application)
+              (fcm_token, application, user_id)
         try:
             cursor.execute(sql)
             db.commit()
@@ -215,16 +236,22 @@ class Mysqldb:
                              user='root',
                              password=self.sql_password,
                              database='barber')
+
         phone_verification_code = str(random.randint(0, 10000))
         cursor = db.cursor()
         sql = "SELECT * FROM user WHERE mobileNo = %s;" % mobile_no
         result = {"status": 0, "message": "Success", "opt": phone_verification_code}
+        fcm_token = ""
+        application = ""
         try:
             cursor.execute(sql)
             results = cursor.fetchall()
             if len(results) == 0:
                 db.close()
                 return '{"status":1,"message":"Account not exit."}'
+            for row in results:
+                fcm_token = row[11]
+                application = row[22]
         except RuntimeError:
             db.close()
             return '{"status":1,"message":"Get phone verification code error."}'
@@ -239,6 +266,11 @@ class Mysqldb:
             db.close()
             return '{"status":1,"message":"Get phone verification code error."}'
         db.close()
+        try:
+            fmc.send_notification('Verification Code', 'Your verification code is ' + phone_verification_code,
+                                  fcm_token, application, -1)
+        except:
+            pass
         return json.dumps(result)
 
     def reset_password(self, mobile_no, phone_verification_code, password):
@@ -261,7 +293,7 @@ class Mysqldb:
                     return '{"status":1,"message":"Phone verification code not correct."}'
         except RuntimeError:
             db.close()
-            return '{"status":1,"message":"Get phone verification code error."}'
+            return '{"status":1,"message":"Reset password error."}'
         cursor = db.cursor()
         md5 = hashlib.md5()
         md5.update(password.encode('utf-8'))
@@ -760,8 +792,12 @@ class Mysqldb:
             db.close()
             return '{"status":1,"message":"Book appointment error."}'
         db.close()
-        fmc.send_notification('Appointment confirmation', 'Your appointment is confirmed', user["fcmToken"],
-                              user['application'])
+        try:
+            fmc.send_notification('Appointment confirmation', 'Your appointment is confirmed', user["fcmToken"],
+                                  user['application'], appointment_id)
+        except:
+            pass
+
         result = self.get_appointment_result(appointment_id)
         return json.dumps(result)
 
@@ -773,8 +809,9 @@ class Mysqldb:
                              password=self.sql_password,
                              database='barber')
         cursor = db.cursor()
+        day = time.strftime('%Y-%m-%d')
         appointments = []
-        sql = "SELECT * FROM appointment WHERE userId = %s AND isDeleted = 0;" % user_id
+        sql = "SELECT * FROM appointment WHERE userId = %s AND isDeleted = 0 AND aptDate >= '%s';" % (user_id, day)
         try:
             cursor.execute(sql)
             results = cursor.fetchall()

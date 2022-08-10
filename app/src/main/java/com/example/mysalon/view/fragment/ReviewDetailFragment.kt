@@ -34,9 +34,10 @@ class ReviewDetailFragment : Fragment() {
         mainViewModel.reviewLiveData.value?.let{
             binding.tvUserName.text = it.fullName
             binding.tvReviewDate.text = it.creationDate
+            binding.rbRating.rating = it.rating.toFloat()
             binding.tvDetail.text = it.comment
             Glide.with(requireActivity().applicationContext)
-                .load(Constants.BASE_IMAGE_URL + it.profilePic)
+                .load(it.profilePic)
                 .into(binding.ivProfilePic)
         }
 

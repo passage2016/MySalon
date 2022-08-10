@@ -58,11 +58,6 @@
             android:text="Select 4 Slots"
             android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/sr_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_time_slots"
                 android:layout_width="match_parent"
@@ -72,7 +67,6 @@
                 app:spanCount="4"
                 tools:itemCount="20"
                 tools:listitem="@layout/view_book_select_time" />
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>
 
 

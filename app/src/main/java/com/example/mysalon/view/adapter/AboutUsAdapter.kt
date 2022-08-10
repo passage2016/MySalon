@@ -2,6 +2,7 @@ package com.example.mysalon.view.adapter
 
 import android.content.Intent
 import android.net.Uri
+import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -103,16 +104,17 @@ class AboutUsAdapter(private val fragment: Fragment, val infoList: ArrayList<Con
                 }
             }
             if (contact.contactType == "WEB_LINK") {
-                binding.tvContactDetails.setTextColor(fragment.resources.getColor(R.color.teal_200))
+                Linkify.addLinks(binding.tvContactDetails, Linkify.WEB_URLS)
+//                binding.tvContactDetails.setTextColor(fragment.resources.getColor(R.color.teal_200))
                 binding.ivBynIcon1.visibility = View.GONE
                 Glide.with(fragment.requireActivity().applicationContext)
                     .load(Constants.BASE_IMAGE_URL + contact.iconUrl)
                     .into(binding.ivIcon)
-                binding.tvContactDetails.setOnClickListener {
-                    val intent =
-                        Intent(Intent.ACTION_VIEW, Uri.parse(contact.contactData))
-                    fragment.requireActivity().startActivity(intent)
-                }
+//                binding.tvContactDetails.setOnClickListener {
+//                    val intent =
+//                        Intent(Intent.ACTION_VIEW, Uri.parse(contact.contactData))
+//                    fragment.requireActivity().startActivity(intent)
+//                }
             }
             if (contact.contactType == "TEXT") {
                 binding.ivIcon.visibility = View.GONE

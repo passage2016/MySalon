@@ -31,6 +31,7 @@ import com.example.mysalon.model.remote.data.product.Product
 import com.example.mysalon.model.remote.data.product.ProductsResponse
 import com.example.mysalon.model.remote.data.review.getReview.GetReviewResponse
 import com.example.mysalon.model.remote.data.review.getReview.Review
+import com.example.mysalon.model.remote.data.updateUser.UpdateUserResponse
 import com.example.mysalon.model.remote.data.workingHour.Weekday
 import com.example.mysalon.utils.PageTool
 import com.google.gson.Gson
@@ -38,6 +39,9 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -91,6 +95,47 @@ class MainViewModel : ViewModel() {
     val reviewPageLiveData = MutableLiveData<PageTool>()
     val reviewsListLiveData = MutableLiveData<ArrayList<Review>>()
     val reviewLiveData = MutableLiveData<Review>()
+    val couponLiveData = MutableLiveData<ArrayList<String>>()
+
+    fun getCoupons() {
+        compositeDisposable.add(baseApiService.getCoupons()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    val coupons = ArrayList<String>()
+                    it.coupons.forEach {
+                        coupons.add(it.couponCode)
+                    }
+                    couponLiveData.postValue(coupons)
+                },
+                { t: Throwable? -> Log.i("Throwable", t?.message ?: "error") }
+            )
+
+        )
+    }
+
+    fun updateUser  (map: HashMap<String, Any>) {
+            val ps_auth_token = userLiveData.value!!.apiToken
+            val reqJson: String = Gson().toJson(map)
+            val body: RequestBody =
+                reqJson.toRequestBody("application/json".toMediaTypeOrNull())
+        compositeDisposable.add(appUserApiService.updateUser (ps_auth_token, body)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    Log.e("", it.toString())
+                    userLiveData.value!!.fullName = it.fullName
+                    userLiveData.value!!.emailId = it.emailId
+                    userLiveData.value!!.dateOfBirth = it.dateOfBirth
+                    userLiveData.value!!.profilePic = it.profilePic
+                },
+                { t: Throwable? -> Log.i("Throwable", t?.message ?: "error") }
+            )
+
+        )
+    }
 
     fun addReview(rating: Double, comment: String) {
         val ps_auth_token = userLiveData.value!!.apiToken
@@ -135,9 +180,11 @@ class MainViewModel : ViewModel() {
     }
 
     fun loadReviews() {
+        var isFirstPage = false
         if (reviewPageLiveData.value == null) {
-            val productPage = PageTool(0, false, false, 0, 0, 10)
-            reviewPageLiveData.value = productPage
+            isFirstPage = true
+            val reviewPage = PageTool(0, false, false, 0, 0, 10)
+            reviewPageLiveData.value = reviewPage
         }
         val map = HashMap<String, Any>()
         map["pageSize"] = reviewPageLiveData.value!!.pageSize
@@ -156,7 +203,10 @@ class MainViewModel : ViewModel() {
                         Log.e("loadProducts", response.body().toString())
                         var reviewList = ArrayList<Review>()
                         reviewsListLiveData.value?.let {
-                            reviewList.addAll(it)
+                            if(!isFirstPage){
+                                reviewList.addAll(it)
+                            }
+
                         }
                         reviewList.addAll(response.body()!!.reviews)
                         reviewPageLiveData.value!!.isLastPage = response.body()!!.isLastPage
@@ -275,10 +325,6 @@ class MainViewModel : ViewModel() {
                 t.printStackTrace()
             }
         })
-    }
-
-    fun setUserLiveData(loginResponse: LoginResponse) {
-        userLiveData.postValue(loginResponse)
     }
 
     fun loadAlbumList() {

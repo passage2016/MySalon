@@ -19,21 +19,9 @@ class MyFCMService: FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-
-        Log.e("onMessageReceived", "onMessageReceived")
-        val alertType = message.data["alert_type"]
-        if(alertType == "InterviewSchedule") {
-            val title = message.data["title"]
-            val msg = message.data["message"]
-            val job_title = message.data["title"]
-            val job_id = message.data["job_id"]
-            showInterviewScheduledNotificaiton(title, msg, job_title, job_id)
-
-        } else {
-            var m = message.notification!!.body
-            val t = message.notification!!.title
-            showInterviewScheduledNotificaiton(t, m, "1", "1")
-        }
+        val aptNo = message.data["aptNo"]
+        Log.e("aptNo", aptNo.toString())
+        showInterviewScheduledNotificaiton(message.notification!!.title, message.notification!!.body, aptNo)
 
         for((k,v) in message.data) {
             Log.d("MyFCMService", "onMessageReceived: $k = $v")
@@ -43,15 +31,13 @@ class MyFCMService: FirebaseMessagingService() {
     private fun showInterviewScheduledNotificaiton(
         title: String?,
         msg: String?,
-        jobTitle: String?,
-        jobId: String?
+        aptNo: String?
     ) {
         val id = Random.nextInt(0, Int.MAX_VALUE)
 
         val idIntent = Intent(baseContext, MainActivity::class.java).apply {
             putExtra("msg", msg)
-            putExtra("job_title", jobTitle)
-            putExtra("job_id", jobId)
+            putExtra("aptNo", aptNo)
         }
 
         val pendingIntent = PendingIntent.getActivity(

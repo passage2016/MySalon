@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -39,7 +41,7 @@ class BookSummaryFragment : Fragment() {
         val totalDuration = mainViewModel.appointmentsTotalDurationLiveData.value!!
         val barbers = mainViewModel.barbersLiveData.value!!
         val barberId = mainViewModel.barberServicesIdLiveData.value!!
-        val barber = barbers.get(barberId)
+        val barber = barbers.filter { it.barberId == barberId }.get(0)
         val services = mainViewModel.barberServicesLiveData.value!!
         val selectedService = mainViewModel.barberServicesSelectLiveData.value!!
         binding.tvSelectedDayDate.text = date
@@ -66,6 +68,21 @@ class BookSummaryFragment : Fragment() {
         mainViewModel.couponCodeLiveData.postValue("")
         binding.tvCouponCode.setOnClickListener {
 
+            val list = mainViewModel.couponLiveData.value!!
+            var coupons = arrayOfNulls<String>(list.size)
+            list.toArray(coupons)
+
+            val builder = AlertDialog.Builder(this.requireContext())
+                .setTitle("Select Coupon")
+                .setSingleChoiceItems(coupons, -1){
+                        dialog, position ->
+                    mainViewModel.couponCodeLiveData.postValue(coupons[position])
+                    binding.tvCouponCode.text = "Coupon: " + coupons[position]
+                    dialog.dismiss()
+                }
+            val alertDialog: AlertDialog = builder.create()
+            alertDialog.setCancelable(true)
+            alertDialog.show()
         }
         var cost = 0.0
         selectedServiceList.forEach() {
