@@ -33,6 +33,7 @@ class BookSummaryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+        mainViewModel.getCoupons()
 
         var date = mainViewModel.appointmentsDateLiveData.value!!
         val timeFrom = mainViewModel.appointmentsStartFromLiveData.value!!

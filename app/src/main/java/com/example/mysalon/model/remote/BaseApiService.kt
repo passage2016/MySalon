@@ -46,8 +46,8 @@ interface BaseApiService {
     fun getWorkingHours(): Single<WorkingHourResponse>
 
     @Headers("Content-type: application/json")
-    @GET("alert/getList")
-    fun getAlert(): Single<AlertResponse>
+    @GET
+    fun getAlert(@Header("ps_auth_token") ps_auth_token: String, @Url url: String): Single<AlertResponse>
 
     @Headers("Content-type: application/json")
     @GET("offers/getCoupons")

@@ -1034,6 +1034,27 @@ def get_alert():
     return db.get_alert()
 
 
+@alert.route('/getList/<user_id>', methods=['GET'])
+def get_alert_by_user(user_id):
+    """
+        @@@
+        #### arg
+
+        | args | nullable | type | remark |
+        |--------|--------|--------|--------|
+        |    userId         |    false  |    string   |         |
+
+        #### return
+        - ##### json
+        @@@
+    """
+    if request.headers.get("Content-type") != "application/json":
+        return '{"status":1,"message":"Require Content-type"}'
+    if request.headers.get("ps_auth_token") is None:
+        return '{"status":1,"message":"Failed to authenticate"}'
+    return db.get_alert_by_user(request.headers.get("ps_auth_token"), user_id)
+
+
 app.register_blueprint(test, url_prefix="/test")
 app.register_blueprint(app_user, url_prefix="/appUser")
 app.register_blueprint(app_user, url_prefix="/user")

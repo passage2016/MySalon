@@ -9,7 +9,6 @@ import uuid
 import datetime
 
 import utils
-import fmc
 
 
 class Mysqldb:
@@ -267,6 +266,7 @@ class Mysqldb:
             return '{"status":1,"message":"Get phone verification code error."}'
         db.close()
         try:
+            import fmc
             fmc.send_notification('Verification Code', 'Your verification code is ' + phone_verification_code,
                                   fcm_token, application, -1)
         except:
@@ -774,6 +774,7 @@ class Mysqldb:
             send_sms = 1
         else:
             send_sms = 0
+        dt = time.strftime('%Y-%m-%d %H:%M:%S')
         sql = "INSERT INTO appointment(aptDate, timeFrom, timeTo, userId, fullName, mobileNo, totalCost, " \
               "couponDiscount, finalCost, totalDuration, aptStatus, couponCode, barberId, barberName, " \
               "profilePic, userProfilePic, services, previousTimePhotos, sendSms) \
@@ -791,8 +792,19 @@ class Mysqldb:
             db.rollback()
             db.close()
             return '{"status":1,"message":"Book appointment error."}'
+        try:
+            sql = "INSERT INTO alert(message, type, createdOn) \
+                           VALUES ('%s', '%s', '%s')" % \
+                  ("Your appointment " + str(appointment_id) + " is confirmed", user_id, dt)
+            cursor.execute(sql)
+            db.commit()
+        except RuntimeError:
+            db.rollback()
+            db.close()
+            return '{"status":1,"message":"Database error."}'
         db.close()
         try:
+            import fmc
             fmc.send_notification('Appointment confirmation', 'Your appointment is confirmed', user["fcmToken"],
                                   user['application'], appointment_id)
         except:
@@ -934,7 +946,29 @@ class Mysqldb:
                              password=self.sql_password,
                              database='barber')
         cursor = db.cursor()
-        sql = "SELECT * FROM alert order by id desc;"
+        sql = "SELECT * FROM alert WHERE type = 'public' OR type = 'both' order by id desc;"
+        result = {"status": 0, "message": "Success", "alert": []}
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for row in results:
+                alert = {"id": row[0], "message": row[1], "type": row[2], "createdOn": str(row[3])}
+                result["alert"].append(alert)
+        except RuntimeError:
+            db.close()
+            return '{"status":1,"message":"Database error."}'
+        db.close()
+        return json.dumps(result)
+
+    def get_alert_by_user(self, ps_auth_token, user_id):
+        if not self.api_key_check(ps_auth_token, user_id):
+            return '{"status":1,"message":"Failed to authenticate."}'
+        db = pymysql.connect(host=self.sql_host,
+                             user='root',
+                             password=self.sql_password,
+                             database='barber')
+        cursor = db.cursor()
+        sql = "SELECT * FROM alert WHERE type = 'public' OR type = 'both' OR type = '%s' order by id desc;" % user_id
         result = {"status": 0, "message": "Success", "alert": []}
         try:
             cursor.execute(sql)

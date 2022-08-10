@@ -48,7 +48,7 @@ class MyFCMService: FirebaseMessagingService() {
         )
 
 
-        val notification = NotificationCompat.Builder(this, "JobAlerts").apply {
+        val notification = NotificationCompat.Builder(this, "SalonAlerts").apply {
             setContentTitle(title?:"")
             setContentText(msg?:"")
             setSmallIcon(R.drawable.ic_outline_email_24)
@@ -58,7 +58,7 @@ class MyFCMService: FirebaseMessagingService() {
 
         val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel("JobAlerts", "Job Alerts", NotificationManager.IMPORTANCE_HIGH)
+            val channel = NotificationChannel("SalonAlerts", "Salon Alerts", NotificationManager.IMPORTANCE_HIGH)
             nm.createNotificationChannel(channel)
         }
 

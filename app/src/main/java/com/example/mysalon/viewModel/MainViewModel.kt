@@ -227,7 +227,8 @@ class MainViewModel : ViewModel() {
     }
 
     fun getAlert() {
-        compositeDisposable.add(baseApiService.getAlert()
+        val url = "alert/getList/" + userLiveData.value!!.userId
+        compositeDisposable.add(baseApiService.getAlert(userLiveData.value!!.apiToken, url)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
