@@ -57,36 +57,42 @@ class BookInfoFragment : Fragment() {
             binding.tvSelectedTime.text =
                 "${appointment.timeFrom} to ${appointment.timeTo} (${appointment.totalDuration} Minutes) - ${appointment.aptStatus}"
             binding.tvSelectedBarber.text = appointment.barberName
-            Glide.with(requireActivity().applicationContext)
-                .load(Constants.BASE_IMAGE_URL + appointment.profilePic)
-                .into(binding.ivBarberPic)
+            if(isAdded){
+                Glide.with(requireContext())
+                    .load(Constants.BASE_IMAGE_URL + appointment.profilePic)
+                    .into(binding.ivBarberPic)
+            }
+
             adapter = ServiceInfoAdapter(this, appointment.services)
             binding.rvSelected.adapter = adapter
             binding.rvSelected.layoutManager = LinearLayoutManager(view.context)
             binding.tvAptNo.text = appointment.aptNo.toString()
             val qrCode = QRCodeUtils().createQRCode(appointment.aptNo.toString())
-            Glide.with(requireActivity().applicationContext)
-                .load(qrCode)
-                .into(binding.ivQrCode)
-            if (appointment.aptStatus == "Confirmed") {
-                Glide.with(requireActivity().applicationContext)
-                    .load(R.drawable.confirmed)
-                    .into(binding.ivStamp)
-                binding.btnCancel.visibility = View.VISIBLE
-                binding.btnReschedule.visibility = View.VISIBLE
-            } else if (appointment.aptStatus == "Rescheduled") {
-                Glide.with(requireActivity().applicationContext)
-                    .load(R.drawable.rescheduled)
-                    .into(binding.ivStamp)
-                binding.btnCancel.visibility = View.VISIBLE
-                binding.btnReschedule.visibility = View.VISIBLE
-            } else {
-                Glide.with(requireActivity().applicationContext)
-                    .load(R.drawable.canceled)
-                    .into(binding.ivStamp)
-                binding.btnCancel.visibility = View.GONE
-                binding.btnReschedule.visibility = View.GONE
+            if(isAdded){
+                Glide.with(requireContext())
+                    .load(qrCode)
+                    .into(binding.ivQrCode)
+                if (appointment.aptStatus == "Confirmed") {
+                    Glide.with(requireContext())
+                        .load(R.drawable.confirmed)
+                        .into(binding.ivStamp)
+                    binding.btnCancel.visibility = View.VISIBLE
+                    binding.btnReschedule.visibility = View.VISIBLE
+                } else if (appointment.aptStatus == "Rescheduled") {
+                    Glide.with(requireContext())
+                        .load(R.drawable.rescheduled)
+                        .into(binding.ivStamp)
+                    binding.btnCancel.visibility = View.VISIBLE
+                    binding.btnReschedule.visibility = View.VISIBLE
+                } else {
+                    Glide.with(requireContext())
+                        .load(R.drawable.canceled)
+                        .into(binding.ivStamp)
+                    binding.btnCancel.visibility = View.GONE
+                    binding.btnReschedule.visibility = View.GONE
+                }
             }
+
 
 
             binding.btnCancel.setOnClickListener {
@@ -110,15 +116,15 @@ class BookInfoFragment : Fragment() {
 
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        if (item.itemId == android.R.id.home) {
-            val action = BookInfoFragmentDirections.bookExitAction()
-            binding.root.findNavController().navigate(action)
-            requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout).closeDrawer(
-                GravityCompat.START)
-        }
-        return super.onOptionsItemSelected(item)
-
-    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//
+//        if (item.itemId == android.R.id.home) {
+//            val action = BookInfoFragmentDirections.bookExitAction()
+//            binding.root.findNavController().navigate(action)
+//            requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout).closeDrawer(
+//                GravityCompat.START)
+//        }
+//        return super.onOptionsItemSelected(item)
+//
+//    }
 }

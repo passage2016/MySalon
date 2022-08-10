@@ -57,7 +57,7 @@ class ReviewAdapter(private val fragment: Fragment, val infoList: ArrayList<Revi
                 binding.root.findNavController().navigate(action)
 
             }
-            Glide.with(fragment.requireActivity().applicationContext)
+            Glide.with(fragment)
                 .load(review.profilePic)
                 .into(binding.ivProfilePic)
         }

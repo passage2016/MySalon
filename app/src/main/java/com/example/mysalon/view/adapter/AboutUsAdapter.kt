@@ -52,7 +52,7 @@ class AboutUsAdapter(private val fragment: Fragment, val infoList: ArrayList<Con
                 binding.ivBynIcon1.setImageResource(R.drawable.ic_baseline_call_24)
                 binding.ivBynIcon2.visibility = View.VISIBLE
                 binding.ivBynIcon2.setImageResource(R.drawable.ic_outline_email_24)
-                Glide.with(fragment.requireActivity().applicationContext)
+                Glide.with(fragment)
                     .load(Constants.BASE_IMAGE_URL + contact.iconUrl)
                     .into(binding.ivIcon)
                 binding.ivBynIcon1.setOnClickListener {
@@ -68,7 +68,7 @@ class AboutUsAdapter(private val fragment: Fragment, val infoList: ArrayList<Con
             }
             if (contact.contactType == "EMAIL") {
                 binding.ivBynIcon1.setImageResource(R.drawable.ic_outline_email_24)
-                Glide.with(fragment.requireActivity().applicationContext)
+                Glide.with(fragment)
                     .load(Constants.BASE_IMAGE_URL + contact.iconUrl)
                     .into(binding.ivIcon)
                 binding.ivBynIcon1.setOnClickListener {
@@ -89,7 +89,7 @@ class AboutUsAdapter(private val fragment: Fragment, val infoList: ArrayList<Con
                 val longitude = arrayOfString[1].toDouble()
                 binding.tvContactDetails.text = arrayOfString[2]
                 binding.ivBynIcon1.setImageResource(R.drawable.ic_outline_location_on_24)
-                Glide.with(fragment.requireActivity().applicationContext)
+                Glide.with(fragment)
                     .load(Constants.BASE_IMAGE_URL + contact.iconUrl)
                     .into(binding.ivIcon)
                 binding.ivBynIcon1.setOnClickListener {
@@ -107,7 +107,7 @@ class AboutUsAdapter(private val fragment: Fragment, val infoList: ArrayList<Con
                 Linkify.addLinks(binding.tvContactDetails, Linkify.WEB_URLS)
 //                binding.tvContactDetails.setTextColor(fragment.resources.getColor(R.color.teal_200))
                 binding.ivBynIcon1.visibility = View.GONE
-                Glide.with(fragment.requireActivity().applicationContext)
+                Glide.with(fragment)
                     .load(Constants.BASE_IMAGE_URL + contact.iconUrl)
                     .into(binding.ivIcon)
 //                binding.tvContactDetails.setOnClickListener {

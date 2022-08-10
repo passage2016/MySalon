@@ -41,8 +41,11 @@ class BookSelectBarberFragment : Fragment() {
 
         mainViewModel.barbersLiveData.observe(requireActivity()) {
             it?.let {
-                adapter = BarberAdapter(requireActivity().applicationContext, it)
-                binding.rvBarbers.adapter = adapter
+                if(isAdded){
+                    adapter = BarberAdapter(requireActivity().applicationContext, it)
+                    binding.rvBarbers.adapter = adapter
+                }
+
                 binding.rvBarbers.layoutManager = LinearLayoutManager(view.context)
 
             }

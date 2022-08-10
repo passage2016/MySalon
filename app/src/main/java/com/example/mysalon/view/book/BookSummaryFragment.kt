@@ -8,9 +8,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.mysalon.R
 import com.example.mysalon.databinding.FragmentBookSummaryBinding
 import com.example.mysalon.model.remote.Constants
 import com.example.mysalon.view.book.adapter.ServiceItemAdapter
@@ -105,7 +107,8 @@ class BookSummaryFragment : Fragment() {
             map["sendSms"] = false
             mainViewModel.bookAppointment(map)
             val action = BookSummaryFragmentDirections.bookConfirmAction(-1)
-            binding.root.findNavController().navigate(action)
+            val option = NavOptions.Builder().setPopUpTo(R.id.home_dest, false).build()
+            binding.root.findNavController().navigate(action, option)
 
         }
 

@@ -54,7 +54,7 @@ class ProductAdapter(private val fragment: Fragment, val infoList: ArrayList<Pro
             }
 
 
-            Glide.with(fragment.requireActivity().applicationContext)
+            Glide.with(fragment)
                 .load(BASE_IMAGE_URL + product.productPic)
                 .into(binding.ivServicePic)
         }

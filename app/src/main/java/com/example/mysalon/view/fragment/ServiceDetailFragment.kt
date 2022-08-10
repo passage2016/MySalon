@@ -35,7 +35,7 @@ class ServiceDetailFragment : Fragment() {
             binding.tvDuration.text = "duration: " + it.duration.toString()
             binding.tvCost.text = "cost: " + it.cost.toString()
             binding.tvDescription.text = it.description
-            Glide.with(requireActivity().applicationContext)
+            Glide.with(this)
                 .load(Constants.BASE_IMAGE_URL + it.servicePic)
                 .into(binding.ivServicePic)
         }
