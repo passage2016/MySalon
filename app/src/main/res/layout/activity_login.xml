@@ -39,7 +39,6 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:paddingHorizontal="15dp"
-        android:text="999999999"
         android:hint="Mobile Number"
         app:layout_constraintTop_toBottomOf="@+id/tv_mobile_phone" />
 
@@ -57,7 +56,6 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:paddingHorizontal="15dp"
-        android:text="asdf1234"
         android:hint="Password"
         android:inputType="textPassword"
         app:layout_constraintTop_toBottomOf="@+id/tv_login_password" />
