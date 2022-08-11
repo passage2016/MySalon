@@ -1,6 +1,9 @@
 # About My Salon
 
-**About My Salon** This is a sample application that can simulate the operations required by the barber shop, and perform reservation-level query barber shop information waiting.
+**About My Salon** 
+
+## About:
+This is a sample application that can simulate the operations required by the barber shop, and perform reservation-level query barber shop information waiting.
 
 ## Sailent Features:
 - Appointment service.
@@ -12,23 +15,23 @@
 
 **Please click the image below to enlarge.**
 
-<img src="https://github.com/passage2016/MySalon/Register.png" height="600" width="300" hspace="40"><img src="https://github.com/passage2016/MySalon/Login.png" height="600" width="300" hspace="40">
+<img src="https://github.com/passage2016/MySalon/blob/main/image/Register.png" height="600" width="300" hspace="40"><img src="https://github.com/passage2016/MySalon/blob/main/image/Login.png" height="600" width="300" hspace="40">
 
-<img src="https://github.com/passage2016/MySalon/ForgetPassword.png" height="600" width="300" hspace="40"><img src="https://github.com/passage2016/MySalon/About.png" height="600" width="300" hspace="40">
+<img src="https://github.com/passage2016/MySalon/blob/main/image/ForgetPassword.png" height="600" width="300" hspace="40"><img src="https://github.com/passage2016/MySalon/blob/main/image/About.png" height="600" width="300" hspace="40">
 
-<img src="https://github.com/passage2016/MySalon/AboutUs.png" height="600" width="300" hspace="40"><img src="https://github.com/passage2016/MySalon/AppointmentDetail.png" height="600" width="300" hspace="40">
+<img src="https://github.com/passage2016/MySalon/blob/main/image/AboutUs.png" height="600" width="300" hspace="40"><img src="https://github.com/passage2016/MySalon/blob/main/image/AppointmentDetail.png" height="600" width="300" hspace="40">
 
-<img src="https://github.com/passage2016/MySalon/AppointmentList.png" height="600" width="300" hspace="40"><img src="https://github.com/passage2016/MySalon/HomeScreen.png" height="600" width="300" hspace="40">
+<img src="https://github.com/passage2016/MySalon/blob/main/image/AppointmentList.png" height="600" width="300" hspace="40"><img src="https://github.com/passage2016/MySalon/blob/main/image/HomeScreen.png" height="600" width="300" hspace="40">
 
-<img src="https://github.com/passage2016/MySalon/NavigateBar.png" height="600" width="300" hspace="40"><img src="https://github.com/passage2016/MySalon/Notifications.png" height="600" width="300" hspace="40">
+<img src="https://github.com/passage2016/MySalon/blob/main/image/NavigateBar.png" height="600" width="300" hspace="40"><img src="https://github.com/passage2016/MySalon/blob/main/image/Notifications.png" height="600" width="300" hspace="40">
 
-<img src="https://github.com/passage2016/MySalon/ProductList.png" height="600" width="300" hspace="40"><img src="https://github.com/passage2016/MySalon/RateUs.png" height="600" width="300" hspace="40">
+<img src="https://github.com/passage2016/MySalon/blob/main/image/ProductList.png" height="600" width="300" hspace="40"><img src="https://github.com/passage2016/MySalon/blob/main/image/RateUs.png" height="600" width="300" hspace="40">
 
-<img src="https://github.com/passage2016/MySalon/Reviews.png" height="600" width="300" hspace="40"><img src="https://github.com/passage2016/MySalon/ServiceDetail.png" height="600" width="300" hspace="40">
+<img src="https://github.com/passage2016/MySalon/blob/main/image/Reviews.png" height="600" width="300" hspace="40"><img src="https://github.com/passage2016/MySalon/blob/main/image/ServiceDetail.png" height="600" width="300" hspace="40">
 
-<img src="https://github.com/passage2016/MySalon/ShowCase.png" height="600" width="300" hspace="40"><img src="https://github.com/passage2016/MySalon/UpdateUser.png" height="600" width="300" hspace="40">
+<img src="https://github.com/passage2016/MySalon/blob/main/image/ShowCase.png" height="600" width="300" hspace="40"><img src="https://github.com/passage2016/MySalon/blob/main/image/UpdateUser.png" height="600" width="300" hspace="40">
 
-<img src="https://github.com/passage2016/MySalon/WorkingHour.png" height="600" width="300" hspace="40">
+<img src="https://github.com/passage2016/MySalon/blob/main/image/WorkingHour.png" height="600" width="300" hspace="40">
 
 
 ## Built With 🛠
