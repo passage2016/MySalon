@@ -56,6 +56,11 @@ class BookInfoFragment : Fragment() {
             binding.tvSelectedDayDate.text = appointment.aptDate
             binding.tvSelectedTime.text =
                 "${appointment.timeFrom} to ${appointment.timeTo} (${appointment.totalDuration} Minutes) - ${appointment.aptStatus}"
+            var cost = 0.0
+            appointment.services.forEach {
+                cost += it.cost
+            }
+            binding.tvTotalCost.text = "Total cost : " + cost.toInt()
             binding.tvSelectedBarber.text = appointment.barberName
             if(isAdded){
                 Glide.with(requireContext())

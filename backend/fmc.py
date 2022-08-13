@@ -1,3 +1,6 @@
+import sys
+import traceback
+
 import firebase_admin
 from firebase_admin import messaging
 from firebase_admin import credentials
@@ -27,6 +30,17 @@ def send_notification(title, body, fcm_token, certificate_file, apt_no):
         firebase_admin.delete_app(app)
         # Response is a message ID string.
         print('Successfully sent message:', response)
-    except FileNotFoundError:
-        pass
+    except:
+        traceback.print_exc()
 
+
+arg_type = sys.argv[1]
+arg_key = sys.argv[2]
+arg_application = sys.argv[3]
+arg_value = sys.argv[4]
+if arg_type == "0":
+    send_notification('Appointment confirmation', 'Your appointment %s is confirmed' % sys.argv[4],
+                      sys.argv[2], sys.argv[3], sys.argv[4])
+if arg_type == "1":
+    send_notification('Verification Code', 'Your verification code is %s' % sys.argv[4],
+                      sys.argv[2], sys.argv[3], sys.argv[4])

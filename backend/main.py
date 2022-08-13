@@ -1057,7 +1057,6 @@ def get_alert_by_user(user_id):
 
 app.register_blueprint(test, url_prefix="/test")
 app.register_blueprint(app_user, url_prefix="/appUser")
-app.register_blueprint(app_user, url_prefix="/user")
 app.register_blueprint(service, url_prefix="/service")
 app.register_blueprint(barber, url_prefix="/barber")
 app.register_blueprint(offers, url_prefix="/offers")

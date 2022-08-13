@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -105,9 +106,10 @@ class BookRescheduleFragment : Fragment() {
                 map["timeTo"] = toTimeString
                 map["aptDate"] = date
                 mainViewModel.rescheduleAppointment(map)
+                val option = NavOptions.Builder().setPopUpTo(R.id.home_dest, false).build()
                 val action =
                     BookRescheduleFragmentDirections.bookConfirmAction(mainViewModel.appointmentLiveData.value!!.aptNo)
-                binding.root.findNavController().navigate(action)
+                binding.root.findNavController().navigate(action, option)
             }
         }
 

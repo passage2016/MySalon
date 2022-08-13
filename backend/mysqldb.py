@@ -1,4 +1,5 @@
 import math
+import os
 import random
 
 import pymysql
@@ -265,13 +266,10 @@ class Mysqldb:
             db.close()
             return '{"status":1,"message":"Get phone verification code error."}'
         db.close()
-        import fmc
         try:
-            fmc.send_notification('Verification Code', 'Your verification code is ' + phone_verification_code,
-                                  fcm_token, application, -1)
+            os.system("python3.9 fmc.py 1 %s %s %s" % (fcm_token, application, phone_verification_code))
         except:
             pass
-        del fmc
         return json.dumps(result)
 
     def reset_password(self, mobile_no, phone_verification_code, password):
@@ -804,13 +802,10 @@ class Mysqldb:
             db.close()
             return '{"status":1,"message":"Database error."}'
         db.close()
-        import fmc
         try:
-            fmc.send_notification('Appointment confirmation', 'Your appointment is confirmed', user["fcmToken"],
-                                  user['application'], appointment_id)
+            os.system("python3.9 fmc.py 0 %s %s %s" % (user["fcmToken"], user['application'], str(appointment_id)))
         except:
             pass
-        del fmc
         result = self.get_appointment_result(appointment_id)
         return json.dumps(result)
 
